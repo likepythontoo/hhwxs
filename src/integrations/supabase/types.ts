@@ -50,6 +50,94 @@ export type Database = {
         }
         Relationships: []
       }
+      check_ins: {
+        Row: {
+          checked_in_at: string
+          event_id: string
+          id: string
+          student_id: string | null
+          user_id: string | null
+          user_name: string
+        }
+        Insert: {
+          checked_in_at?: string
+          event_id: string
+          id?: string
+          student_id?: string | null
+          user_id?: string | null
+          user_name: string
+        }
+        Update: {
+          checked_in_at?: string
+          event_id?: string
+          id?: string
+          student_id?: string | null
+          user_id?: string | null
+          user_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_ins_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      department_members: {
+        Row: {
+          department_id: string
+          id: string
+          is_head: boolean | null
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          department_id: string
+          id?: string
+          is_head?: boolean | null
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          department_id?: string
+          id?: string
+          is_head?: boolean | null
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "department_members_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      departments: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       event_registrations: {
         Row: {
           college: string | null
@@ -97,6 +185,7 @@ export type Database = {
       events: {
         Row: {
           category: string | null
+          check_in_code: string | null
           created_at: string
           description: string | null
           event_date: string
@@ -105,11 +194,13 @@ export type Database = {
           location: string | null
           max_participants: number | null
           registration_deadline: string | null
+          scope: string | null
           title: string
           updated_at: string
         }
         Insert: {
           category?: string | null
+          check_in_code?: string | null
           created_at?: string
           description?: string | null
           event_date: string
@@ -118,11 +209,13 @@ export type Database = {
           location?: string | null
           max_participants?: number | null
           registration_deadline?: string | null
+          scope?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           category?: string | null
+          check_in_code?: string | null
           created_at?: string
           description?: string | null
           event_date?: string
@@ -131,6 +224,7 @@ export type Database = {
           location?: string | null
           max_participants?: number | null
           registration_deadline?: string | null
+          scope?: string | null
           title?: string
           updated_at?: string
         }
@@ -325,6 +419,7 @@ export type Database = {
         Row: {
           college: string | null
           created_at: string
+          department_id: string | null
           email: string | null
           id: string
           literary_works: string | null
@@ -341,6 +436,7 @@ export type Database = {
         Insert: {
           college?: string | null
           created_at?: string
+          department_id?: string | null
           email?: string | null
           id?: string
           literary_works?: string | null
@@ -357,6 +453,7 @@ export type Database = {
         Update: {
           college?: string | null
           created_at?: string
+          department_id?: string | null
           email?: string | null
           id?: string
           literary_works?: string | null
@@ -370,7 +467,15 @@ export type Database = {
           student_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "recruitment_applications_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       site_settings: {
         Row: {
@@ -461,11 +566,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_admin_access: { Args: { _user_id: string }; Returns: boolean }
+      has_management_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_department_head: {
+        Args: { _department_id: string; _user_id: string }
         Returns: boolean
       }
     }
