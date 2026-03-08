@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Shield, Newspaper, BookOpen, Wallet, Settings } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare } from "lucide-react";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
 import MemberManagement from "@/components/admin/MemberManagement";
@@ -10,16 +10,24 @@ import NewsManagement from "@/components/admin/NewsManagement";
 import SubmissionsManagement from "@/components/admin/SubmissionsManagement";
 import FinanceManagement from "@/components/admin/FinanceManagement";
 import SiteSettings from "@/components/admin/SiteSettings";
+import RecruitmentManagement from "@/components/admin/RecruitmentManagement";
+import AuditLogViewer from "@/components/admin/AuditLogViewer";
+import ExportCenter from "@/components/admin/ExportCenter";
+import ForumManagement from "@/components/admin/ForumManagement";
 
-type Tab = "dashboard" | "events" | "members" | "news" | "submissions" | "finance" | "settings";
+type Tab = "dashboard" | "events" | "news" | "submissions" | "members" | "recruitment" | "finance" | "forum" | "export" | "audit" | "settings";
 
 const tabs: { key: Tab; label: string; icon: typeof LayoutDashboard; section?: string }[] = [
   { key: "dashboard", label: "数据总览", icon: LayoutDashboard, section: "概览" },
-  { key: "events", label: "活动管理", icon: Calendar, section: "内容" },
+  { key: "events", label: "活动管理", icon: Calendar, section: "内容管理" },
   { key: "news", label: "新闻公告", icon: Newspaper },
   { key: "submissions", label: "作品投稿", icon: BookOpen },
-  { key: "members", label: "成员管理", icon: Users, section: "组织" },
-  { key: "finance", label: "财务管理", icon: Wallet },
+  { key: "forum", label: "论坛管理", icon: MessageSquare },
+  { key: "members", label: "成员管理", icon: Users, section: "组织管理" },
+  { key: "recruitment", label: "招新审批", icon: UserPlus },
+  { key: "finance", label: "财务管理", icon: Wallet, section: "运营" },
+  { key: "export", label: "数据导出", icon: Download },
+  { key: "audit", label: "操作日志", icon: ScrollText },
   { key: "settings", label: "系统设置", icon: Settings, section: "系统" },
 ];
 
@@ -82,38 +90,35 @@ const Admin = () => {
   return (
     <div className="flex min-h-screen bg-background">
       {/* Sidebar */}
-      <aside className={`sticky top-0 flex h-screen flex-col border-r border-border bg-card transition-all ${sidebarOpen ? "w-56" : "w-14"}`}>
-        {/* Header */}
-        <div className="flex items-center gap-2 border-b border-border px-3 py-4">
+      <aside className={`sticky top-0 flex h-screen flex-col border-r border-border bg-card transition-all ${sidebarOpen ? "w-52" : "w-14"}`}>
+        <div className="flex items-center gap-2 border-b border-border px-3 py-3.5">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="rounded-lg p-1.5 transition hover:bg-secondary">
             <LayoutDashboard className="h-5 w-5 text-primary" />
           </button>
           {sidebarOpen && <span className="font-serif text-sm font-bold tracking-wide">管理后台</span>}
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 overflow-y-auto py-2">
+        <nav className="flex-1 overflow-y-auto py-1">
           {tabs.map((t, i) => (
             <div key={t.key}>
               {t.section && sidebarOpen && (
-                <p className={`px-4 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground ${i > 0 ? "pt-4" : "pt-2"}`}>{t.section}</p>
+                <p className={`px-4 pb-0.5 text-[9px] font-semibold uppercase tracking-widest text-muted-foreground ${i > 0 ? "pt-3" : "pt-2"}`}>{t.section}</p>
               )}
               <button
                 onClick={() => setTab(t.key)}
-                className={`flex w-full items-center gap-2.5 px-3 py-2 text-xs font-medium transition ${
+                className={`flex w-full items-center gap-2 px-3 py-1.5 text-[11px] font-medium transition ${
                   tab === t.key ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 }`}
                 title={t.label}
               >
-                <t.icon className={`h-4 w-4 flex-shrink-0 ${tab === t.key ? "text-primary" : ""}`} />
+                <t.icon className={`h-3.5 w-3.5 flex-shrink-0 ${tab === t.key ? "text-primary" : ""}`} />
                 {sidebarOpen && <span>{t.label}</span>}
               </button>
             </div>
           ))}
         </nav>
 
-        {/* User */}
-        <div className="border-t border-border p-3">
+        <div className="border-t border-border p-2.5">
           {sidebarOpen ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -121,8 +126,8 @@ const Admin = () => {
                   {(displayName || "?")[0]}
                 </div>
                 <div>
-                  <p className="text-xs font-medium leading-tight">{displayName}</p>
-                  <p className="text-[10px] text-primary">管理员</p>
+                  <p className="text-[11px] font-medium leading-tight truncate max-w-[90px]">{displayName}</p>
+                  <p className="text-[9px] text-primary">管理员</p>
                 </div>
               </div>
               <button onClick={handleLogout} className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-foreground" title="退出">
@@ -137,15 +142,11 @@ const Admin = () => {
         </div>
       </aside>
 
-      {/* Main content */}
+      {/* Main */}
       <main className="flex-1 overflow-y-auto">
-        {/* Top bar */}
         <header className="sticky top-0 z-10 border-b border-border bg-card/80 px-6 py-3 backdrop-blur-sm">
-          <h1 className="font-serif text-lg font-bold">
-            {tabs.find(t => t.key === tab)?.label}
-          </h1>
+          <h1 className="font-serif text-lg font-bold">{tabs.find(t => t.key === tab)?.label}</h1>
         </header>
-
         <div className="p-6">
           {tab === "dashboard" && <AdminDashboard />}
           {tab === "events" && <EventManagement />}
@@ -153,6 +154,10 @@ const Admin = () => {
           {tab === "news" && <NewsManagement />}
           {tab === "submissions" && <SubmissionsManagement />}
           {tab === "finance" && <FinanceManagement />}
+          {tab === "recruitment" && <RecruitmentManagement />}
+          {tab === "forum" && <ForumManagement />}
+          {tab === "export" && <ExportCenter />}
+          {tab === "audit" && <AuditLogViewer />}
           {tab === "settings" && <SiteSettings />}
         </div>
       </main>
