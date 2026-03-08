@@ -505,45 +505,60 @@ export type Database = {
         Row: {
           author_id: string | null
           author_name: string
+          class_name: string | null
+          college: string | null
           content: string
           created_at: string
           genre: string | null
           id: string
           image_url: string | null
           is_featured: boolean | null
+          major: string | null
+          phone: string | null
           recommend_count: number | null
           reviewer_notes: string | null
           status: string | null
+          student_id: string | null
           title: string
           updated_at: string
         }
         Insert: {
           author_id?: string | null
           author_name: string
+          class_name?: string | null
+          college?: string | null
           content: string
           created_at?: string
           genre?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
+          major?: string | null
+          phone?: string | null
           recommend_count?: number | null
           reviewer_notes?: string | null
           status?: string | null
+          student_id?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           author_id?: string | null
           author_name?: string
+          class_name?: string | null
+          college?: string | null
           content?: string
           created_at?: string
           genre?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean | null
+          major?: string | null
+          phone?: string | null
           recommend_count?: number | null
           reviewer_notes?: string | null
           status?: string | null
+          student_id?: string | null
           title?: string
           updated_at?: string
         }

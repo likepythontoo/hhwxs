@@ -13,6 +13,11 @@ interface Submission {
   is_featured: boolean | null;
   created_at: string;
   image_url?: string | null;
+  college?: string | null;
+  major?: string | null;
+  class_name?: string | null;
+  student_id?: string | null;
+  phone?: string | null;
 }
 
 const SubmissionsManagement = () => {
@@ -74,7 +79,7 @@ const SubmissionsManagement = () => {
                     <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-muted-foreground">{item.genre}</span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    ✍️ {item.author_name} · {new Date(item.created_at).toLocaleDateString("zh-CN")}
+                    ✍️ {item.author_name} · {[item.college, item.major, item.class_name].filter(Boolean).join(" / ")} · {new Date(item.created_at).toLocaleDateString("zh-CN")}
                   </p>
                   <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground/80">{item.content}</p>
                 </div>
@@ -107,6 +112,13 @@ const SubmissionsManagement = () => {
             </div>
             <h3 className="font-serif text-lg font-bold">{viewing.title}</h3>
             <p className="mt-1 text-xs text-muted-foreground">✍️ {viewing.author_name} · {new Date(viewing.created_at).toLocaleDateString("zh-CN")}</p>
+            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              {viewing.college && <span>🏫 {viewing.college}</span>}
+              {viewing.major && <span>📚 {viewing.major}</span>}
+              {viewing.class_name && <span>🎓 {viewing.class_name}</span>}
+              {viewing.student_id && <span>🆔 {viewing.student_id}</span>}
+              {viewing.phone && <span>📱 {viewing.phone}</span>}
+            </div>
             {viewing.image_url && (
               <div className="mt-4 overflow-hidden rounded-lg">
                 <img src={viewing.image_url} alt={viewing.title} className="w-full object-contain" />

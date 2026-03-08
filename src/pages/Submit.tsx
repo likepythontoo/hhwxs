@@ -29,6 +29,11 @@ const Submit = () => {
   const [genre, setGenre] = useState("诗歌");
   const [content, setContent] = useState("");
   const [authorName, setAuthorName] = useState("");
+  const [college, setCollege] = useState("");
+  const [major, setMajor] = useState("");
+  const [className, setClassName] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [phone, setPhone] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
@@ -58,6 +63,11 @@ const Submit = () => {
       genre,
       author_id: user?.id || null,
       author_name: authorName.trim() || "匿名",
+      college: college.trim() || null,
+      major: major.trim() || null,
+      class_name: className.trim() || null,
+      student_id: studentId.trim() || null,
+      phone: phone.trim() || null,
       image_url: isImageType && imageUrl.trim() ? imageUrl.trim() : null,
     } as any);
 
@@ -86,7 +96,7 @@ const Submit = () => {
             <h2 className="font-serif text-2xl font-bold">投稿成功！</h2>
             <p className="max-w-md text-muted-foreground">你的作品已提交，编辑部将尽快审核。{user ? "可在个人中心查看审核状态。" : ""}</p>
             <div className="flex gap-3">
-              <button onClick={() => { setSubmitted(false); setTitle(""); setContent(""); setImageUrl(""); }}
+              <button onClick={() => { setSubmitted(false); setTitle(""); setContent(""); setImageUrl(""); setCollege(""); setMajor(""); setClassName(""); setStudentId(""); setPhone(""); }}
                 className="rounded-lg border border-border px-5 py-2 text-sm transition hover:bg-secondary">继续投稿</button>
               {user && <a href="/profile" className="rounded-lg bg-primary px-5 py-2 text-sm text-primary-foreground transition hover:bg-primary/90">个人中心</a>}
             </div>
@@ -125,6 +135,40 @@ const Submit = () => {
               <input type="text" required value={authorName} onChange={e => setAuthorName(e.target.value)}
                 className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
                 placeholder="你的姓名或笔名" maxLength={50} />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">学院 <span className="text-destructive">*</span></label>
+                <input type="text" required value={college} onChange={e => setCollege(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="如：文学院" maxLength={50} />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">专业 <span className="text-destructive">*</span></label>
+                <input type="text" required value={major} onChange={e => setMajor(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="如：汉语言文学" maxLength={50} />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">班级 <span className="text-destructive">*</span></label>
+                <input type="text" required value={className} onChange={e => setClassName(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="如：2024级1班" maxLength={50} />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">学号 <span className="text-destructive">*</span></label>
+                <input type="text" required value={studentId} onChange={e => setStudentId(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="你的学号" maxLength={30} />
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">联系方式 <span className="text-destructive">*</span></label>
+              <input type="tel" required value={phone} onChange={e => setPhone(e.target.value)}
+                className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                placeholder="手机号码" maxLength={20} />
             </div>
 
             <div>
