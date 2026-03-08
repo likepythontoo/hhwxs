@@ -50,7 +50,7 @@ const MemberManagement = ({ currentUserRole, currentUserDeptId }: Props) => {
     (deptMembers || []).forEach((dm: any) => {
       const names = userDeptMap.get(dm.user_id as string) || [];
       names.push(deptMap.get(dm.department_id as string) || "");
-        userDeptMap.set(dm.user_id, names);
+        userDeptMap.set(dm.user_id as string, names);
       });
 
       let merged: Member[] = profiles.map(p => ({
