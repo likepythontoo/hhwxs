@@ -1,19 +1,18 @@
-import { Building2, Users, Award, BookOpen } from "lucide-react";
+import { Building2, Users, Award, BookOpen, Monitor } from "lucide-react";
 
 const departments = [
-  { name: "理事会", desc: "社团最高决策机构" },
-  { name: "编辑部", desc: "社刊编审与出版" },
-  { name: "创作委员会", desc: "文学创作指导" },
+  { name: "办公室", desc: "活动策划与文件管理" },
+  { name: "话剧部", desc: "文学话剧排演" },
+  { name: "编辑部", desc: "期刊《雨巷》与报刊《墨香阁》" },
   { name: "外联部", desc: "对外交流合作" },
-  { name: "宣传部", desc: "品牌推广与传播" },
-  { name: "秘书处", desc: "日常事务管理" },
+  { name: "网络部", desc: "网络宣传与资料管理" },
 ];
 
 const stats = [
-  { icon: Building2, label: "成立年份", value: "1985" },
-  { icon: Users, label: "现有社员", value: "320+" },
-  { icon: Award, label: "获奖次数", value: "56" },
-  { icon: BookOpen, label: "出版社刊", value: "48期" },
+  { icon: Building2, label: "成立年份", value: "2006" },
+  { icon: Users, label: "下设部门", value: "5个" },
+  { icon: BookOpen, label: "社团期刊", value: "《雨巷》" },
+  { icon: Award, label: "社团报刊", value: "《墨香阁》" },
 ];
 
 const AboutSection = () => {
@@ -27,10 +26,10 @@ const AboutSection = () => {
           <div>
             <h3 className="mb-4 font-serif text-xl font-semibold">红湖简介</h3>
             <p className="mb-4 leading-relaxed text-muted-foreground">
-              红湖文学社成立于1985年，是我校历史最悠久、影响力最广泛的学生文学社团之一。社团以"笔耕红湖，墨绘春秋"为宗旨，致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
+              河北科技学院红湖文学社成立于2006年5月，是河北科技学院的学生文学社团组织。社团致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
             </p>
             <p className="mb-6 leading-relaxed text-muted-foreground">
-              三十余年来，红湖文学社始终坚持文学理想，涌现出一大批优秀的文学创作者。社团定期出版文学刊物《红湖》，举办"红湖杯"征文大赛、文学讲座、采风活动等，已成为校园文化建设的重要力量。
+              社团下设办公室、话剧部、编辑部、外联部、网络部五个部门，定期出版期刊《雨巷》和报刊《墨香阁》，组织征文活动、演讲比赛、话剧专场等丰富多彩的文学活动。
             </p>
 
             {/* Stats */}
@@ -61,19 +60,19 @@ const AboutSection = () => {
             </div>
 
             <div className="mt-6 rounded bg-secondary p-5">
-              <h4 className="mb-3 font-serif text-sm font-semibold text-primary">历任主编</h4>
+              <h4 className="mb-3 font-serif text-sm font-semibold text-primary">2017届管理团队</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex justify-between border-b border-dashed border-border pb-2">
-                  <span>第一任 · 张文远</span><span>1985-1988</span>
+                  <span>社长</span><span>孙浩然</span>
                 </div>
                 <div className="flex justify-between border-b border-dashed border-border pb-2">
-                  <span>第二任 · 李墨华</span><span>1988-1991</span>
+                  <span>办公室主任</span><span>沈威、李晨</span>
                 </div>
                 <div className="flex justify-between border-b border-dashed border-border pb-2">
-                  <span>第三任 · 王书韵</span><span>1991-1994</span>
+                  <span>编辑部部长</span><span>康雅倩、李钰</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-primary">更多历任主编 →</span>
+                  <span>外联部部长</span><span>高凡</span>
                 </div>
               </div>
             </div>
