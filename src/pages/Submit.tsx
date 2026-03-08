@@ -260,10 +260,10 @@ const Submit = () => {
 
             {error && <p className="text-xs text-destructive">{error}</p>}
 
-            <button type="submit" disabled={loading}
+            <button type="submit" disabled={loading || uploading}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:opacity-50">
               <Send className="h-4 w-4" />
-              {loading ? "提交中..." : "提交作品"}
+              {uploading ? "上传附件中..." : loading ? "提交中..." : "提交作品"}
             </button>
           </form>
         </div>
