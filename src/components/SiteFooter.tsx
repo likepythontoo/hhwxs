@@ -33,7 +33,7 @@ const SiteFooter = () => {
             <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">联系我们</h4>
             <ul className="space-y-2 text-sm opacity-60">
               <li>📍 图书馆 A000</li>
-              <li>📧 redlake@university.edu.cn</li>
+              <li>📧 1330760849@qq.com</li>
               <li>📱 微信公众号：红湖文学社</li>
             </ul>
           </div>
