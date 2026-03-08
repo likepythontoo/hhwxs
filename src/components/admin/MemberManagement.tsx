@@ -45,12 +45,13 @@ const MemberManagement = ({ currentUserRole, currentUserDeptId }: Props) => {
 
     if (profiles && roles) {
       const roleMap = new Map(roles.map(r => [r.user_id, r.role]));
-    const deptMap = new Map((depts || []).map((d: any) => [d.id as string, d.name as string]));
-    const userDeptMap = new Map<string, string[]>();
-    (deptMembers || []).forEach((dm: any) => {
-      const names = userDeptMap.get(dm.user_id as string) || [];
-      names.push(deptMap.get(dm.department_id as string) || "");
-        userDeptMap.set(dm.user_id as string, names);
+      const deptMap = new Map<string, string>((depts || []).map((d: any) => [String(d.id), String(d.name)]));
+      const userDeptMap = new Map<string, string[]>();
+      (deptMembers || []).forEach((dm: any) => {
+        const uid = String(dm.user_id);
+        const names = userDeptMap.get(uid) || [];
+        names.push(deptMap.get(String(dm.department_id)) || "");
+        userDeptMap.set(uid, names);
       });
 
       let merged: Member[] = profiles.map(p => ({
