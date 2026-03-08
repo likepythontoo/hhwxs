@@ -35,6 +35,10 @@ const SiteFooter = () => {
               <li>📍 图书馆 A000</li>
               <li>📧 1330760849@qq.com</li>
               <li>📱 微信公众号：红湖文学社</li>
+              <li>🎵 抖音：红湖文学社</li>
+              <li>📺 Bilibili：红湖文学社</li>
+              <li>👨‍🏫 指导老师：某某某</li>
+              <li>📞 老师电话：000-0000-0000</li>
             </ul>
           </div>
         </div>
