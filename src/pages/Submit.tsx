@@ -1,13 +1,24 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, Send, CheckCircle } from "lucide-react";
+import { BookOpen, Send, CheckCircle, Image } from "lucide-react";
 
-const genres = ["诗歌", "散文", "小说", "评论", "其他"];
+const genres = [
+  { value: "诗歌", label: "诗歌", desc: "现代诗、古体诗、词等" },
+  { value: "散文", label: "散文", desc: "抒情散文、叙事散文" },
+  { value: "小说", label: "小说", desc: "短篇小说、微小说" },
+  { value: "书评", label: "书评", desc: "读书笔记、书评影评" },
+  { value: "剧本", label: "剧本", desc: "话剧、课本剧、小品" },
+  { value: "书法", label: "书法", desc: "硬笔、软笔书法作品（上传图片）" },
+  { value: "摄影", label: "摄影", desc: "摄影作品（上传图片）" },
+  { value: "绘画", label: "绘画", desc: "国画、插画、手绘等（上传图片）" },
+  { value: "朗诵", label: "朗诵", desc: "朗诵稿、朗诵音视频链接" },
+  { value: "其他", label: "其他", desc: "其他文学艺术作品" },
+];
+
+const imageGenres = ["书法", "摄影", "绘画"];
 
 const Submit = () => {
-  const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,29 +28,38 @@ const Submit = () => {
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("诗歌");
   const [content, setContent] = useState("");
+  const [authorName, setAuthorName] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) { navigate("/auth"); return; }
-      setUser(session.user);
-      supabase.from("profiles").select("display_name").eq("user_id", session.user.id).single()
-        .then(({ data }) => setDisplayName(data?.display_name || session.user.email || ""));
+      if (session) {
+        setUser(session.user);
+        supabase.from("profiles").select("display_name").eq("user_id", session.user.id).single()
+          .then(({ data }) => {
+            const name = data?.display_name || session.user.email || "";
+            setDisplayName(name);
+            setAuthorName(name);
+          });
+      }
     });
-  }, [navigate]);
+  }, []);
+
+  const isImageType = imageGenres.includes(genre);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
     setError("");
     setLoading(true);
 
     const { error: err } = await supabase.from("submissions").insert({
       title: title.trim(),
-      content: content.trim(),
+      content: isImageType ? (content.trim() || "（图片作品）") : content.trim(),
       genre,
-      author_id: user.id,
-      author_name: displayName,
-    });
+      author_id: user?.id || null,
+      author_name: authorName.trim() || "匿名",
+      image_url: isImageType && imageUrl.trim() ? imageUrl.trim() : null,
+    } as any);
 
     if (err) {
       setError("提交失败，请稍后重试");
@@ -64,11 +84,11 @@ const Submit = () => {
               <CheckCircle className="h-8 w-8 text-primary" />
             </div>
             <h2 className="font-serif text-2xl font-bold">投稿成功！</h2>
-            <p className="max-w-md text-muted-foreground">你的作品已提交，编辑部将尽快审核。可在个人中心查看审核状态。</p>
+            <p className="max-w-md text-muted-foreground">你的作品已提交，编辑部将尽快审核。{user ? "可在个人中心查看审核状态。" : ""}</p>
             <div className="flex gap-3">
-              <button onClick={() => { setSubmitted(false); setTitle(""); setContent(""); }}
+              <button onClick={() => { setSubmitted(false); setTitle(""); setContent(""); setImageUrl(""); }}
                 className="rounded-lg border border-border px-5 py-2 text-sm transition hover:bg-secondary">继续投稿</button>
-              <a href="/profile" className="rounded-lg bg-primary px-5 py-2 text-sm text-primary-foreground transition hover:bg-primary/90">个人中心</a>
+              {user && <a href="/profile" className="rounded-lg bg-primary px-5 py-2 text-sm text-primary-foreground transition hover:bg-primary/90">个人中心</a>}
             </div>
           </div>
         </section>
@@ -81,7 +101,7 @@ const Submit = () => {
       <div className="relative bg-primary py-16 text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h1 className="font-serif text-3xl font-bold tracking-widest md:text-4xl">作品投稿</h1>
-          <p className="mt-3 text-sm text-primary-foreground/70">提交你的文学作品，展现你的才华</p>
+          <p className="mt-3 text-sm text-primary-foreground/70">诗歌、散文、书法、摄影……展现你的才华</p>
           <div className="gold-divider mx-auto mt-4" />
         </div>
       </div>
@@ -94,26 +114,60 @@ const Submit = () => {
               <h2 className="font-serif text-lg font-bold">投稿表单</h2>
             </div>
 
+            {!user && (
+              <div className="rounded-lg bg-muted p-3 text-xs text-muted-foreground">
+                未登录也可投稿。<a href="/auth" className="text-primary hover:underline">登录</a>后可在个人中心追踪审核状态。
+              </div>
+            )}
+
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">作者姓名/笔名 <span className="text-destructive">*</span></label>
+              <input type="text" required value={authorName} onChange={e => setAuthorName(e.target.value)}
+                className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                placeholder="你的姓名或笔名" maxLength={50} />
+            </div>
+
             <div>
               <label className="mb-1 block text-xs font-medium text-muted-foreground">作品标题 <span className="text-destructive">*</span></label>
               <input type="text" required value={title} onChange={e => setTitle(e.target.value)}
                 className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
-                placeholder="你的作品标题" maxLength={200} />
+                placeholder="作品标题" maxLength={200} />
             </div>
 
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">体裁 <span className="text-destructive">*</span></label>
-              <select value={genre} onChange={e => setGenre(e.target.value)}
-                className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none">
-                {genres.map(g => <option key={g}>{g}</option>)}
-              </select>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">作品类型 <span className="text-destructive">*</span></label>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {genres.map(g => (
+                  <button key={g.value} type="button" onClick={() => setGenre(g.value)}
+                    className={`rounded-lg border p-2 text-left text-xs transition ${genre === g.value ? "border-primary bg-primary/5" : "border-border hover:border-primary/30"}`}>
+                    <span className="font-medium">{g.label}</span>
+                    <p className="mt-0.5 text-[10px] text-muted-foreground">{g.desc}</p>
+                  </button>
+                ))}
+              </div>
             </div>
 
+            {isImageType && (
+              <div>
+                <label className="mb-1 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                  <Image className="h-3.5 w-3.5" /> 图片链接
+                </label>
+                <input type="url" value={imageUrl} onChange={e => setImageUrl(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="粘贴图片URL（如图床链接）" />
+                <p className="mt-1 text-[10px] text-muted-foreground">可使用任意图床上传后粘贴链接</p>
+              </div>
+            )}
+
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">作品正文 <span className="text-destructive">*</span></label>
-              <textarea required value={content} onChange={e => setContent(e.target.value)} rows={12}
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                {isImageType ? "作品说明（选填）" : "作品正文"} {!isImageType && <span className="text-destructive">*</span>}
+              </label>
+              <textarea required={!isImageType} value={content} onChange={e => setContent(e.target.value)}
+                rows={isImageType ? 4 : 12}
                 className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm leading-relaxed focus:border-primary focus:outline-none"
-                placeholder="在此粘贴或书写你的作品..." maxLength={50000} />
+                placeholder={isImageType ? "简要描述你的作品，创作背景等" : "在此书写或粘贴你的作品..."}
+                maxLength={50000} />
             </div>
 
             {error && <p className="text-xs text-destructive">{error}</p>}
@@ -123,8 +177,6 @@ const Submit = () => {
               <Send className="h-4 w-4" />
               {loading ? "提交中..." : "提交作品"}
             </button>
-
-            <p className="text-center text-[11px] text-muted-foreground">投稿人: {displayName}</p>
           </form>
         </div>
       </section>
