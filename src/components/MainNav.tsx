@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
-  { label: "首页", href: "#" },
-  { label: "社团概况", href: "#about" },
-  { label: "新闻动态", href: "#news" },
-  { label: "作品展示", href: "#works" },
-  { label: "创作研究", href: "#research" },
-  { label: "文学档案馆", href: "#archives" },
-  { label: "社员服务", href: "#services" },
-  { label: "联系我们", href: "#contact" },
+  { label: "首页", href: "/" },
+  { label: "社团概况", href: "/about" },
+  { label: "新闻动态", href: "/news" },
+  { label: "作品展示", href: "/works" },
+  { label: "创作研究", href: "/research" },
+  { label: "文学档案馆", href: "/archives" },
+  { label: "社员服务", href: "/services" },
+  { label: "联系我们", href: "/contact" },
 ];
 
 const MainNav = () => {
