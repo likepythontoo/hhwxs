@@ -1,10 +1,12 @@
 import { Search, User, Clock, UserPlus } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const TopBar = () => {
   return (
     <div className="top-bar">
       <div className="container mx-auto flex items-center justify-between px-4 py-1.5 text-sm">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          <img src={logo} alt="红湖文学社社徽" className="h-8 w-8 rounded-full" />
           <span className="font-serif text-base tracking-widest">红湖文学社</span>
           <span className="hidden text-xs opacity-60 sm:inline">Red Lake Literature Society</span>
         </div>
