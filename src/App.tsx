@@ -12,6 +12,9 @@ import Admin from "./pages/Admin";
 import Join from "./pages/Join";
 import CheckIn from "./pages/CheckIn";
 import Profile from "./pages/Profile";
+import Forum from "./pages/Forum";
+import Submit from "./pages/Submit";
+import Events from "./pages/Events";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
