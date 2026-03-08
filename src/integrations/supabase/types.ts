@@ -100,6 +100,81 @@ export type Database = {
         }
         Relationships: []
       }
+      finances: {
+        Row: {
+          amount: number
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          receipt_url: string | null
+          recorded_by: string | null
+          transaction_date: string
+          type: string
+        }
+        Insert: {
+          amount: number
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          receipt_url?: string | null
+          recorded_by?: string | null
+          transaction_date?: string
+          type: string
+        }
+        Update: {
+          amount?: number
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          receipt_url?: string | null
+          recorded_by?: string | null
+          transaction_date?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      news: {
+        Row: {
+          author_id: string | null
+          category: string | null
+          content: string | null
+          cover_url: string | null
+          created_at: string
+          id: string
+          is_published: boolean | null
+          published_at: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          category?: string | null
+          content?: string | null
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          category?: string | null
+          content?: string | null
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          is_published?: boolean | null
+          published_at?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -130,6 +205,72 @@ export type Database = {
           student_id?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: string | null
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: string | null
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: string | null
+        }
+        Relationships: []
+      }
+      submissions: {
+        Row: {
+          author_id: string | null
+          author_name: string
+          content: string
+          created_at: string
+          genre: string | null
+          id: string
+          is_featured: boolean | null
+          reviewer_notes: string | null
+          status: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          author_name: string
+          content: string
+          created_at?: string
+          genre?: string | null
+          id?: string
+          is_featured?: boolean | null
+          reviewer_notes?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          author_name?: string
+          content?: string
+          created_at?: string
+          genre?: string | null
+          id?: string
+          is_featured?: boolean | null
+          reviewer_notes?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
