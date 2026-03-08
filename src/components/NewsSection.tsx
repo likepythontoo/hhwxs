@@ -4,7 +4,7 @@ import { CalendarDays, ArrowRight } from "lucide-react";
 const tabs = ["社情快讯", "通知公告", "文学前沿"];
 
 const newsData: Record<string, { title: string; date: string }[]> = {
-  社情快讯: [
+  "社情快讯": [
     { title: "红湖文学社2025年度总结大会圆满举行", date: "2025-12-20" },
     { title: "第十二届"红湖杯"征文大赛获奖名单公布", date: "2025-11-15" },
     { title: "文学社赴西湖开展秋季采风活动", date: "2025-10-28" },
