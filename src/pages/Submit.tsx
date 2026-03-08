@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, Send, CheckCircle, Image } from "lucide-react";
+import { BookOpen, Send, CheckCircle, Image, Paperclip, X } from "lucide-react";
 
 const genres = [
   { value: "诗歌", label: "诗歌", desc: "现代诗、古体诗、词等" },
@@ -35,6 +35,8 @@ const Submit = () => {
   const [studentId, setStudentId] = useState("");
   const [phone, setPhone] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [attachmentFile, setAttachmentFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -57,6 +59,24 @@ const Submit = () => {
     setError("");
     setLoading(true);
 
+    // Upload attachment if exists
+    let attachmentUrl: string | null = null;
+    if (attachmentFile) {
+      setUploading(true);
+      const ext = attachmentFile.name.split(".").pop();
+      const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("submissions").upload(path, attachmentFile);
+      if (uploadErr) {
+        setError("附件上传失败，请重试");
+        setLoading(false);
+        setUploading(false);
+        return;
+      }
+      const { data: urlData } = supabase.storage.from("submissions").getPublicUrl(path);
+      attachmentUrl = urlData.publicUrl;
+      setUploading(false);
+    }
+
     const { error: err } = await supabase.from("submissions").insert({
       title: title.trim(),
       content: isImageType ? (content.trim() || "（图片作品）") : content.trim(),
@@ -69,6 +89,7 @@ const Submit = () => {
       student_id: studentId.trim() || null,
       phone: phone.trim() || null,
       image_url: isImageType && imageUrl.trim() ? imageUrl.trim() : null,
+      attachment_url: attachmentUrl,
     } as any);
 
     if (err) {
@@ -96,7 +117,7 @@ const Submit = () => {
             <h2 className="font-serif text-2xl font-bold">投稿成功！</h2>
             <p className="max-w-md text-muted-foreground">你的作品已提交，编辑部将尽快审核。{user ? "可在个人中心查看审核状态。" : ""}</p>
             <div className="flex gap-3">
-              <button onClick={() => { setSubmitted(false); setTitle(""); setContent(""); setImageUrl(""); setCollege(""); setMajor(""); setClassName(""); setStudentId(""); setPhone(""); }}
+              <button onClick={() => { setSubmitted(false); setTitle(""); setContent(""); setImageUrl(""); setCollege(""); setMajor(""); setClassName(""); setStudentId(""); setPhone(""); setAttachmentFile(null); }}
                 className="rounded-lg border border-border px-5 py-2 text-sm transition hover:bg-secondary">继续投稿</button>
               {user && <a href="/profile" className="rounded-lg bg-primary px-5 py-2 text-sm text-primary-foreground transition hover:bg-primary/90">个人中心</a>}
             </div>
@@ -214,12 +235,35 @@ const Submit = () => {
                 maxLength={50000} />
             </div>
 
+            <div>
+              <label className="mb-1 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                <Paperclip className="h-3.5 w-3.5" /> 上传附件（选填）
+              </label>
+              <div className="relative">
+                {attachmentFile ? (
+                  <div className="flex items-center gap-2 rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm">
+                    <Paperclip className="h-4 w-4 text-muted-foreground" />
+                    <span className="flex-1 truncate">{attachmentFile.name}</span>
+                    <span className="text-xs text-muted-foreground">{(attachmentFile.size / 1024 / 1024).toFixed(1)}MB</span>
+                    <button type="button" onClick={() => setAttachmentFile(null)} className="rounded p-0.5 hover:bg-secondary"><X className="h-3.5 w-3.5" /></button>
+                  </div>
+                ) : (
+                  <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-border px-3 py-3 text-sm text-muted-foreground transition hover:border-primary/50 hover:bg-secondary/30">
+                    <Paperclip className="h-4 w-4" />
+                    <span>点击选择文件（PDF、Word、图片等，最大20MB）</span>
+                    <input type="file" className="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.mp4,.zip"
+                      onChange={e => { if (e.target.files?.[0]) { const f = e.target.files[0]; if (f.size > 20 * 1024 * 1024) { setError("附件不能超过20MB"); } else { setError(""); setAttachmentFile(f); } } }} />
+                  </label>
+                )}
+              </div>
+            </div>
+
             {error && <p className="text-xs text-destructive">{error}</p>}
 
-            <button type="submit" disabled={loading}
+            <button type="submit" disabled={loading || uploading}
               className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:opacity-50">
               <Send className="h-4 w-4" />
-              {loading ? "提交中..." : "提交作品"}
+              {uploading ? "上传附件中..." : loading ? "提交中..." : "提交作品"}
             </button>
           </form>
         </div>

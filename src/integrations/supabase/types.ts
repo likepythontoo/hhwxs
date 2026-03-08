@@ -503,6 +503,7 @@ export type Database = {
       }
       submissions: {
         Row: {
+          attachment_url: string | null
           author_id: string | null
           author_name: string
           class_name: string | null
@@ -523,6 +524,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          attachment_url?: string | null
           author_id?: string | null
           author_name: string
           class_name?: string | null
@@ -543,6 +545,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          attachment_url?: string | null
           author_id?: string | null
           author_name?: string
           class_name?: string | null
