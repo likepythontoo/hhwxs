@@ -9,6 +9,7 @@ import Leadership from "./pages/Leadership";
 import News from "./pages/News";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
+import Join from "./pages/Join";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
