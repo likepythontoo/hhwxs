@@ -10,7 +10,7 @@ const TopBar = () => {
           <img src={schoolLogo} alt="河北科技学院" className="h-10 object-contain brightness-0 invert" />
           <span className="text-white/50">|</span>
           <img src={logo} alt="红湖文学社社徽" className="h-10 w-10 object-contain" />
-          <span className="font-serif text-base tracking-widest font-semibold text-white">红湖文学社</span>
+          <span className="font-serif text-base tracking-widest font-semibold text-white">红 湖 文 学 社</span>
         </div>
         <div className="flex items-center gap-4">
           <a href="#" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
