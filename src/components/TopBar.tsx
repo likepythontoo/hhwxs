@@ -1,0 +1,34 @@
+import { Search, User, Clock, UserPlus } from "lucide-react";
+
+const TopBar = () => {
+  return (
+    <div className="top-bar">
+      <div className="container mx-auto flex items-center justify-between px-4 py-1.5 text-sm">
+        <div className="flex items-center gap-6">
+          <span className="font-serif text-base tracking-widest">红湖文学社</span>
+          <span className="hidden text-xs opacity-60 sm:inline">Red Lake Literature Society</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <a href="#" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
+            <UserPlus className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">加入我们</span>
+          </a>
+          <a href="#" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
+            <User className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">社员登录</span>
+          </a>
+          <a href="#" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
+            <Clock className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">旧版回顾</span>
+          </a>
+          <button className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
+            <Search className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">搜索</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TopBar;
