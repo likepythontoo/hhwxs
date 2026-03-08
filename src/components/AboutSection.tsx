@@ -9,10 +9,10 @@ const departments = [
 ];
 
 const stats = [
-  { icon: Building2, label: "成立年份", value: "2006" },
+  { icon: Building2, label: "成立年份", value: "2003" },
   { icon: Users, label: "下设部门", value: "5个" },
-  { icon: BookOpen, label: "社团期刊", value: "《雨巷》" },
-  { icon: Award, label: "社团报刊", value: "《墨香阁》" },
+  { icon: BookOpen, label: "核心社刊", value: "《红湖》" },
+  { icon: Award, label: "品牌活动", value: "红湖杯" },
 ];
 
 const AboutSection = () => {
@@ -26,10 +26,10 @@ const AboutSection = () => {
           <div>
             <h3 className="mb-4 font-serif text-xl font-semibold">红湖简介</h3>
             <p className="mb-4 leading-relaxed text-muted-foreground">
-              河北科技学院红湖文学社成立于2006年5月，是河北科技学院的学生文学社团组织。社团致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
+              河北科技学院红湖文学社成立于2003年，社名取自校园内「红湖」，寓意热血、纯净与深邃。社团致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
             </p>
             <p className="mb-6 leading-relaxed text-muted-foreground">
-              社团由主席团统筹管理，下设办公室、话剧部、编辑部、网宣部、国学部五个部门，定期出版期刊《雨巷》和报刊《墨香阁》，组织征文活动、演讲比赛、话剧专场等丰富多彩的文学活动。
+              社团由主席团统筹管理，下设办公室、话剧部、编辑部、网宣部、国学部五个部门。以「一刊（《红湖》）、一赛（红湖杯征文大赛）、一会（暖冬诗歌朗诵会）」为核心运作模式。
             </p>
 
             {/* Stats */}
