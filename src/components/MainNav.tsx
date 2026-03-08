@@ -15,6 +15,7 @@ const navItems = [
 
 const MainNav = () => {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
 
   return (
     <nav className="main-nav relative z-50">
@@ -23,12 +24,14 @@ const MainNav = () => {
         <ul className="hidden md:flex">
           {navItems.map((item) => (
             <li key={item.label}>
-              <a
-                href={item.href}
-                className="block px-5 py-3 text-sm font-medium tracking-wider transition-colors hover:bg-palace-red-dark"
+              <Link
+                to={item.href}
+                className={`block px-5 py-3 text-sm font-medium tracking-wider transition-colors hover:bg-palace-red-dark ${
+                  location.pathname === item.href ? "bg-palace-red-dark" : ""
+                }`}
               >
                 {item.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -50,13 +53,13 @@ const MainNav = () => {
           <ul className="container mx-auto px-4 py-2">
             {navItems.map((item) => (
               <li key={item.label}>
-                <a
-                  href={item.href}
+                <Link
+                  to={item.href}
                   className="block border-b border-palace-red-dark px-4 py-3 text-sm tracking-wider"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
