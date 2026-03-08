@@ -10,6 +10,8 @@ import News from "./pages/News";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import Join from "./pages/Join";
+import CheckIn from "./pages/CheckIn";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/checkin" element={<CheckIn />} />
+          <Route path="/profile" element={<Profile />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
