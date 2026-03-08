@@ -19,7 +19,7 @@ const TopBar = () => {
           </a>
           <a href="#" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
             <Clock className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">旧版回顾</span>
+            <span className="hidden sm:inline">​社员论坛</span>
           </a>
           <button className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
             <Search className="h-3.5 w-3.5" />
@@ -27,8 +27,8 @@ const TopBar = () => {
           </button>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default TopBar;
