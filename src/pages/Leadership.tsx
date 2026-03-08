@@ -1,15 +1,18 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
-import LeadershipTimeline from "@/components/LeadershipTimeline";
 import LeadershipVerticalTimeline from "@/components/LeadershipVerticalTimeline";
 import LeadershipCarousel from "@/components/LeadershipCarousel";
 import LeadershipAccordion from "@/components/LeadershipAccordion";
-import { LayoutList, Clock, Layers } from "lucide-react";
+import LeadershipGrid from "@/components/LeadershipGrid";
+import LeadershipBook from "@/components/LeadershipBook";
+import { LayoutList, Clock, Layers, Grid3X3, BookOpen } from "lucide-react";
 
 const views = [
   { id: "vertical", label: "垂直时间轴", icon: Clock, desc: "左右交错，强调传承感" },
   { id: "carousel", label: "卡片轮播", icon: Layers, desc: "左右滑动，更有仪式感" },
   { id: "accordion", label: "折叠手风琴", icon: LayoutList, desc: "信息密度高，适合移动端" },
+  { id: "grid", label: "网格全览", icon: Grid3X3, desc: "全局纵览，点击查看详情" },
+  { id: "book", label: "书页翻页", icon: BookOpen, desc: "契合文学社气质的翻页体验" },
 ] as const;
 
 type ViewId = (typeof views)[number]["id"];
@@ -25,7 +28,7 @@ const Leadership = () => {
           <h1 className="font-serif text-3xl font-bold tracking-widest md:text-4xl">历届管理团队</h1>
           <div className="gold-divider mx-auto mt-4" />
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed opacity-80">
-            红湖文学社 2017—2025 届管理团队一览 · 三种展示风格自由切换
+            红湖文学社 2017—2025 届管理团队一览 · 五种展示风格自由切换
           </p>
         </div>
       </div>
@@ -61,6 +64,8 @@ const Leadership = () => {
           {activeView === "vertical" && <LeadershipVerticalTimeline />}
           {activeView === "carousel" && <LeadershipCarousel />}
           {activeView === "accordion" && <LeadershipAccordion />}
+          {activeView === "grid" && <LeadershipGrid />}
+          {activeView === "book" && <LeadershipBook />}
         </div>
       </section>
     </Layout>
