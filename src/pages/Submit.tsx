@@ -137,6 +137,40 @@ const Submit = () => {
                 placeholder="你的姓名或笔名" maxLength={50} />
             </div>
 
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">学院 <span className="text-destructive">*</span></label>
+                <input type="text" required value={college} onChange={e => setCollege(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="如：文学院" maxLength={50} />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">专业 <span className="text-destructive">*</span></label>
+                <input type="text" required value={major} onChange={e => setMajor(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="如：汉语言文学" maxLength={50} />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">班级 <span className="text-destructive">*</span></label>
+                <input type="text" required value={className} onChange={e => setClassName(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="如：2024级1班" maxLength={50} />
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-muted-foreground">学号 <span className="text-destructive">*</span></label>
+                <input type="text" required value={studentId} onChange={e => setStudentId(e.target.value)}
+                  className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  placeholder="你的学号" maxLength={30} />
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">联系方式 <span className="text-destructive">*</span></label>
+              <input type="tel" required value={phone} onChange={e => setPhone(e.target.value)}
+                className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                placeholder="手机号码" maxLength={20} />
+            </div>
+
             <div>
               <label className="mb-1 block text-xs font-medium text-muted-foreground">作品标题 <span className="text-destructive">*</span></label>
               <input type="text" required value={title} onChange={e => setTitle(e.target.value)}

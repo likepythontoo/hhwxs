@@ -112,6 +112,13 @@ const SubmissionsManagement = () => {
             </div>
             <h3 className="font-serif text-lg font-bold">{viewing.title}</h3>
             <p className="mt-1 text-xs text-muted-foreground">✍️ {viewing.author_name} · {new Date(viewing.created_at).toLocaleDateString("zh-CN")}</p>
+            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              {viewing.college && <span>🏫 {viewing.college}</span>}
+              {viewing.major && <span>📚 {viewing.major}</span>}
+              {viewing.class_name && <span>🎓 {viewing.class_name}</span>}
+              {viewing.student_id && <span>🆔 {viewing.student_id}</span>}
+              {viewing.phone && <span>📱 {viewing.phone}</span>}
+            </div>
             {viewing.image_url && (
               <div className="mt-4 overflow-hidden rounded-lg">
                 <img src={viewing.image_url} alt={viewing.title} className="w-full object-contain" />
