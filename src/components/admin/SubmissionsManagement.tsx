@@ -125,6 +125,12 @@ const SubmissionsManagement = () => {
                 <img src={viewing.image_url} alt={viewing.title} className="w-full object-contain" />
               </div>
             )}
+            {viewing.attachment_url && (
+              <a href={viewing.attachment_url} target="_blank" rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-primary hover:bg-secondary">
+                📎 查看附件
+              </a>
+            )}
             <div className="mt-4 whitespace-pre-wrap rounded-lg bg-secondary/50 p-4 text-sm leading-relaxed">{viewing.content}</div>
 
             <div className="mt-4">
