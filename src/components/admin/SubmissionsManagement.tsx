@@ -12,6 +12,7 @@ interface Submission {
   reviewer_notes: string | null;
   is_featured: boolean | null;
   created_at: string;
+  image_url?: string | null;
 }
 
 const SubmissionsManagement = () => {
@@ -106,6 +107,11 @@ const SubmissionsManagement = () => {
             </div>
             <h3 className="font-serif text-lg font-bold">{viewing.title}</h3>
             <p className="mt-1 text-xs text-muted-foreground">✍️ {viewing.author_name} · {new Date(viewing.created_at).toLocaleDateString("zh-CN")}</p>
+            {viewing.image_url && (
+              <div className="mt-4 overflow-hidden rounded-lg">
+                <img src={viewing.image_url} alt={viewing.title} className="w-full object-contain" />
+              </div>
+            )}
             <div className="mt-4 whitespace-pre-wrap rounded-lg bg-secondary/50 p-4 text-sm leading-relaxed">{viewing.content}</div>
 
             <div className="mt-4">
