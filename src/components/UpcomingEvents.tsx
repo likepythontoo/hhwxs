@@ -160,7 +160,7 @@ const FormField = ({ label, value, error, onChange }: { label: string; value: st
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none ${error ? "border-red-400 bg-red-50" : "border-border bg-secondary/30 focus:border-primary"}`}
+      className={`w-full rounded-md border px-3 py-2 text-sm focus:outline-none ${error ? "border-destructive bg-destructive/5" : "border-border bg-secondary/30 focus:border-primary"}`}
     />
     {error && <p className="mt-0.5 text-[11px] text-red-500">{error}</p>}
   </div>
