@@ -109,7 +109,7 @@ const UpcomingEvents = () => {
 
             {submitted ? (
               <div className="py-8 text-center">
-                <CheckCircle className="mx-auto mb-4 h-12 w-12 text-green-600" />
+                <CheckCircle className="mx-auto mb-4 h-12 w-12 text-primary" />
                 <h3 className="mb-2 font-serif text-lg font-bold">报名成功！</h3>
                 <p className="text-sm text-muted-foreground">我们已收到您的报名信息，活动详情将通过短信或邮件通知。</p>
                 <button onClick={() => setSelectedEvent(null)} className="mt-6 rounded-lg bg-primary px-6 py-2 text-sm font-medium text-primary-foreground">关闭</button>
