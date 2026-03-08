@@ -79,7 +79,7 @@ const SubmissionsManagement = () => {
                     <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-muted-foreground">{item.genre}</span>
                   </div>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    ✍️ {item.author_name} · {new Date(item.created_at).toLocaleDateString("zh-CN")}
+                    ✍️ {item.author_name} · {[item.college, item.major, item.class_name].filter(Boolean).join(" / ")} · {new Date(item.created_at).toLocaleDateString("zh-CN")}
                   </p>
                   <p className="mt-1.5 line-clamp-2 text-xs text-muted-foreground/80">{item.content}</p>
                 </div>
