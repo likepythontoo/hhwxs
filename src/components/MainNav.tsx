@@ -6,10 +6,9 @@ const navItems = [
   { label: "首页", href: "/" },
   { label: "社团概况", href: "/about" },
   { label: "新闻动态", href: "/news" },
+  { label: "活动中心", href: "/events" },
   { label: "作品展示", href: "/works" },
-  { label: "创作研究", href: "/research" },
-  { label: "文学档案馆", href: "/archives" },
-  { label: "社员服务", href: "/services" },
+  { label: "社员论坛", href: "/forum" },
   { label: "联系我们", href: "/contact" },
 ];
 
@@ -20,7 +19,6 @@ const MainNav = () => {
   return (
     <nav className="main-nav relative z-50">
       <div className="container mx-auto flex items-center justify-between px-4">
-        {/* Desktop nav */}
         <ul className="hidden md:flex">
           {navItems.map((item) => (
             <li key={item.label}>
@@ -36,18 +34,12 @@ const MainNav = () => {
           ))}
         </ul>
 
-        {/* Mobile toggle */}
-        <button
-          className="py-3 md:hidden"
-          onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
+        <button className="py-3 md:hidden" onClick={() => setOpen(!open)} aria-label="Toggle menu">
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
         <span className="font-serif text-sm tracking-widest md:hidden">导航菜单</span>
       </div>
 
-      {/* Mobile menu */}
       {open && (
         <div className="absolute left-0 top-full w-full bg-palace-red shadow-lg md:hidden">
           <ul className="container mx-auto px-4 py-2">
