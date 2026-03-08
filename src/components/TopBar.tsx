@@ -1,13 +1,13 @@
 import { Search, User, Clock, UserPlus } from "lucide-react";
 import logo from "@/assets/logo.png";
-import schoolLogo from "@/assets/school-logo.png";
+import schoolBadge from "@/assets/school-badge.png";
 
 const TopBar = () => {
   return (
     <div className="top-bar">
       <div className="container mx-auto flex items-center justify-between px-4 py-1.5 text-sm">
         <div className="flex items-center gap-3">
-          <img src={schoolLogo} alt="河北科技学院" className="h-8 object-contain" />
+          <img src={schoolBadge} alt="河北科技学院校徽" className="h-8 w-8 rounded-full object-contain" />
           <span className="text-rice-paper/40">|</span>
           <img src={logo} alt="红湖文学社社徽" className="h-8 w-8 object-contain" />
           <span className="font-serif text-base tracking-widest">红湖文学社</span>
