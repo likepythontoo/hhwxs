@@ -40,7 +40,15 @@ const SiteFooter = () => {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-rice-paper/10 pt-6 text-center text-xs opacity-40">
+        <div className="mt-6 flex justify-center">
+          <a
+            href="/leadership"
+            className="inline-block rounded border border-rice-paper/20 px-6 py-2 text-sm tracking-wider opacity-60 transition hover:opacity-100"
+          >
+            历届管理团队 →
+          </a>
+        </div>
+        <div className="mt-6 border-t border-rice-paper/10 pt-6 text-center text-xs opacity-40">
           © 2026 红湖文学社 Red Lake Literature Society. All rights reserved.
         </div>
       </div>
