@@ -31,7 +31,7 @@ const ExportCenter = () => {
     setExporting(null);
   };
 
-  const exportByRole = async (role: string, label: string) => {
+  const exportByRole = async (role: "admin" | "minister" | "member", label: string) => {
     setExporting(role);
     const { data: roles } = await supabase.from("user_roles").select("user_id").eq("role", role);
     if (roles && roles.length > 0) {
