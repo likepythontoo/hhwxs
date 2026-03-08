@@ -56,8 +56,14 @@ const departments = [
 ];
 
 const milestones = [
-  { year: "2006", event: "红湖文学社于2006年5月在河北科技学院正式成立" },
-  { year: "2017", event: "2017届管理团队组建，社长孙浩然带领社团发展" },
+  { year: "1990", event: "河北科技学院（前身）建校" },
+  { year: "2006", event: "红湖文学社于5月正式成立" },
+  { year: "2006", event: "创办社内期刊《雨巷》" },
+  { year: "2006", event: "创办社内报刊《墨香阁》" },
+  { year: "2011", event: "学校升格为全日制本科院校，社团随之发展壮大" },
+  { year: "2017", event: "2017届管理团队组建，社长孙浩然" },
+  { year: "2017", event: "下设办公室、话剧部、编辑部、外联部、网络部" },
+  { year: "至今", event: "组织架构优化，设立国学部与网宣部，持续繁荣校园文学" },
 ];
 
 const leaders = [
@@ -162,18 +168,28 @@ const About = () => {
         </div>
       </section>
 
-      {/* Timeline */}
+      {/* Timeline - Horizontal */}
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <h2 className="section-title mb-8">发展历程</h2>
-          <div className="relative ml-4 border-l-2 border-primary/30 pl-8">
-            {milestones.map((m, i) => (
-              <div key={i} className="relative mb-8 last:mb-0">
-                <div className="absolute -left-[2.55rem] top-1 h-3 w-3 rounded-full bg-primary" />
-                <div className="font-serif text-lg font-bold text-primary">{m.year}</div>
-                <p className="mt-1 text-sm text-muted-foreground">{m.event}</p>
-              </div>
-            ))}
+          <h2 className="section-title mb-10">发展历程</h2>
+          <div className="relative">
+            {/* Horizontal line */}
+            <div className="absolute left-0 right-0 top-5 hidden h-0.5 bg-primary/20 md:block" />
+
+            <div className="flex gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-4 md:gap-4 md:overflow-visible lg:grid-cols-8">
+              {milestones.map((m, i) => (
+                <div key={i} className="relative flex min-w-[180px] flex-col items-center md:min-w-0">
+                  {/* Dot on line */}
+                  <div className="z-10 mb-3 flex h-10 w-10 items-center justify-center rounded-full border-2 border-primary bg-card">
+                    <div className="h-3 w-3 rounded-full bg-primary" />
+                  </div>
+                  {/* Year */}
+                  <div className="mb-2 font-serif text-base font-bold text-primary">{m.year}</div>
+                  {/* Event */}
+                  <p className="text-center text-xs leading-relaxed text-muted-foreground">{m.event}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
