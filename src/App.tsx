@@ -12,6 +12,9 @@ import Admin from "./pages/Admin";
 import Join from "./pages/Join";
 import CheckIn from "./pages/CheckIn";
 import Profile from "./pages/Profile";
+import Forum from "./pages/Forum";
+import Submit from "./pages/Submit";
+import Events from "./pages/Events";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +35,9 @@ const App = () => (
           <Route path="/join" element={<Join />} />
           <Route path="/checkin" element={<CheckIn />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/forum" element={<Forum />} />
+          <Route path="/submit" element={<Submit />} />
+          <Route path="/events" element={<Events />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
