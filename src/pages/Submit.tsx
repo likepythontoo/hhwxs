@@ -96,7 +96,7 @@ const Submit = () => {
             <h2 className="font-serif text-2xl font-bold">投稿成功！</h2>
             <p className="max-w-md text-muted-foreground">你的作品已提交，编辑部将尽快审核。{user ? "可在个人中心查看审核状态。" : ""}</p>
             <div className="flex gap-3">
-              <button onClick={() => { setSubmitted(false); setTitle(""); setContent(""); setImageUrl(""); }}
+              <button onClick={() => { setSubmitted(false); setTitle(""); setContent(""); setImageUrl(""); setCollege(""); setMajor(""); setClassName(""); setStudentId(""); setPhone(""); }}
                 className="rounded-lg border border-border px-5 py-2 text-sm transition hover:bg-secondary">继续投稿</button>
               {user && <a href="/profile" className="rounded-lg bg-primary px-5 py-2 text-sm text-primary-foreground transition hover:bg-primary/90">个人中心</a>}
             </div>
