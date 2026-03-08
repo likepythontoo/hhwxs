@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import LeadershipTimeline from "@/components/LeadershipTimeline";
 import { Building2, Users, Award, BookOpen, Monitor, Feather, BookMarked, Crown, Trophy, Star, Medal, Mic } from "lucide-react";
 
 const stats = [
@@ -131,15 +132,6 @@ const coreFeatures = [
   { icon: Star, title: "社团精神", desc: "坚持原创，拒绝平庸，用文字记录青春" },
 ];
 
-const leaders = [
-  { name: "孙浩然", role: "社长", term: "2017届" },
-  { name: "沈威、李晨", role: "办公室主任", term: "2017届" },
-  { name: "刘雅晴、李金铵", role: "话剧部部长", term: "2017届" },
-  { name: "康雅倩、李钰", role: "编辑部部长", term: "2017届" },
-  { name: "高凡", role: "外联部部长", term: "2017届" },
-  { name: "张立起、伊创业", role: "网络部部长", term: "2017届" },
-];
-
 const About = () => {
   return (
     <Layout>
@@ -235,7 +227,6 @@ const About = () => {
           <div className="space-y-10">
             {timelinePhases.map((phase, pi) => (
               <div key={pi}>
-                {/* Phase header */}
                 <div className="mb-5 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                     {pi + 1}
@@ -246,7 +237,6 @@ const About = () => {
                   </div>
                 </div>
 
-                {/* Horizontal scrollable events */}
                 <div className="relative">
                   <div className="absolute left-0 right-0 top-5 h-0.5 bg-primary/15" />
                   <div className="flex gap-5 overflow-x-auto pb-3">
@@ -319,25 +309,7 @@ const About = () => {
       </section>
 
       {/* Management Team */}
-      <section className="bg-secondary py-12 md:py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="section-title mb-8">管理团队（2017届）</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {leaders.map((e) => (
-              <div
-                key={e.role}
-                className="flex items-center justify-between rounded bg-card px-5 py-4 shadow-sm"
-              >
-                <div>
-                  <span className="text-xs text-muted-foreground">{e.role}</span>
-                  <div className="font-serif font-semibold">{e.name}</div>
-                </div>
-                <span className="text-sm text-muted-foreground">{e.term}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <LeadershipTimeline />
     </Layout>
   );
 };
