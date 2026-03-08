@@ -7,10 +7,10 @@ const TopBar = () => {
     <div className="top-bar">
       <div className="container mx-auto flex items-center justify-between px-4 py-1.5 text-sm">
         <div className="flex items-center gap-3">
-          <img src={schoolLogo} alt="河北科技学院校徽" className="h-9 w-9 object-contain" />
-          <img src={logo} alt="红湖文学社社徽" className="h-9 w-9 object-contain" />
+          <img src={schoolLogo} alt="河北科技学院" className="h-8 object-contain" />
+          <span className="text-rice-paper/40">|</span>
+          <img src={logo} alt="红湖文学社社徽" className="h-8 w-8 object-contain" />
           <span className="font-serif text-base tracking-widest">红湖文学社</span>
-          <span className="hidden text-xs opacity-60 sm:inline">Red Lake Literature Society</span>
         </div>
         <div className="flex items-center gap-4">
           <a href="#" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
