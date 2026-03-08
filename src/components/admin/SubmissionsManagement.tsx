@@ -12,6 +12,7 @@ interface Submission {
   reviewer_notes: string | null;
   is_featured: boolean | null;
   created_at: string;
+  image_url?: string | null;
 }
 
 const SubmissionsManagement = () => {
