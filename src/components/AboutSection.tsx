@@ -1,11 +1,11 @@
-import { Building2, Users, Award, BookOpen, Monitor } from "lucide-react";
+import { Building2, Users, Award, BookOpen, Monitor, Crown, Feather, BookMarked } from "lucide-react";
 
 const departments = [
-  { name: "办公室", desc: "活动策划与文件管理" },
-  { name: "话剧部", desc: "文学话剧排演" },
-  { name: "编辑部", desc: "期刊《雨巷》与报刊《墨香阁》" },
-  { name: "外联部", desc: "对外交流合作" },
-  { name: "网络部", desc: "网络宣传与资料管理" },
+  { name: "办公室", desc: "活动策划与会议组织" },
+  { name: "话剧部", desc: "文艺表演与团建联谊" },
+  { name: "编辑部", desc: "社刊编辑与稿件征收" },
+  { name: "网宣部", desc: "新媒体运营与活动宣传" },
+  { name: "国学部", desc: "国学推广与知识普及" },
 ];
 
 const stats = [
@@ -29,7 +29,7 @@ const AboutSection = () => {
               河北科技学院红湖文学社成立于2006年5月，是河北科技学院的学生文学社团组织。社团致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
             </p>
             <p className="mb-6 leading-relaxed text-muted-foreground">
-              社团下设办公室、话剧部、编辑部、外联部、网络部五个部门，定期出版期刊《雨巷》和报刊《墨香阁》，组织征文活动、演讲比赛、话剧专场等丰富多彩的文学活动。
+              社团由主席团统筹管理，下设办公室、话剧部、编辑部、网宣部、国学部五个部门，定期出版期刊《雨巷》和报刊《墨香阁》，组织征文活动、演讲比赛、话剧专场等丰富多彩的文学活动。
             </p>
 
             {/* Stats */}
@@ -47,6 +47,15 @@ const AboutSection = () => {
           {/* Organization */}
           <div>
             <h3 className="mb-4 font-serif text-xl font-semibold">组织架构</h3>
+
+            {/* Presidium */}
+            <div className="mb-3 rounded border-2 border-primary bg-primary/10 p-3 text-center">
+              <div className="font-serif text-sm font-bold text-primary">主席团</div>
+              <div className="mt-1 text-xs text-muted-foreground">社团最高领导与决策机构</div>
+            </div>
+
+            <div className="mx-auto mb-3 h-4 w-px bg-primary/30" />
+
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
               {departments.map((dept) => (
                 <div
@@ -57,24 +66,6 @@ const AboutSection = () => {
                   <div className="mt-1 text-xs text-muted-foreground">{dept.desc}</div>
                 </div>
               ))}
-            </div>
-
-            <div className="mt-6 rounded bg-secondary p-5">
-              <h4 className="mb-3 font-serif text-sm font-semibold text-primary">2017届管理团队</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div className="flex justify-between border-b border-dashed border-border pb-2">
-                  <span>社长</span><span>孙浩然</span>
-                </div>
-                <div className="flex justify-between border-b border-dashed border-border pb-2">
-                  <span>办公室主任</span><span>沈威、李晨</span>
-                </div>
-                <div className="flex justify-between border-b border-dashed border-border pb-2">
-                  <span>编辑部部长</span><span>康雅倩、李钰</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>外联部部长</span><span>高凡</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
