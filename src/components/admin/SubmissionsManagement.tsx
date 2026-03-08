@@ -13,6 +13,11 @@ interface Submission {
   is_featured: boolean | null;
   created_at: string;
   image_url?: string | null;
+  college?: string | null;
+  major?: string | null;
+  class_name?: string | null;
+  student_id?: string | null;
+  phone?: string | null;
 }
 
 const SubmissionsManagement = () => {
