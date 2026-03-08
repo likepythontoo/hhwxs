@@ -14,7 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      event_registrations: {
+        Row: {
+          college: string | null
+          created_at: string
+          email: string | null
+          event_id: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string
+          student_id: string | null
+        }
+        Insert: {
+          college?: string | null
+          created_at?: string
+          email?: string | null
+          event_id: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone: string
+          student_id?: string | null
+        }
+        Update: {
+          college?: string | null
+          created_at?: string
+          email?: string | null
+          event_id?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string
+          student_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_registrations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          event_date: string
+          id: string
+          is_active: boolean | null
+          location: string | null
+          max_participants: number | null
+          registration_deadline: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          event_date: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          max_participants?: number | null
+          registration_deadline?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          is_active?: boolean | null
+          location?: string | null
+          max_participants?: number | null
+          registration_deadline?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
