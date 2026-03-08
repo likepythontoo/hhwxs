@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star } from "lucide-react";
+import type { Database } from "@/integrations/supabase/types";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
 import MemberManagement from "@/components/admin/MemberManagement";
@@ -14,45 +15,79 @@ import RecruitmentManagement from "@/components/admin/RecruitmentManagement";
 import AuditLogViewer from "@/components/admin/AuditLogViewer";
 import ExportCenter from "@/components/admin/ExportCenter";
 import ForumManagement from "@/components/admin/ForumManagement";
+import DepartmentManagement from "@/components/admin/DepartmentManagement";
+import CheckInManagement from "@/components/admin/CheckInManagement";
 
-type Tab = "dashboard" | "events" | "news" | "submissions" | "members" | "recruitment" | "finance" | "forum" | "export" | "audit" | "settings";
+type AppRole = Database["public"]["Enums"]["app_role"];
+type Tab = "dashboard" | "events" | "news" | "submissions" | "forum" | "members" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
 
-const tabs: { key: Tab; label: string; icon: typeof LayoutDashboard; section?: string }[] = [
-  { key: "dashboard", label: "数据总览", icon: LayoutDashboard, section: "概览" },
-  { key: "events", label: "活动管理", icon: Calendar, section: "内容管理" },
-  { key: "news", label: "新闻公告", icon: Newspaper },
-  { key: "submissions", label: "作品投稿", icon: BookOpen },
-  { key: "forum", label: "论坛管理", icon: MessageSquare },
-  { key: "members", label: "成员管理", icon: Users, section: "组织管理" },
-  { key: "recruitment", label: "招新审批", icon: UserPlus },
-  { key: "finance", label: "财务管理", icon: Wallet, section: "运营" },
-  { key: "export", label: "数据导出", icon: Download },
-  { key: "audit", label: "操作日志", icon: ScrollText },
-  { key: "settings", label: "系统设置", icon: Settings, section: "系统" },
+interface TabConfig {
+  key: Tab;
+  label: string;
+  icon: typeof LayoutDashboard;
+  section?: string;
+  roles: AppRole[];
+}
+
+const tabs: TabConfig[] = [
+  { key: "dashboard", label: "数据总览", icon: LayoutDashboard, section: "概览", roles: ["admin", "president", "minister"] },
+  { key: "events", label: "活动管理", icon: Calendar, section: "内容管理", roles: ["admin", "president", "minister"] },
+  { key: "news", label: "新闻公告", icon: Newspaper, roles: ["admin", "president", "minister"] },
+  { key: "submissions", label: "作品投稿", icon: BookOpen, roles: ["admin", "president", "minister"] },
+  { key: "forum", label: "论坛管理", icon: MessageSquare, roles: ["admin", "president", "minister"] },
+  { key: "checkin", label: "签到管理", icon: ClipboardCheck, roles: ["admin", "president", "minister"] },
+  { key: "members", label: "成员管理", icon: Users, section: "组织管理", roles: ["admin", "president", "minister"] },
+  { key: "departments", label: "部门管理", icon: Building2, roles: ["admin", "president"] },
+  { key: "recruitment", label: "招新审批", icon: UserPlus, roles: ["admin", "president", "minister"] },
+  { key: "finance", label: "财务管理", icon: Wallet, section: "运营", roles: ["admin", "president"] },
+  { key: "export", label: "数据导出", icon: Download, roles: ["admin", "president"] },
+  { key: "audit", label: "操作日志", icon: ScrollText, roles: ["admin", "president"] },
+  { key: "settings", label: "系统设置", icon: Settings, section: "系统", roles: ["admin", "president"] },
 ];
+
+const roleLabels: Record<AppRole, string> = {
+  admin: "管理员",
+  president: "社长",
+  minister: "部长",
+  member: "社员",
+};
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [userRole, setUserRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("dashboard");
   const [displayName, setDisplayName] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [userDeptId, setUserDeptId] = useState<string | undefined>();
 
   useEffect(() => {
-    const checkAdmin = async () => {
+    const checkAccess = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) { navigate("/auth"); return; }
-      const [roleRes, profileRes] = await Promise.all([
-        supabase.from("user_roles").select("role").eq("user_id", session.user.id).eq("role", "admin"),
+
+      const [roleRes, profileRes, deptRes] = await Promise.all([
+        supabase.from("user_roles").select("role").eq("user_id", session.user.id),
         supabase.from("profiles").select("display_name").eq("user_id", session.user.id).single(),
+        supabase.from("department_members" as any).select("department_id, is_head").eq("user_id", session.user.id) as any,
       ]);
-      if (!roleRes.data || roleRes.data.length === 0) { setIsAdmin(false); setLoading(false); return; }
-      setIsAdmin(true);
+
+      const roles = roleRes.data?.map(r => r.role) || [];
+      const accessRoles: AppRole[] = ["admin", "president", "minister"];
+      const foundRole = accessRoles.find(r => roles.includes(r));
+
+      if (!foundRole) { setUserRole(null); setLoading(false); return; }
+
+      setUserRole(foundRole);
       setDisplayName(profileRes.data?.display_name || session.user.email || "");
+
+      // Find department where user is head
+      const headDept = (deptRes.data || []).find((d: any) => d.is_head);
+      if (headDept) setUserDeptId(headDept.department_id);
+
       setLoading(false);
     };
-    checkAdmin();
+    checkAccess();
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -73,19 +108,21 @@ const Admin = () => {
     );
   }
 
-  if (!isAdmin) {
+  if (!userRole) {
     return (
       <Layout>
         <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
           <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
-            <p className="font-serif text-lg">⚠️ 你没有管理员权限</p>
-            <p className="mt-2 text-sm text-muted-foreground">请联系社长获取管理员权限</p>
+            <p className="font-serif text-lg">⚠️ 你没有管理权限</p>
+            <p className="mt-2 text-sm text-muted-foreground">请联系社长或管理员获取权限</p>
             <button onClick={() => navigate("/")} className="mt-4 rounded-lg bg-primary px-6 py-2 text-sm text-primary-foreground">返回首页</button>
           </div>
         </div>
       </Layout>
     );
   }
+
+  const visibleTabs = tabs.filter(t => t.roles.includes(userRole));
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -99,7 +136,7 @@ const Admin = () => {
         </div>
 
         <nav className="flex-1 overflow-y-auto py-1">
-          {tabs.map((t, i) => (
+          {visibleTabs.map((t, i) => (
             <div key={t.key}>
               {t.section && sidebarOpen && (
                 <p className={`px-4 pb-0.5 text-[9px] font-semibold uppercase tracking-widest text-muted-foreground ${i > 0 ? "pt-3" : "pt-2"}`}>{t.section}</p>
@@ -127,7 +164,7 @@ const Admin = () => {
                 </div>
                 <div>
                   <p className="text-[11px] font-medium leading-tight truncate max-w-[90px]">{displayName}</p>
-                  <p className="text-[9px] text-primary">管理员</p>
+                  <p className="text-[9px] text-primary">{roleLabels[userRole]}</p>
                 </div>
               </div>
               <button onClick={handleLogout} className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-foreground" title="退出">
@@ -145,17 +182,19 @@ const Admin = () => {
       {/* Main */}
       <main className="flex-1 overflow-y-auto">
         <header className="sticky top-0 z-10 border-b border-border bg-card/80 px-6 py-3 backdrop-blur-sm">
-          <h1 className="font-serif text-lg font-bold">{tabs.find(t => t.key === tab)?.label}</h1>
+          <h1 className="font-serif text-lg font-bold">{visibleTabs.find(t => t.key === tab)?.label}</h1>
         </header>
         <div className="p-6">
           {tab === "dashboard" && <AdminDashboard />}
           {tab === "events" && <EventManagement />}
-          {tab === "members" && <MemberManagement />}
+          {tab === "members" && <MemberManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
+          {tab === "departments" && <DepartmentManagement />}
           {tab === "news" && <NewsManagement />}
           {tab === "submissions" && <SubmissionsManagement />}
           {tab === "finance" && <FinanceManagement />}
-          {tab === "recruitment" && <RecruitmentManagement />}
+          {tab === "recruitment" && <RecruitmentManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
           {tab === "forum" && <ForumManagement />}
+          {tab === "checkin" && <CheckInManagement />}
           {tab === "export" && <ExportCenter />}
           {tab === "audit" && <AuditLogViewer />}
           {tab === "settings" && <SiteSettings />}

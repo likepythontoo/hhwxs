@@ -8,6 +8,11 @@ interface Props {
   onSaved: () => void;
 }
 
+const generateCode = () => {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+};
+
 const EventFormDialog = ({ event, onClose, onSaved }: Props) => {
   const [form, setForm] = useState<Partial<Event>>(event);
   const [saving, setSaving] = useState(false);
@@ -16,7 +21,7 @@ const EventFormDialog = ({ event, onClose, onSaved }: Props) => {
     if (!form.title || !form.event_date) return;
     setSaving(true);
 
-    const payload = {
+    const payload: any = {
       title: form.title,
       description: form.description || null,
       event_date: form.event_date,
@@ -25,11 +30,15 @@ const EventFormDialog = ({ event, onClose, onSaved }: Props) => {
       max_participants: form.max_participants || null,
       registration_deadline: form.registration_deadline || null,
       is_active: form.is_active ?? true,
+      scope: (form as any).scope || "public",
+      check_in_code: (form as any).check_in_code || null,
     };
 
     if (form.id) {
       await supabase.from("events").update(payload).eq("id", form.id);
     } else {
+      // Auto-generate check-in code for new events
+      if (!payload.check_in_code) payload.check_in_code = generateCode();
       await supabase.from("events").insert(payload);
     }
 
@@ -48,6 +57,23 @@ const EventFormDialog = ({ event, onClose, onSaved }: Props) => {
             <label className="mb-1.5 block text-xs font-medium text-muted-foreground">活动名称 *</label>
             <input type="text" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} className={inputClass} placeholder="如：春日诗歌朗诵会" />
           </div>
+
+          {/* Scope selector */}
+          <div>
+            <label className="mb-1.5 block text-xs font-medium text-muted-foreground">活动范围</label>
+            <div className="flex gap-2">
+              <button onClick={() => setForm({ ...form, scope: "public" } as any)} className={`flex-1 rounded-lg py-2 text-xs font-medium transition ${(form as any).scope !== "internal" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+                🌐 全校活动
+              </button>
+              <button onClick={() => setForm({ ...form, scope: "internal" } as any)} className={`flex-1 rounded-lg py-2 text-xs font-medium transition ${(form as any).scope === "internal" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}>
+                🏠 社内活动
+              </button>
+            </div>
+            <p className="mt-1 text-[10px] text-muted-foreground">
+              {(form as any).scope === "internal" ? "仅社员可报名参加" : "所有学生凭学号均可报名"}
+            </p>
+          </div>
+
           <div>
             <label className="mb-1.5 block text-xs font-medium text-muted-foreground">活动描述</label>
             <textarea value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} className={inputClass} rows={3} placeholder="活动详情..." />
