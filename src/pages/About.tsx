@@ -127,7 +127,7 @@ const levelColors: Record<string, string> = {
 // ========== 核心特色 ==========
 const coreFeatures = [
   { icon: BookOpen, title: "核心社刊", desc: "《红湖》— 每年定期出刊，社团文学创作的核心阵地" },
-  { icon: Trophy, title: "品牌活动", desc: ""红湖杯"征文大赛 — 跨学院参与的校内文学品牌赛事" },
+  { icon: Trophy, title: "品牌活动", desc: "「红湖杯」征文大赛 — 跨学院参与的校内文学品牌赛事" },
   { icon: Mic, title: "暖冬朗诵会", desc: "年度诗歌朗诵盛会，声文结合，传递文字之美" },
   { icon: Star, title: "社团精神", desc: "坚持原创，拒绝平庸，用文字记录青春" },
 ];
