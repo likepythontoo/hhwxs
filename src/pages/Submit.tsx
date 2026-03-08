@@ -29,6 +29,11 @@ const Submit = () => {
   const [genre, setGenre] = useState("诗歌");
   const [content, setContent] = useState("");
   const [authorName, setAuthorName] = useState("");
+  const [college, setCollege] = useState("");
+  const [major, setMajor] = useState("");
+  const [className, setClassName] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [phone, setPhone] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
