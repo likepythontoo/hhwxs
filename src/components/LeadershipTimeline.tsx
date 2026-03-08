@@ -1,12 +1,16 @@
 import { useState } from "react";
-import { Crown, ChevronDown, Users, User } from "lucide-react";
+import { Crown, Users, User } from "lucide-react";
+
+interface Dept {
+  title: string;
+  names: string[];
+}
 
 interface Term {
   year: string;
   president: string;
   vicePresidents?: string[];
-  departments?: { title: string; names: string[] }[];
-  ministers?: string[];
+  departments: Dept[];
 }
 
 const terms: Term[] = [
@@ -14,60 +18,76 @@ const terms: Term[] = [
     year: "2025届",
     president: "黄博文",
     vicePresidents: ["付高鹏", "王斯侬"],
-    ministers: ["左亚峥", "夏天"],
+    departments: [
+      { title: "部长", names: ["左亚峥", "夏天"] },
+    ],
   },
   {
     year: "2024届",
     president: "崔晨莹",
     vicePresidents: ["马哲"],
-    ministers: ["赵梓菁", "夏向花", "赵鱼帆", "胡梦瑾", "薛博鑫", "赵国群", "庞悦欣", "张盛凯", "魏梦德"],
+    departments: [
+      { title: "部长", names: ["赵梓菁", "夏向花", "赵鱼帆", "胡梦瑾", "薛博鑫", "赵国群", "庞悦欣", "张盛凯", "魏梦德"] },
+    ],
   },
   {
     year: "2023届",
     president: "宋镓铖",
     vicePresidents: ["赵艺凇", "张文清"],
     departments: [
-      { title: "组织部", names: ["马圣奇", "崔馨颐", "邸佳蕊"] },
-      { title: "办公室", names: ["张家畅", "邢睿譞", "彭姣宁"] },
-      { title: "网宣部", names: ["王雨桐", "于海雅", "闫秋旭"] },
-      { title: "话剧部", names: ["李妍", "龙海静", "刘岚竹"] },
-      { title: "编辑部", names: ["张家豪", "李佳潞"] },
+      { title: "组织部部长", names: ["马圣奇", "崔馨颐", "邸佳蕊"] },
+      { title: "办公室部长", names: ["张家畅", "邢睿譞", "彭姣宁"] },
+      { title: "网宣部部长", names: ["王雨桐", "于海雅", "闫秋旭"] },
+      { title: "话剧部部长", names: ["李妍", "龙海静", "刘岚竹"] },
+      { title: "编辑部部长", names: ["张家豪", "李佳潞"] },
     ],
   },
   {
     year: "2022届",
     president: "胡宝文",
     vicePresidents: ["黄家驹"],
-    ministers: ["王琦", "杜轩", "马境蔓", "李秀云", "刘嘉颖", "刘静", "袁鑫", "张孟雨", "刘佳鑫", "刘馨"],
+    departments: [
+      { title: "部长", names: ["王琦", "杜轩", "马境蔓", "李秀云", "刘嘉颖", "刘静", "袁鑫", "张孟雨", "刘佳鑫", "刘馨"] },
+    ],
   },
   {
     year: "2021届",
     president: "韩雨轩",
     vicePresidents: ["杜毅飞", "白燕飞"],
-    ministers: ["董俊豪", "曹旭彤", "路秋爽", "雷泽玉", "杨晨", "沈伟华", "周树坤", "王天玉"],
+    departments: [
+      { title: "部长", names: ["董俊豪", "曹旭彤", "路秋爽", "雷泽玉", "杨晨", "沈伟华", "周树坤", "王天玉"] },
+    ],
   },
   {
     year: "2020届",
     president: "霍娅洁",
     vicePresidents: ["丁稳"],
-    ministers: ["赵文琪", "郝丽鑫", "苏紫云", "王子平", "张子璇", "王茹霞", "王莹", "张佳宇"],
+    departments: [
+      { title: "部长", names: ["赵文琪", "郝丽鑫", "苏紫云", "王子平", "张子璇", "王茹霞", "王莹", "张佳宇"] },
+    ],
   },
   {
     year: "2019届",
     president: "韩月瑶",
     vicePresidents: ["李双蕊", "程鑫阳"],
-    ministers: ["宋博涵", "张玉笑", "孙路伟", "谢薇", "张紫苑", "陈春姝", "王一可"],
+    departments: [
+      { title: "部长", names: ["宋博涵", "张玉笑", "孙路伟", "谢薇", "张紫苑", "陈春姝", "王一可"] },
+    ],
   },
   {
     year: "2018届",
     president: "刘翰林",
     vicePresidents: ["商航"],
-    ministers: ["孟兆香", "南大龙", "刘宏炎", "张帆", "李雪", "宫欣怡", "柴颖", "张义昕"],
+    departments: [
+      { title: "部长", names: ["孟兆香", "南大龙", "刘宏炎", "张帆", "李雪", "宫欣怡", "柴颖", "张义昕"] },
+    ],
   },
   {
     year: "2017届",
     president: "孙浩然",
-    ministers: ["沈威", "李晨", "刘雅晴", "李金铵", "康雅倩", "李钰", "高凡", "张立起", "伊创业"],
+    departments: [
+      { title: "部长", names: ["沈威", "李晨", "刘雅晴", "李金铵", "康雅倩", "李钰", "高凡", "张立起", "伊创业"] },
+    ],
   },
 ];
 
@@ -110,18 +130,14 @@ const LeadershipTimeline = () => {
                 <div className="inline-flex items-center gap-3 rounded-lg border-2 border-primary bg-primary/10 px-6 py-4 shadow-sm">
                   <Crown className="h-5 w-5 text-primary" />
                   <div className="text-center">
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      {t.year.replace("届", "")}届社长
-                    </div>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">社长</div>
                     <div className="font-serif text-lg font-bold text-primary">{t.president}</div>
                   </div>
                 </div>
               </div>
 
               {/* Connector */}
-              {(t.vicePresidents?.length || t.ministers?.length || t.departments?.length) && (
-                <div className="mx-auto mb-4 h-6 w-px bg-primary/30" />
-              )}
+              <div className="mx-auto mb-4 h-6 w-px bg-primary/30" />
 
               {/* Vice Presidents */}
               {t.vicePresidents && t.vicePresidents.length > 0 && (
@@ -140,55 +156,31 @@ const LeadershipTimeline = () => {
                       </div>
                     ))}
                   </div>
-                  {(t.ministers?.length || t.departments?.length) && (
-                    <div className="mx-auto mb-4 h-6 w-px bg-border" />
-                  )}
+                  <div className="mx-auto mb-4 h-6 w-px bg-border" />
                 </>
               )}
 
-              {/* Departments (for 2023届 with named departments) */}
-              {t.departments && t.departments.length > 0 && (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {t.departments.map((dept) => (
-                    <div
-                      key={dept.title}
-                      className="rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md"
-                    >
-                      <div className="mb-2 text-xs font-medium text-primary">{dept.title}</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {dept.names.map((n) => (
-                          <span
-                            key={n}
-                            className="rounded bg-secondary px-2 py-0.5 text-xs text-foreground"
-                          >
-                            {n}
-                          </span>
-                        ))}
-                      </div>
+              {/* Departments */}
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {t.departments.map((dept) => (
+                  <div
+                    key={dept.title}
+                    className="rounded-md border border-border bg-card p-4 transition-shadow hover:shadow-md"
+                  >
+                    <div className="mb-2 text-xs font-bold text-primary">{dept.title}</div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {dept.names.map((n) => (
+                        <span
+                          key={n}
+                          className="rounded bg-secondary px-2 py-0.5 text-xs text-foreground"
+                        >
+                          {n}
+                        </span>
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Ministers (flat list) */}
-              {t.ministers && t.ministers.length > 0 && !t.departments?.length && (
-                <div className="rounded-md border border-border bg-card p-5">
-                  <div className="mb-3 flex items-center gap-2">
-                    <Users className="h-4 w-4 text-primary/70" />
-                    <span className="text-xs font-medium text-muted-foreground">部长</span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {t.ministers.map((m) => (
-                      <span
-                        key={m}
-                        className="rounded bg-secondary px-3 py-1 text-sm text-foreground"
-                      >
-                        {m}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+                ))}
+              </div>
             </div>
           </div>
         ))}
