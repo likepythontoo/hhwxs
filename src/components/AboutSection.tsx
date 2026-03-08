@@ -9,10 +9,10 @@ const departments = [
 ];
 
 const stats = [
-  { icon: Building2, label: "成立年份", value: "2006" },
+  { icon: Building2, label: "成立年份", value: "2003" },
   { icon: Users, label: "下设部门", value: "5个" },
-  { icon: BookOpen, label: "社团期刊", value: "《雨巷》" },
-  { icon: Award, label: "社团报刊", value: "《墨香阁》" },
+  { icon: BookOpen, label: "核心社刊", value: "《红湖》" },
+  { icon: Award, label: "品牌活动", value: "红湖杯" },
 ];
 
 const AboutSection = () => {
