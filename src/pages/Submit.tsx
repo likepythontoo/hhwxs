@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, Send, CheckCircle, Image } from "lucide-react";
+import { BookOpen, Send, CheckCircle, Image, Paperclip, X } from "lucide-react";
 
 const genres = [
   { value: "诗歌", label: "诗歌", desc: "现代诗、古体诗、词等" },
