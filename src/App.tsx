@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import Forum from "./pages/Forum";
 import Submit from "./pages/Submit";
 import Events from "./pages/Events";
+import Works from "./pages/Works";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
