@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
+import UpcomingEvents from "@/components/UpcomingEvents";
 import { newsItems, type NewsItem } from "@/data/newsData";
 import { CalendarDays, Search, Tag } from "lucide-react";
 
