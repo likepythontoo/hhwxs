@@ -5,7 +5,7 @@ import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
 
 const slides = [
-  { image: hero1, title: "笔耕红湖", subtitle: "墨绘春秋", desc: "传承文学精神，书写时代华章" },
+  { image: hero1, title: "红湖文学社", subtitle: "河北科技学院", desc: "成立于2006年 · 传承文学精神，书写时代华章" },
   { image: hero2, title: "年度盛典", subtitle: "荣誉加冕", desc: "表彰优秀创作者，共襄文学盛事" },
   { image: hero3, title: "翰墨飘香", subtitle: "以文会友", desc: "探索文学之美，感悟生命真谛" },
 ];

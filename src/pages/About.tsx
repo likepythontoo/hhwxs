@@ -1,39 +1,33 @@
 import Layout from "@/components/Layout";
-import { Building2, Users, Award, BookOpen, Heart, Feather, BookMarked, Mic } from "lucide-react";
+import { Building2, Users, Award, BookOpen, Heart, Feather, BookMarked, Mic, Monitor } from "lucide-react";
 
 const stats = [
-  { icon: Building2, label: "成立年份", value: "1985" },
-  { icon: Users, label: "现有社员", value: "320+" },
-  { icon: Award, label: "获奖次数", value: "56" },
-  { icon: BookOpen, label: "出版社刊", value: "48期" },
+  { icon: Building2, label: "成立年份", value: "2006" },
+  { icon: Users, label: "下设部门", value: "5个" },
+  { icon: BookOpen, label: "社团期刊", value: "《雨巷》" },
+  { icon: Award, label: "社团报刊", value: "《墨香阁》" },
 ];
 
 const departments = [
-  { name: "理事会", desc: "社团最高决策机构，负责重大事务决策与方向把控", icon: Building2 },
-  { name: "编辑部", desc: "负责社刊《红湖》的编审、排版与出版工作", icon: BookMarked },
-  { name: "创作委员会", desc: "组织创作活动，提供文学创作指导与交流平台", icon: Feather },
-  { name: "外联部", desc: "对外交流合作，联络兄弟社团与文学机构", icon: Heart },
-  { name: "宣传部", desc: "品牌推广与新媒体运营，扩大社团影响力", icon: Mic },
-  { name: "秘书处", desc: "日常事务管理，档案整理与会议组织", icon: BookOpen },
+  { name: "办公室", desc: "活动策划，文件管理，展板制作，活动细节安排", icon: Building2 },
+  { name: "话剧部", desc: "以排、演文学话剧为主，负责挑选、改编剧本，演员确定和整体表演", icon: Feather },
+  { name: "编辑部", desc: "负责出版社内期刊《雨巷》、报刊《墨香阁》，组织征文活动与演讲比赛", icon: BookMarked },
+  { name: "外联部", desc: "负责各种活动的联谊及涉外活动的组织，向外界筹集活动经费，加强对内沟通和对外联系", icon: Heart },
+  { name: "网络部", desc: "以网络为平台推送社团文学作品，协调各部门完成网络宣传和网络资料管理，制作视频和PPT", icon: Monitor },
 ];
 
 const milestones = [
-  { year: "1985", event: "红湖文学社正式成立，首任社长张文远" },
-  { year: "1990", event: "社刊《红湖》创刊，首期发行500册" },
-  { year: "1998", event: "首次获得全国高校文学社团联合会优秀社团称号" },
-  { year: "2005", event: "举办首届「红湖杯」全校征文大赛" },
-  { year: "2010", event: "社员作品首次被省级文学刊物转载" },
-  { year: "2018", event: "社团获评河北省优秀学生社团" },
-  { year: "2023", event: "开通新媒体平台，线上社员突破千人" },
+  { year: "2006", event: "红湖文学社于2006年5月在河北科技学院正式成立" },
+  { year: "2017", event: "2017届管理团队组建，社长孙浩然带领社团发展" },
 ];
 
-const editors = [
-  { name: "张文远", term: "1985-1988", gen: "第一任" },
-  { name: "李墨华", term: "1988-1991", gen: "第二任" },
-  { name: "王书韵", term: "1991-1994", gen: "第三任" },
-  { name: "赵明志", term: "1994-1997", gen: "第四任" },
-  { name: "刘文静", term: "1997-2000", gen: "第五任" },
-  { name: "陈思远", term: "2000-2003", gen: "第六任" },
+const leaders = [
+  { name: "孙浩然", role: "社长", term: "2017届" },
+  { name: "沈威、李晨", role: "办公室主任", term: "2017届" },
+  { name: "刘雅晴、李金铵", role: "话剧部部长", term: "2017届" },
+  { name: "康雅倩、李钰", role: "编辑部部长", term: "2017届" },
+  { name: "高凡", role: "外联部部长", term: "2017届" },
+  { name: "张立起、伊创业", role: "网络部部长", term: "2017届" },
 ];
 
 const About = () => {
@@ -45,7 +39,7 @@ const About = () => {
           <h1 className="font-serif text-3xl font-bold tracking-widest md:text-4xl">社团概况</h1>
           <div className="gold-divider mx-auto mt-4" />
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed opacity-80">
-            笔耕红湖，墨绘春秋 — 传承文学精神，培育时代新人
+            河北科技学院红湖文学社 · 2006年5月成立
           </p>
         </div>
       </div>
@@ -69,10 +63,10 @@ const About = () => {
           <h2 className="section-title mb-6">红湖简介</h2>
           <div className="max-w-3xl space-y-4 leading-relaxed text-muted-foreground">
             <p>
-              红湖文学社成立于1985年，是河北科技学院历史最悠久、影响力最广泛的学生文学社团之一。社团以"笔耕红湖，墨绘春秋"为宗旨，致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
+              河北科技学院红湖文学社成立于2006年5月，是河北科技学院的学生文学社团组织。社团致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
             </p>
             <p>
-              三十余年来，红湖文学社始终坚持文学理想，涌现出一大批优秀的文学创作者。社团定期出版文学刊物《红湖》，举办"红湖杯"征文大赛、文学讲座、采风活动等，已成为校园文化建设的重要力量。
+              红湖文学社下设办公室、话剧部、编辑部、外联部、网络部五个部门，定期出版社内期刊《雨巷》和报刊《墨香阁》，组织征文活动、演讲比赛、话剧专场等丰富多彩的文学活动。
             </p>
             <p>
               一批批的红湖人在河北科技学院历史上各领风骚，一代代的红湖人以低调做人、高调做事的风格活跃在各个领域。回顾红湖的光辉史实，我们为自己是一名红湖人而感到骄傲和自豪。
@@ -120,18 +114,18 @@ const About = () => {
         </div>
       </section>
 
-      {/* Past Editors */}
+      {/* Management Team */}
       <section className="bg-secondary py-12 md:py-16">
         <div className="container mx-auto px-4">
-          <h2 className="section-title mb-8">历任主编</h2>
+          <h2 className="section-title mb-8">管理团队（2017届）</h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {editors.map((e) => (
+            {leaders.map((e) => (
               <div
-                key={e.gen}
+                key={e.role}
                 className="flex items-center justify-between rounded bg-card px-5 py-4 shadow-sm"
               >
                 <div>
-                  <span className="text-xs text-muted-foreground">{e.gen}</span>
+                  <span className="text-xs text-muted-foreground">{e.role}</span>
                   <div className="font-serif font-semibold">{e.name}</div>
                 </div>
                 <span className="text-sm text-muted-foreground">{e.term}</span>
