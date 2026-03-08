@@ -15,6 +15,7 @@ import Profile from "./pages/Profile";
 import Forum from "./pages/Forum";
 import Submit from "./pages/Submit";
 import Events from "./pages/Events";
+import Works from "./pages/Works";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/forum" element={<Forum />} />
           <Route path="/submit" element={<Submit />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/works" element={<Works />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
