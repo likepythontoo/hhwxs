@@ -19,7 +19,7 @@ const TopBar = () => {
             <UserPlus className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">加入我们</span>
           </a>
-          <a href="#" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
+          <a href="/auth" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
             <User className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">社员登录</span>
           </a>
