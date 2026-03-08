@@ -59,6 +59,24 @@ const Submit = () => {
     setError("");
     setLoading(true);
 
+    // Upload attachment if exists
+    let attachmentUrl: string | null = null;
+    if (attachmentFile) {
+      setUploading(true);
+      const ext = attachmentFile.name.split(".").pop();
+      const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("submissions").upload(path, attachmentFile);
+      if (uploadErr) {
+        setError("附件上传失败，请重试");
+        setLoading(false);
+        setUploading(false);
+        return;
+      }
+      const { data: urlData } = supabase.storage.from("submissions").getPublicUrl(path);
+      attachmentUrl = urlData.publicUrl;
+      setUploading(false);
+    }
+
     const { error: err } = await supabase.from("submissions").insert({
       title: title.trim(),
       content: isImageType ? (content.trim() || "（图片作品）") : content.trim(),
@@ -71,6 +89,7 @@ const Submit = () => {
       student_id: studentId.trim() || null,
       phone: phone.trim() || null,
       image_url: isImageType && imageUrl.trim() ? imageUrl.trim() : null,
+      attachment_url: attachmentUrl,
     } as any);
 
     if (err) {
