@@ -5,12 +5,12 @@ import schoolLogo from "@/assets/school-logo.png";
 const TopBar = () => {
   return (
     <div className="top-bar">
-      <div className="container mx-auto flex items-center justify-between px-4 py-1.5 text-sm">
+      <div className="container mx-auto flex items-center justify-between px-4 py-2 text-sm">
         <div className="flex items-center gap-3">
-          <img src={schoolLogo} alt="河北科技学院" className="h-8 object-contain" />
-          <span className="text-rice-paper/40">|</span>
-          <img src={logo} alt="红湖文学社社徽" className="h-8 w-8 object-contain" />
-          <span className="font-serif text-base tracking-widest">红湖文学社</span>
+          <img src={schoolLogo} alt="河北科技学院" className="h-10 object-contain brightness-125 contrast-110" />
+          <span className="text-rice-paper/50">|</span>
+          <img src={logo} alt="红湖文学社社徽" className="h-10 w-10 object-contain brightness-125 contrast-110" />
+          <span className="font-serif text-base tracking-widest font-semibold">红湖文学社</span>
         </div>
         <div className="flex items-center gap-4">
           <a href="#" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
