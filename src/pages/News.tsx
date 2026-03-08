@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Layout from "@/components/Layout";
+import UpcomingEvents from "@/components/UpcomingEvents";
 import { newsItems, type NewsItem } from "@/data/newsData";
 import { CalendarDays, Search, Tag } from "lucide-react";
 
@@ -68,6 +69,8 @@ const News = () => {
 
       <section className="py-12 md:py-16">
         <div className="container mx-auto px-4">
+          {/* Upcoming Events */}
+          <UpcomingEvents />
           {/* Featured card (only show on "全部") */}
           {activeCategory === "全部" && featured && !searchQuery && (
             <div className="mb-10 overflow-hidden rounded-lg border border-border bg-card shadow-sm md:flex">
