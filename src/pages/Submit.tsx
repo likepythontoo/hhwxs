@@ -63,6 +63,11 @@ const Submit = () => {
       genre,
       author_id: user?.id || null,
       author_name: authorName.trim() || "匿名",
+      college: college.trim() || null,
+      major: major.trim() || null,
+      class_name: className.trim() || null,
+      student_id: studentId.trim() || null,
+      phone: phone.trim() || null,
       image_url: isImageType && imageUrl.trim() ? imageUrl.trim() : null,
     } as any);
 
