@@ -6,7 +6,9 @@ const SiteFooter = () => {
           <div>
             <h3 className="mb-4 font-serif text-lg tracking-widest">红湖文学社</h3>
             <p className="text-sm leading-relaxed opacity-60">
-              笔耕红湖，墨绘春秋。传承文学精神，书写时代华章。
+              一批批的红湖人在河北科技学院历史上各领风骚，一代代的红湖人以低调做人，高调做事的风格活跃在各个领域。回顾红湖的光辉史实，我们为自己是一名红湖人而感到骄傲和自豪。
+一批批红湖人投入到服务同学，发展文学，传播热情的工作中来，前仆后继。
+            
             </p>
           </div>
           <div>
@@ -40,8 +42,6 @@ const SiteFooter = () => {
           © 2026 红湖文学社 Red Lake Literature Society. All rights reserved.
         </div>
       </div>
-    </footer>
-  );
-};
+    </footer>);};
 
 export default SiteFooter;
