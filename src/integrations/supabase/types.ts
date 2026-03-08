@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_name: string | null
+          target_type: string
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_name?: string | null
+          target_type: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_name?: string | null
+          target_type?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
       event_registrations: {
         Row: {
           college: string | null
@@ -136,6 +172,83 @@ export type Database = {
         }
         Relationships: []
       }
+      forum_comments: {
+        Row: {
+          author_id: string
+          author_name: string
+          content: string
+          created_at: string
+          id: string
+          post_id: string
+        }
+        Insert: {
+          author_id: string
+          author_name: string
+          content: string
+          created_at?: string
+          id?: string
+          post_id: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string
+          content?: string
+          created_at?: string
+          id?: string
+          post_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "forum_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "forum_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      forum_posts: {
+        Row: {
+          author_id: string
+          author_name: string
+          category: string | null
+          content: string
+          created_at: string
+          id: string
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          title: string
+          updated_at: string
+          view_count: number | null
+        }
+        Insert: {
+          author_id: string
+          author_name: string
+          category?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          title: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Update: {
+          author_id?: string
+          author_name?: string
+          category?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          title?: string
+          updated_at?: string
+          view_count?: number | null
+        }
+        Relationships: []
+      }
       news: {
         Row: {
           author_id: string | null
@@ -205,6 +318,57 @@ export type Database = {
           student_id?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      recruitment_applications: {
+        Row: {
+          college: string | null
+          created_at: string
+          email: string | null
+          id: string
+          literary_works: string | null
+          name: string
+          phone: string
+          preferred_department: string | null
+          reviewer_id: string | null
+          reviewer_notes: string | null
+          self_intro: string | null
+          status: string | null
+          student_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          college?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          literary_works?: string | null
+          name: string
+          phone: string
+          preferred_department?: string | null
+          reviewer_id?: string | null
+          reviewer_notes?: string | null
+          self_intro?: string | null
+          status?: string | null
+          student_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          college?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          literary_works?: string | null
+          name?: string
+          phone?: string
+          preferred_department?: string | null
+          reviewer_id?: string | null
+          reviewer_notes?: string | null
+          self_intro?: string | null
+          status?: string | null
+          student_id?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
