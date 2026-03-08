@@ -509,7 +509,9 @@ export type Database = {
           created_at: string
           genre: string | null
           id: string
+          image_url: string | null
           is_featured: boolean | null
+          recommend_count: number | null
           reviewer_notes: string | null
           status: string | null
           title: string
@@ -522,7 +524,9 @@ export type Database = {
           created_at?: string
           genre?: string | null
           id?: string
+          image_url?: string | null
           is_featured?: boolean | null
+          recommend_count?: number | null
           reviewer_notes?: string | null
           status?: string | null
           title: string
@@ -535,7 +539,9 @@ export type Database = {
           created_at?: string
           genre?: string | null
           id?: string
+          image_url?: string | null
           is_featured?: boolean | null
+          recommend_count?: number | null
           reviewer_notes?: string | null
           status?: string | null
           title?: string
