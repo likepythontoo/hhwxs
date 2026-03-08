@@ -42,7 +42,7 @@ const NewsSection = () => {
       <div className="container mx-auto px-4">
         <div className="mb-8 flex items-center justify-between">
           <h2 className="section-title">新闻速递</h2>
-          <a href="#" className="flex items-center gap-1 text-sm text-primary transition hover:underline">
+          <a href="/news" className="flex items-center gap-1 text-sm text-primary transition hover:underline">
             更多新闻 <ArrowRight className="h-4 w-4" />
           </a>
         </div>
