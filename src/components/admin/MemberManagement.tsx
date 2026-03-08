@@ -45,11 +45,11 @@ const MemberManagement = ({ currentUserRole, currentUserDeptId }: Props) => {
 
     if (profiles && roles) {
       const roleMap = new Map(roles.map(r => [r.user_id, r.role]));
-      const deptMap = new Map((depts || []).map((d: any) => [d.id, d.name]));
-      const userDeptMap = new Map<string, string[]>();
-      (deptMembers || []).forEach((dm: any) => {
-        const names = userDeptMap.get(dm.user_id) || [];
-        names.push(deptMap.get(dm.department_id) || "");
+    const deptMap = new Map((depts || []).map((d: any) => [d.id as string, d.name as string]));
+    const userDeptMap = new Map<string, string[]>();
+    (deptMembers || []).forEach((dm: any) => {
+      const names = userDeptMap.get(dm.user_id as string) || [];
+      names.push(deptMap.get(dm.department_id as string) || "");
         userDeptMap.set(dm.user_id, names);
       });
 
