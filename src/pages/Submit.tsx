@@ -235,6 +235,29 @@ const Submit = () => {
                 maxLength={50000} />
             </div>
 
+            <div>
+              <label className="mb-1 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                <Paperclip className="h-3.5 w-3.5" /> 上传附件（选填）
+              </label>
+              <div className="relative">
+                {attachmentFile ? (
+                  <div className="flex items-center gap-2 rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm">
+                    <Paperclip className="h-4 w-4 text-muted-foreground" />
+                    <span className="flex-1 truncate">{attachmentFile.name}</span>
+                    <span className="text-xs text-muted-foreground">{(attachmentFile.size / 1024 / 1024).toFixed(1)}MB</span>
+                    <button type="button" onClick={() => setAttachmentFile(null)} className="rounded p-0.5 hover:bg-secondary"><X className="h-3.5 w-3.5" /></button>
+                  </div>
+                ) : (
+                  <label className="flex cursor-pointer items-center gap-2 rounded-md border border-dashed border-border px-3 py-3 text-sm text-muted-foreground transition hover:border-primary/50 hover:bg-secondary/30">
+                    <Paperclip className="h-4 w-4" />
+                    <span>点击选择文件（PDF、Word、图片等，最大20MB）</span>
+                    <input type="file" className="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.mp4,.zip"
+                      onChange={e => { if (e.target.files?.[0]) { const f = e.target.files[0]; if (f.size > 20 * 1024 * 1024) { setError("附件不能超过20MB"); } else { setError(""); setAttachmentFile(f); } } }} />
+                  </label>
+                )}
+              </div>
+            </div>
+
             {error && <p className="text-xs text-destructive">{error}</p>}
 
             <button type="submit" disabled={loading}
