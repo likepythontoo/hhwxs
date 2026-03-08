@@ -18,6 +18,7 @@ interface Submission {
   class_name?: string | null;
   student_id?: string | null;
   phone?: string | null;
+  attachment_url?: string | null;
 }
 
 const SubmissionsManagement = () => {
