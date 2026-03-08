@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout";
+import LeadershipTimeline from "@/components/LeadershipTimeline";
 import { Building2, Users, Award, BookOpen, Monitor, Feather, BookMarked, Crown, Trophy, Star, Medal, Mic } from "lucide-react";
 
 const stats = [
