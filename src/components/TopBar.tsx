@@ -1,6 +1,6 @@
 import { Search, User, Clock, UserPlus } from "lucide-react";
 import logo from "@/assets/logo.png";
-import schoolLogo from "@/assets/school-logo.png";
+import schoolBadge from "@/assets/school-badge.png";
 
 const TopBar = () => {
   return (
