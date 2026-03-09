@@ -39,29 +39,13 @@ const SiteFooter = () => {
               <li>📺 Bilibili：红湖文学社</li>
             </ul>
             <a
-              href="https://uri.amap.com/marker?position=118.460007,39.232719&name=河北科技学院曹妃甸校区"
+              href="https://uri.amap.com/marker?position=118.460007,39.232719&name=河北科技学院曹妃甸校区&src=红湖文学社"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-3 block overflow-hidden rounded transition hover:opacity-90"
+              className="mt-3 flex h-[100px] items-center justify-center gap-2 rounded border border-rice-paper/15 bg-rice-paper/5 text-xs opacity-60 transition hover:opacity-100"
             >
-              <img
-                src="https://restapi.amap.com/v3/staticmap?location=118.460007,39.232719&zoom=14&size=400*200&markers=mid,,A:118.460007,39.232719&key=amap_web_key_placeholder"
-                alt="河北科技学院曹妃甸校区地图"
-                className="w-full rounded opacity-70 transition hover:opacity-100"
-                style={{ filter: "invert(0.85) hue-rotate(180deg)" }}
-                onError={(e) => {
-                  // Fallback: show a styled placeholder if static map fails
-                  const target = e.currentTarget;
-                  target.style.display = "none";
-                  const fallback = target.nextElementSibling as HTMLElement;
-                  if (fallback) fallback.style.display = "flex";
-                }}
-              />
-              <div
-                className="hidden h-[120px] items-center justify-center rounded border border-rice-paper/10 bg-rice-paper/5 text-xs opacity-60"
-              >
-                📍 点击查看地图 · 河北科技学院曹妃甸校区
-              </div>
+              <span className="text-lg">🗺️</span>
+              <span>点击查看地图 · 曹妃甸校区</span>
             </a>
           </div>
         </div>
