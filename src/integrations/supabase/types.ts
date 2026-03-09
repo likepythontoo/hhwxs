@@ -343,6 +343,51 @@ export type Database = {
         }
         Relationships: []
       }
+      journals: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_published: boolean | null
+          issue_number: string | null
+          month: number | null
+          pdf_url: string | null
+          table_of_contents: string | null
+          title: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          issue_number?: string | null
+          month?: number | null
+          pdf_url?: string | null
+          table_of_contents?: string | null
+          title: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_published?: boolean | null
+          issue_number?: string | null
+          month?: number | null
+          pdf_url?: string | null
+          table_of_contents?: string | null
+          title?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
