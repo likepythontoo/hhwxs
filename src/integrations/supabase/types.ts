@@ -343,6 +343,33 @@ export type Database = {
         }
         Relationships: []
       }
+      messages: {
+        Row: {
+          content: string
+          created_at: string
+          email: string | null
+          id: string
+          is_read: boolean | null
+          name: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_read?: boolean | null
+          name: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_read?: boolean | null
+          name?: string
+        }
+        Relationships: []
+      }
       news: {
         Row: {
           author_id: string | null
