@@ -32,12 +32,23 @@ const SiteFooter = () => {
           <div>
             <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">联系我们</h4>
             <ul className="space-y-2 text-sm opacity-60">
-              <li>📍 河北科技学院</li>
+              <li>📍 河北科技学院（曹妃甸校区）</li>
               <li>📧 1330760849@qq.com</li>
               <li>📱 微信公众号：红湖文学社</li>
               <li>🎵 抖音：红湖文学社</li>
               <li>📺 Bilibili：红湖文学社</li>
             </ul>
+            <div className="mt-3 overflow-hidden rounded">
+              <iframe
+                src="https://www.amap.com/search?query=河北科技学院曹妃甸&city=130000"
+                width="100%"
+                height="150"
+                style={{ border: 0, filter: "invert(0.9) hue-rotate(180deg)" }}
+                loading="lazy"
+                title="河北科技学院位置"
+                referrerPolicy="no-referrer"
+              />
+            </div>
           </div>
         </div>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
