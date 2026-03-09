@@ -35,20 +35,15 @@ const SiteFooter = () => {
           <div>
             <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">联系我们</h4>
             <ul className="space-y-2 text-sm opacity-60">
-              <li className="relative">
-                <span
-                  className="cursor-pointer transition hover:opacity-100"
-                  onMouseEnter={() => setShowMap(true)}
-                  onMouseLeave={() => setShowMap(false)}
-                >
+              <li className="relative"
+                onMouseEnter={() => setShowMap(true)}
+                onMouseLeave={() => setShowMap(false)}
+              >
+                <span className="cursor-pointer transition hover:opacity-100">
                   📍 河北科技学院（曹妃甸校区）
                 </span>
                 {showMap && (
-                  <div
-                    className="absolute bottom-full left-0 z-50 mb-2 w-[280px] rounded-lg border border-border bg-card p-3 shadow-xl"
-                    onMouseEnter={() => setShowMap(true)}
-                    onMouseLeave={() => setShowMap(false)}
-                  >
+                  <div className="absolute bottom-full left-0 z-50 mb-1 w-[280px] rounded-lg border border-border bg-card p-3 shadow-xl">
                     <div className="space-y-1.5 text-xs">
                       <p className="font-medium text-foreground">🏫 河北科技学院 · 曹妃甸校区</p>
                       <p className="text-muted-foreground">河北省唐山市曹妃甸区曹妃甸新城行知路36号</p>
@@ -61,6 +56,8 @@ const SiteFooter = () => {
                     >
                       🗺️ 在高德地图中查看
                     </a>
+                    {/* 连接桥：填补弹窗与触发文字之间的间隙 */}
+                    <div className="absolute left-0 top-full h-1 w-full" />
                   </div>
                 )}
               </li>
