@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 const navItems = [
   { label: "首页", href: "/" },
   { label: "社团概况", href: "/about" },
+  { label: "社团章程", href: "/charter" },
   { label: "新闻动态", href: "/news" },
   { label: "活动中心", href: "/events" },
   { label: "作品展示", href: "/works" },
