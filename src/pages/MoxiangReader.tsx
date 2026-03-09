@@ -24,6 +24,35 @@ interface Article {
   content: string;
 }
 
+/** Render article content with genre-aware typography */
+const renderContent = (content: string, genre: string | null) => {
+  const isPoetry = genre === "诗歌";
+  const paragraphs = content.split(/\n+/).filter(p => p.trim());
+
+  if (isPoetry) {
+    return (
+      <div className="flex flex-col items-center gap-1 py-4 font-serif text-[15px] leading-[2.2] text-foreground/90">
+        {paragraphs.map((line, i) => (
+          <p key={i} className={`${line.trim() === "" ? "h-4" : ""}`}>
+            {line}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  // Prose: indent first line, generous spacing
+  return (
+    <div className="space-y-4 font-serif text-[15px] leading-[2] text-foreground/90">
+      {paragraphs.map((para, i) => (
+        <p key={i} className="indent-[2em]">
+          {para}
+        </p>
+      ))}
+    </div>
+  );
+};
+
 const MoxiangReader = () => {
   const { id } = useParams<{ id: string }>();
   const [journal, setJournal] = useState<Journal | null>(null);
