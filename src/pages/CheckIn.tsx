@@ -44,7 +44,7 @@ const CheckIn = () => {
     const { data: { session } } = await supabase.auth.getSession();
 
     const { error } = await supabase.from("check_ins").insert({
-      event_id: event.id,
+      event_id: event.event_id,
       user_name: name.trim(),
       student_id: studentId.trim() || null,
       user_id: session?.user?.id || null,
