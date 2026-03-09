@@ -4,6 +4,9 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
+User-agent: Baiduspider
+Allow: /
+
 User-agent: Twitterbot
 Allow: /
 
@@ -12,3 +15,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://hhwxs.lovable.app/sitemap.xml
