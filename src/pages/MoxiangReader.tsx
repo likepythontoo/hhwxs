@@ -163,8 +163,8 @@ const MoxiangReader = () => {
                   {currentArticle.genre && <span className="ml-2 rounded bg-secondary px-2 py-0.5 text-[10px]">{currentArticle.genre}</span>}
                 </p>
                 <div className="mx-auto mt-4 h-px w-16 bg-primary/20" />
-                <div className="mt-6 whitespace-pre-wrap text-sm leading-[2] text-foreground/90">
-                  {currentArticle.content}
+                <div className="mt-6">
+                  {renderContent(currentArticle.content, currentArticle.genre)}
                 </div>
               </article>
             )}
