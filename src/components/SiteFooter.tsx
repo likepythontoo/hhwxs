@@ -37,7 +37,7 @@ const SiteFooter = () => {
             <ul className="space-y-2 text-sm opacity-60">
               <li className="relative">
                 <span
-                  className="cursor-pointer underline decoration-dotted underline-offset-4 transition hover:opacity-100"
+                  className="cursor-pointer transition hover:opacity-100"
                   onMouseEnter={() => setShowMap(true)}
                   onMouseLeave={() => setShowMap(false)}
                 >
