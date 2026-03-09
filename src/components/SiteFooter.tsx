@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 const SiteFooter = () => {
   return (
@@ -32,21 +33,44 @@ const SiteFooter = () => {
           <div>
             <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">联系我们</h4>
             <ul className="space-y-2 text-sm opacity-60">
-              <li>📍 河北科技学院（曹妃甸校区）</li>
+              <li>
+                <HoverCard openDelay={200} closeDelay={400}>
+                  <HoverCardTrigger asChild>
+                    <span className="cursor-pointer underline decoration-dotted underline-offset-4 transition hover:opacity-100">
+                      📍 河北科技学院（曹妃甸校区）
+                    </span>
+                  </HoverCardTrigger>
+                  <HoverCardContent side="top" align="start" className="w-[300px] p-3">
+                    <div className="mb-2 overflow-hidden rounded">
+                      <iframe
+                        src="https://m.amap.com/navi/?dest=118.460007,39.232719&destName=河北科技学院曹妃甸校区&hideRouteIcon=1&key=invalid"
+                        width="100%"
+                        height="180"
+                        style={{ border: 0 }}
+                        loading="lazy"
+                        title="河北科技学院位置"
+                      />
+                    </div>
+                    <div className="space-y-1 text-xs">
+                      <p className="font-medium text-foreground">河北科技学院 · 曹妃甸校区</p>
+                      <p className="text-muted-foreground">河北省唐山市曹妃甸区曹妃甸新城</p>
+                    </div>
+                    <a
+                      href="https://uri.amap.com/marker?position=118.460007,39.232719&name=河北科技学院曹妃甸校区&src=红湖文学社"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 block rounded bg-primary px-3 py-1.5 text-center text-xs font-medium text-primary-foreground transition hover:bg-primary/90"
+                    >
+                      🗺️ 在高德地图中查看
+                    </a>
+                  </HoverCardContent>
+                </HoverCard>
+              </li>
               <li>📧 1330760849@qq.com</li>
               <li>📱 微信公众号：红湖文学社</li>
               <li>🎵 抖音：红湖文学社</li>
               <li>📺 Bilibili：红湖文学社</li>
             </ul>
-            <a
-              href="https://uri.amap.com/marker?position=118.460007,39.232719&name=河北科技学院曹妃甸校区&src=红湖文学社"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 flex h-[100px] items-center justify-center gap-2 rounded border border-rice-paper/15 bg-rice-paper/5 text-xs opacity-60 transition hover:opacity-100"
-            >
-              <span className="text-lg">🗺️</span>
-              <span>点击查看地图 · 曹妃甸校区</span>
-            </a>
           </div>
         </div>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
