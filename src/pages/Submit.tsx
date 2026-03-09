@@ -72,8 +72,8 @@ const Submit = () => {
         setUploading(false);
         return;
       }
-      const { data: urlData } = supabase.storage.from("submissions").getPublicUrl(path);
-      attachmentUrl = urlData.publicUrl;
+      // Store the path for signed URL generation later
+      attachmentUrl = path;
       setUploading(false);
     }
 

@@ -1,6 +1,21 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Check, X, Star, StarOff, Eye } from "lucide-react";
+import { useCallback } from "react";
+
+const AttachmentLink = ({ path }: { path: string }) => {
+  const [url, setUrl] = useState<string | null>(null);
+  const handleClick = useCallback(async () => {
+    if (url) { window.open(url, "_blank"); return; }
+    const { data } = await supabase.storage.from("submissions").createSignedUrl(path, 3600);
+    if (data?.signedUrl) { setUrl(data.signedUrl); window.open(data.signedUrl, "_blank"); }
+  }, [path, url]);
+  return (
+    <button onClick={handleClick} className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-primary hover:bg-secondary">
+      📎 查看附件
+    </button>
+  );
+};
 
 interface Submission {
   id: string;
@@ -126,10 +141,7 @@ const SubmissionsManagement = () => {
               </div>
             )}
             {viewing.attachment_url && (
-              <a href={viewing.attachment_url} target="_blank" rel="noopener noreferrer"
-                className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs text-primary hover:bg-secondary">
-                📎 查看附件
-              </a>
+              <AttachmentLink path={viewing.attachment_url} />
             )}
             <div className="mt-4 whitespace-pre-wrap rounded-lg bg-secondary/50 p-4 text-sm leading-relaxed">{viewing.content}</div>
 
