@@ -50,6 +50,8 @@ const App = () => (
           <Route path="/contact" element={<Contact />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/journals" element={<Journals />} />
+          <Route path="/moxiang" element={<Moxiang />} />
+          <Route path="/moxiang/:id" element={<MoxiangReader />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
