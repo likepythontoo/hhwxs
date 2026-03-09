@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 
 const SiteFooter = () => {
+  const [showMap, setShowMap] = useState(false);
+
   return (
     <footer className="bg-ink-black text-rice-paper">
       <div className="container mx-auto px-4 py-8 sm:py-10">
@@ -33,27 +35,23 @@ const SiteFooter = () => {
           <div>
             <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">联系我们</h4>
             <ul className="space-y-2 text-sm opacity-60">
-              <li>
-                <HoverCard openDelay={200} closeDelay={400}>
-                  <HoverCardTrigger asChild>
-                    <span className="cursor-pointer underline decoration-dotted underline-offset-4 transition hover:opacity-100">
-                      📍 河北科技学院（曹妃甸校区）
-                    </span>
-                  </HoverCardTrigger>
-                  <HoverCardContent side="top" align="start" className="w-[300px] p-3">
-                    <div className="mb-2 overflow-hidden rounded">
-                      <iframe
-                        src="https://m.amap.com/navi/?dest=118.460007,39.232719&destName=河北科技学院曹妃甸校区&hideRouteIcon=1&key=invalid"
-                        width="100%"
-                        height="180"
-                        style={{ border: 0 }}
-                        loading="lazy"
-                        title="河北科技学院位置"
-                      />
-                    </div>
-                    <div className="space-y-1 text-xs">
-                      <p className="font-medium text-foreground">河北科技学院 · 曹妃甸校区</p>
-                      <p className="text-muted-foreground">河北省唐山市曹妃甸区曹妃甸新城</p>
+              <li className="relative">
+                <span
+                  className="cursor-pointer underline decoration-dotted underline-offset-4 transition hover:opacity-100"
+                  onMouseEnter={() => setShowMap(true)}
+                  onMouseLeave={() => setShowMap(false)}
+                >
+                  📍 河北科技学院（曹妃甸校区）
+                </span>
+                {showMap && (
+                  <div
+                    className="absolute bottom-full left-0 z-50 mb-2 w-[280px] rounded-lg border border-border bg-card p-3 shadow-xl"
+                    onMouseEnter={() => setShowMap(true)}
+                    onMouseLeave={() => setShowMap(false)}
+                  >
+                    <div className="space-y-1.5 text-xs">
+                      <p className="font-medium text-foreground">🏫 河北科技学院 · 曹妃甸校区</p>
+                      <p className="text-muted-foreground">河北省唐山市曹妃甸区曹妃甸新城行知路36号</p>
                     </div>
                     <a
                       href="https://uri.amap.com/marker?position=118.460007,39.232719&name=河北科技学院曹妃甸校区&src=红湖文学社"
@@ -63,8 +61,8 @@ const SiteFooter = () => {
                     >
                       🗺️ 在高德地图中查看
                     </a>
-                  </HoverCardContent>
-                </HoverCard>
+                  </div>
+                )}
               </li>
               <li>📧 1330760849@qq.com</li>
               <li>📱 微信公众号：红湖文学社</li>
