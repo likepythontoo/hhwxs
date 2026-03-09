@@ -196,6 +196,7 @@ const Admin = () => {
           {tab === "finance" && <FinanceManagement />}
           {tab === "recruitment" && <RecruitmentManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
           {tab === "forum" && <ForumManagement />}
+          {tab === "journals" && <JournalManagement />}
           {tab === "checkin" && <CheckInManagement />}
           {tab === "export" && <ExportCenter />}
           {tab === "audit" && <AuditLogViewer />}
