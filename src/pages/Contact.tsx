@@ -137,7 +137,7 @@ const Contact = () => {
                 <h2 className="mb-4 font-serif text-lg font-bold">💬 给我们留言</h2>
                 {submitted ? (
                   <div className="flex flex-col items-center gap-3 py-8 text-center">
-                    <CheckCircle className="h-10 w-10 text-green-500" />
+                    <CheckCircle className="h-10 w-10 text-primary" />
                     <p className="font-serif text-lg font-bold">留言已发送！</p>
                     <p className="text-sm text-muted-foreground">感谢你的留言，我们会尽快回复</p>
                     <button onClick={() => setSubmitted(false)} className="mt-2 text-sm text-primary hover:underline">
