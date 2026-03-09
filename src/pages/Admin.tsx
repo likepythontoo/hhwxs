@@ -17,6 +17,7 @@ import ExportCenter from "@/components/admin/ExportCenter";
 import ForumManagement from "@/components/admin/ForumManagement";
 import DepartmentManagement from "@/components/admin/DepartmentManagement";
 import CheckInManagement from "@/components/admin/CheckInManagement";
+import JournalManagement from "@/components/admin/JournalManagement";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 type Tab = "dashboard" | "events" | "news" | "submissions" | "forum" | "members" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
