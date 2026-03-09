@@ -15,13 +15,11 @@ const CheckIn = () => {
     setResult(null);
     setLoading(true);
 
-    // Find event by check-in code
-    const { data: event } = await supabase
-      .from("events")
-      .select("id, title, check_in_code")
-      .eq("check_in_code", code.toUpperCase().trim())
-      .eq("is_active", true)
-      .single();
+    // Validate check-in code via secure RPC (never exposes codes to client)
+    const { data: eventData } = await supabase
+      .rpc("validate_checkin_code", { p_code: code.trim() });
+
+    const event = eventData && eventData.length > 0 ? eventData[0] : null;
 
     if (!event) {
       setResult({ success: false, message: "签到码无效或活动已结束" });
