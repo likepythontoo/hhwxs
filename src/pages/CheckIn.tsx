@@ -53,7 +53,7 @@ const CheckIn = () => {
     if (error) {
       setResult({ success: false, message: "签到失败，请稍后重试" });
     } else {
-      setResult({ success: true, message: `已成功签到「${event.title}」` });
+      setResult({ success: true, message: `已成功签到「${event.event_title}」` });
     }
     setLoading(false);
   };
