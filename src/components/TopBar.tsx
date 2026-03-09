@@ -33,7 +33,7 @@ const TopBar = () => {
     <div className="top-bar">
       <div className="container mx-auto flex items-center justify-between px-4 py-2 text-sm">
         <div className="flex items-center gap-3">
-          <a href="https://www.hbkjxy.cn" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.hbkjxy.edu.cn/" target="_blank" rel="noopener noreferrer">
             <img src={schoolLogo} alt="河北科技学院" className="h-10 object-contain brightness-0 invert" />
           </a>
           <span className="text-white/50">|</span>
