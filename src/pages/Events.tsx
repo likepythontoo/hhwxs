@@ -31,7 +31,7 @@ const Events = () => {
   const [regResult, setRegResult] = useState<{ ok: boolean; msg: string } | null>(null);
 
   useEffect(() => {
-    supabase.from("events").select("*").eq("is_active", true)
+    supabase.from("events").select("id, title, description, event_date, location, category, scope, max_participants, registration_deadline, is_active").eq("is_active", true)
       .order("event_date", { ascending: true })
       .then(({ data }) => { setEvents(data || []); setLoading(false); });
   }, []);

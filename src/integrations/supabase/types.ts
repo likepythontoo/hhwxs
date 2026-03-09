@@ -720,6 +720,13 @@ export type Database = {
         Args: { _department_id: string; _user_id: string }
         Returns: boolean
       }
+      validate_checkin_code: {
+        Args: { p_code: string }
+        Returns: {
+          event_id: string
+          event_title: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "minister" | "member" | "president"

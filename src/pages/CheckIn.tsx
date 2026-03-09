@@ -15,13 +15,11 @@ const CheckIn = () => {
     setResult(null);
     setLoading(true);
 
-    // Find event by check-in code
-    const { data: event } = await supabase
-      .from("events")
-      .select("id, title, check_in_code")
-      .eq("check_in_code", code.toUpperCase().trim())
-      .eq("is_active", true)
-      .single();
+    // Validate check-in code via secure RPC (never exposes codes to client)
+    const { data: eventData } = await supabase
+      .rpc("validate_checkin_code", { p_code: code.trim() });
+
+    const event = eventData && eventData.length > 0 ? eventData[0] : null;
 
     if (!event) {
       setResult({ success: false, message: "签到码无效或活动已结束" });
@@ -33,7 +31,7 @@ const CheckIn = () => {
     const { data: existing } = await supabase
       .from("check_ins")
       .select("id")
-      .eq("event_id", event.id)
+      .eq("event_id", event.event_id)
       .eq("user_name", name.trim());
 
     if (existing && existing.length > 0) {
@@ -46,7 +44,7 @@ const CheckIn = () => {
     const { data: { session } } = await supabase.auth.getSession();
 
     const { error } = await supabase.from("check_ins").insert({
-      event_id: event.id,
+      event_id: event.event_id,
       user_name: name.trim(),
       student_id: studentId.trim() || null,
       user_id: session?.user?.id || null,
@@ -55,7 +53,7 @@ const CheckIn = () => {
     if (error) {
       setResult({ success: false, message: "签到失败，请稍后重试" });
     } else {
-      setResult({ success: true, message: `已成功签到「${event.title}」` });
+      setResult({ success: true, message: `已成功签到「${event.event_title}」` });
     }
     setLoading(false);
   };
