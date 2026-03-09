@@ -343,6 +343,48 @@ export type Database = {
         }
         Relationships: []
       }
+      journal_articles: {
+        Row: {
+          created_at: string
+          id: string
+          journal_id: string
+          section_title: string | null
+          sort_order: number
+          submission_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          journal_id: string
+          section_title?: string | null
+          sort_order?: number
+          submission_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          journal_id?: string
+          section_title?: string | null
+          sort_order?: number
+          submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_articles_journal_id_fkey"
+            columns: ["journal_id"]
+            isOneToOne: false
+            referencedRelation: "journals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_articles_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journals: {
         Row: {
           cover_url: string | null
@@ -355,6 +397,7 @@ export type Database = {
           pdf_url: string | null
           table_of_contents: string | null
           title: string
+          type: string
           updated_at: string
           year: number
         }
@@ -369,6 +412,7 @@ export type Database = {
           pdf_url?: string | null
           table_of_contents?: string | null
           title: string
+          type?: string
           updated_at?: string
           year: number
         }
@@ -383,6 +427,7 @@ export type Database = {
           pdf_url?: string | null
           table_of_contents?: string | null
           title?: string
+          type?: string
           updated_at?: string
           year?: number
         }

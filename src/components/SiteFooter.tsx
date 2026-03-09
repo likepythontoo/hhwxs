@@ -27,7 +27,7 @@ const SiteFooter = () => {
             <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">社团出版物</h4>
             <ul className="space-y-2 text-sm opacity-60">
               <li><Link to="/journals" className="transition hover:opacity-100">📖 期刊：《红湖》</Link></li>
-              <li>📰 报刊：《墨香阁》</li>
+              <li><Link to="/moxiang" className="transition hover:opacity-100">📰 报刊：《墨香阁》</Link></li>
               <li><Link to="/submit" className="transition hover:opacity-100">投稿系统</Link></li>
               <li><Link to="/join" className="transition hover:opacity-100">入社申请</Link></li>
             </ul>
