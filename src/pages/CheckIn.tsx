@@ -31,7 +31,7 @@ const CheckIn = () => {
     const { data: existing } = await supabase
       .from("check_ins")
       .select("id")
-      .eq("event_id", event.id)
+      .eq("event_id", event.event_id)
       .eq("user_name", name.trim());
 
     if (existing && existing.length > 0) {
