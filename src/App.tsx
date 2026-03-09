@@ -18,6 +18,7 @@ import Submit from "./pages/Submit";
 import Events from "./pages/Events";
 import Works from "./pages/Works";
 import Contact from "./pages/Contact";
+import Documents from "./pages/Documents";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
