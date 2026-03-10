@@ -3,6 +3,7 @@ import HeroCarousel from "@/components/HeroCarousel";
 import NewsSection from "@/components/NewsSection";
 import QuickLinks from "@/components/QuickLinks";
 import AboutSection from "@/components/AboutSection";
+import VisitorCounter from "@/components/VisitorCounter";
 
 const Index = () => {
   return (
@@ -11,6 +12,7 @@ const Index = () => {
       <NewsSection />
       <QuickLinks />
       <AboutSection />
+      <VisitorCounter />
     </Layout>
   );
 };
