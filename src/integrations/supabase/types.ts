@@ -618,6 +618,24 @@ export type Database = {
         }
         Relationships: []
       }
+      site_visits: {
+        Row: {
+          id: string
+          page: string | null
+          visited_at: string
+        }
+        Insert: {
+          id?: string
+          page?: string | null
+          visited_at?: string
+        }
+        Update: {
+          id?: string
+          page?: string | null
+          visited_at?: string
+        }
+        Relationships: []
+      }
       submissions: {
         Row: {
           attachment_url: string | null
