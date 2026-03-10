@@ -21,11 +21,19 @@ const Auth = () => {
     setLoading(true);
 
     if (isLogin) {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
         setError(error.message === "Invalid login credentials" ? "邮箱或密码错误" : error.message);
-      } else {
-        navigate("/admin");
+      } else if (data.user) {
+        // Check if user has admin/president/minister role
+        const { data: roles } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", data.user.id);
+        const hasManagement = roles?.some(r =>
+          ["admin", "president", "minister"].includes(r.role)
+        );
+        navigate(hasManagement ? "/admin" : "/profile");
       }
     } else {
       const { error } = await supabase.auth.signUp({
