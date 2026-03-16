@@ -433,6 +433,75 @@ export type Database = {
         }
         Relationships: []
       }
+      member_works: {
+        Row: {
+          created_at: string
+          id: string
+          member_id: string
+          submission_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_id: string
+          submission_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_id?: string
+          submission_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_works_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_works_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      members: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          id: string
+          name: string
+          role_title: string | null
+          term: string
+          user_id: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          role_title?: string | null
+          term: string
+          user_id?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          role_title?: string | null
+          term?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
