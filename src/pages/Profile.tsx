@@ -26,12 +26,13 @@ const Profile = () => {
 
       const uid = session.user.id;
 
-      const [profileRes, roleRes, deptRes, checkInRes, subRes] = await Promise.all([
+      const [profileRes, roleRes, deptRes, checkInRes, subRes, memberRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", uid).single(),
         supabase.from("user_roles").select("role").eq("user_id", uid),
         supabase.from("department_members").select("department_id, is_head, departments(name)").eq("user_id", uid),
         supabase.from("check_ins").select("id, user_name, checked_in_at, events(title)").eq("user_id", uid).order("checked_in_at", { ascending: false }).limit(20),
         supabase.from("submissions").select("id, title, genre, status, created_at").eq("author_id", uid).order("created_at", { ascending: false }).limit(20),
+        supabase.from("members").select("*").eq("user_id", uid).limit(1),
       ]);
 
       setProfile(profileRes.data);
