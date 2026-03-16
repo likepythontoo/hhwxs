@@ -18,9 +18,10 @@ import ForumManagement from "@/components/admin/ForumManagement";
 import DepartmentManagement from "@/components/admin/DepartmentManagement";
 import CheckInManagement from "@/components/admin/CheckInManagement";
 import JournalManagement from "@/components/admin/JournalManagement";
+import MemberDirectoryManagement from "@/components/admin/MemberDirectoryManagement";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
-type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
+type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
 
 interface TabConfig {
   key: Tab;
