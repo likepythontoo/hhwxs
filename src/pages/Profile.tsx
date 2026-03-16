@@ -161,6 +161,46 @@ const Profile = () => {
             </div>
           )}
 
+          {/* Member Bio */}
+          {memberRecord && (
+            <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+              <h3 className="mb-3 flex items-center gap-2 font-serif text-sm font-bold">
+                <Quote className="h-4 w-4 text-primary" /> 个性签名
+                <span className="text-[10px] font-normal text-muted-foreground">({memberRecord.term})</span>
+              </h3>
+              {editingBio ? (
+                <div className="space-y-2">
+                  <textarea
+                    value={memberBio}
+                    onChange={e => setMemberBio(e.target.value)}
+                    className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                    rows={3}
+                    placeholder="写下你的个性签名..."
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={async () => {
+                        await supabase.from("members").update({ bio: memberBio || null }).eq("id", memberRecord.id);
+                        setMemberRecord({ ...memberRecord, bio: memberBio });
+                        setEditingBio(false);
+                      }}
+                      className="rounded-lg bg-primary px-3 py-1 text-xs text-primary-foreground"
+                    >保存</button>
+                    <button onClick={() => { setMemberBio(memberRecord.bio || ""); setEditingBio(false); }}
+                      className="rounded-lg bg-secondary px-3 py-1 text-xs">取消</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-start justify-between">
+                  <p className="text-sm italic text-muted-foreground">{memberRecord.bio || "暂未设置个性签名"}</p>
+                  <button onClick={() => setEditingBio(true)} className="rounded-lg p-1 text-muted-foreground hover:bg-secondary">
+                    <Edit2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Check-in History */}
           <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <h3 className="mb-3 flex items-center gap-2 font-serif text-sm font-bold">
