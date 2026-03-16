@@ -15,6 +15,9 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [studentId, setStudentId] = useState("");
+  const [memberRecord, setMemberRecord] = useState<any>(null);
+  const [memberBio, setMemberBio] = useState("");
+  const [editingBio, setEditingBio] = useState(false);
 
   useEffect(() => {
     const load = async () => {
