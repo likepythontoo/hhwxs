@@ -43,6 +43,10 @@ const TopBar = () => {
           <span className="font-serif text-base tracking-widest font-semibold text-white">红 湖 文 学 社</span>
         </div>
         <div className="flex items-center gap-4">
+          <button onClick={() => setSearchOpen(true)} className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100" title="搜索 (Ctrl+K)">
+            <Search className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">搜索</span>
+          </button>
           <Link to="/join" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
             <UserPlus className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">加入我们</span>
