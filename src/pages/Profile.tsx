@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Building2, BookOpen, CalendarCheck, LogOut, Edit2, Save } from "lucide-react";
+import { User, Building2, BookOpen, CalendarCheck, LogOut, Edit2, Save, Quote } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
