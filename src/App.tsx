@@ -53,6 +53,7 @@ const App = () => (
           <Route path="/journals" element={<Journals />} />
           <Route path="/moxiang" element={<Moxiang />} />
           <Route path="/moxiang/:id" element={<MoxiangReader />} />
+          <Route path="/members" element={<Members />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

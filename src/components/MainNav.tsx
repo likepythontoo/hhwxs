@@ -9,6 +9,7 @@ const navItems = [
   { label: "新闻动态", href: "/news" },
   { label: "活动中心", href: "/events" },
   { label: "作品展示", href: "/works" },
+  { label: "历届成员", href: "/members" },
   { label: "社员论坛", href: "/forum" },
   { label: "联系我们", href: "/contact" },
 ];

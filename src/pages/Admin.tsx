@@ -192,6 +192,7 @@ const Admin = () => {
           {tab === "dashboard" && <AdminDashboard />}
           {tab === "events" && <EventManagement />}
           {tab === "members" && <MemberManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
+          {tab === "member_directory" && <MemberDirectoryManagement />}
           {tab === "departments" && <DepartmentManagement />}
           {tab === "news" && <NewsManagement />}
           {tab === "submissions" && <SubmissionsManagement />}
