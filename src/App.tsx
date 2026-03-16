@@ -22,6 +22,7 @@ import Documents from "./pages/Documents";
 import Journals from "./pages/Journals";
 import Moxiang from "./pages/Moxiang";
 import MoxiangReader from "./pages/MoxiangReader";
+import Members from "./pages/Members";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ const App = () => (
           <Route path="/journals" element={<Journals />} />
           <Route path="/moxiang" element={<Moxiang />} />
           <Route path="/moxiang/:id" element={<MoxiangReader />} />
+          <Route path="/members" element={<Members />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
@@ -18,9 +18,10 @@ import ForumManagement from "@/components/admin/ForumManagement";
 import DepartmentManagement from "@/components/admin/DepartmentManagement";
 import CheckInManagement from "@/components/admin/CheckInManagement";
 import JournalManagement from "@/components/admin/JournalManagement";
+import MemberDirectoryManagement from "@/components/admin/MemberDirectoryManagement";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
-type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
+type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
 
 interface TabConfig {
   key: Tab;
@@ -39,6 +40,7 @@ const tabs: TabConfig[] = [
   { key: "journals", label: "期刊管理", icon: Library, roles: ["admin", "president", "minister"] },
   { key: "checkin", label: "签到管理", icon: ClipboardCheck, roles: ["admin", "president", "minister"] },
   { key: "members", label: "成员管理", icon: Users, section: "组织管理", roles: ["admin", "president", "minister"] },
+  { key: "member_directory", label: "成员风采", icon: UsersRound, roles: ["admin", "president"] },
   { key: "departments", label: "部门管理", icon: Building2, roles: ["admin", "president"] },
   { key: "recruitment", label: "招新审批", icon: UserPlus, roles: ["admin", "president", "minister"] },
   { key: "finance", label: "财务管理", icon: Wallet, section: "运营", roles: ["admin", "president"] },
@@ -190,6 +192,7 @@ const Admin = () => {
           {tab === "dashboard" && <AdminDashboard />}
           {tab === "events" && <EventManagement />}
           {tab === "members" && <MemberManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
+          {tab === "member_directory" && <MemberDirectoryManagement />}
           {tab === "departments" && <DepartmentManagement />}
           {tab === "news" && <NewsManagement />}
           {tab === "submissions" && <SubmissionsManagement />}

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Building2, BookOpen, CalendarCheck, LogOut, Edit2, Save } from "lucide-react";
+import { User, Building2, BookOpen, CalendarCheck, LogOut, Edit2, Save, Quote } from "lucide-react";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -15,6 +15,9 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [displayName, setDisplayName] = useState("");
   const [studentId, setStudentId] = useState("");
+  const [memberRecord, setMemberRecord] = useState<any>(null);
+  const [memberBio, setMemberBio] = useState("");
+  const [editingBio, setEditingBio] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -23,12 +26,13 @@ const Profile = () => {
 
       const uid = session.user.id;
 
-      const [profileRes, roleRes, deptRes, checkInRes, subRes] = await Promise.all([
+      const [profileRes, roleRes, deptRes, checkInRes, subRes, memberRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", uid).single(),
         supabase.from("user_roles").select("role").eq("user_id", uid),
         supabase.from("department_members").select("department_id, is_head, departments(name)").eq("user_id", uid),
         supabase.from("check_ins").select("id, user_name, checked_in_at, events(title)").eq("user_id", uid).order("checked_in_at", { ascending: false }).limit(20),
         supabase.from("submissions").select("id, title, genre, status, created_at").eq("author_id", uid).order("created_at", { ascending: false }).limit(20),
+        supabase.from("members").select("*").eq("user_id", uid).limit(1),
       ]);
 
       setProfile(profileRes.data);
@@ -38,6 +42,9 @@ const Profile = () => {
       setDepartments(deptRes.data || []);
       setCheckIns(checkInRes.data || []);
       setSubmissions(subRes.data || []);
+      const mr = memberRes.data?.[0] || null;
+      setMemberRecord(mr);
+      setMemberBio(mr?.bio || "");
       setLoading(false);
     };
     load();
@@ -151,6 +158,46 @@ const Profile = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Member Bio */}
+          {memberRecord && (
+            <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+              <h3 className="mb-3 flex items-center gap-2 font-serif text-sm font-bold">
+                <Quote className="h-4 w-4 text-primary" /> 个性签名
+                <span className="text-[10px] font-normal text-muted-foreground">({memberRecord.term})</span>
+              </h3>
+              {editingBio ? (
+                <div className="space-y-2">
+                  <textarea
+                    value={memberBio}
+                    onChange={e => setMemberBio(e.target.value)}
+                    className="w-full rounded-md border border-border bg-secondary/30 px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                    rows={3}
+                    placeholder="写下你的个性签名..."
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={async () => {
+                        await supabase.from("members").update({ bio: memberBio || null }).eq("id", memberRecord.id);
+                        setMemberRecord({ ...memberRecord, bio: memberBio });
+                        setEditingBio(false);
+                      }}
+                      className="rounded-lg bg-primary px-3 py-1 text-xs text-primary-foreground"
+                    >保存</button>
+                    <button onClick={() => { setMemberBio(memberRecord.bio || ""); setEditingBio(false); }}
+                      className="rounded-lg bg-secondary px-3 py-1 text-xs">取消</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-start justify-between">
+                  <p className="text-sm italic text-muted-foreground">{memberRecord.bio || "暂未设置个性签名"}</p>
+                  <button onClick={() => setEditingBio(true)} className="rounded-lg p-1 text-muted-foreground hover:bg-secondary">
+                    <Edit2 className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
