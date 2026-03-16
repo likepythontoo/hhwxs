@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
 import schoolLogo from "@/assets/school-logo.png";
+import GlobalSearch from "@/components/GlobalSearch";
 
 const TopBar = () => {
   const [user, setUser] = useState<any>(null);
