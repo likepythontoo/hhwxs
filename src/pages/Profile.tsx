@@ -42,6 +42,9 @@ const Profile = () => {
       setDepartments(deptRes.data || []);
       setCheckIns(checkInRes.data || []);
       setSubmissions(subRes.data || []);
+      const mr = memberRes.data?.[0] || null;
+      setMemberRecord(mr);
+      setMemberBio(mr?.bio || "");
       setLoading(false);
     };
     load();
