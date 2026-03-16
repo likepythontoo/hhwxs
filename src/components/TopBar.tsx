@@ -9,6 +9,7 @@ import GlobalSearch from "@/components/GlobalSearch";
 const TopBar = () => {
   const [user, setUser] = useState<any>(null);
   const [displayName, setDisplayName] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
