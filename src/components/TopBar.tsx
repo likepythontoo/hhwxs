@@ -74,6 +74,7 @@ const TopBar = () => {
           </Link>
         </div>
       </div>
+      <GlobalSearch open={searchOpen} onOpenChange={setSearchOpen} />
     </div>
   );
 };
