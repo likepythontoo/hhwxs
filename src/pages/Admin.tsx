@@ -40,6 +40,7 @@ const tabs: TabConfig[] = [
   { key: "journals", label: "期刊管理", icon: Library, roles: ["admin", "president", "minister"] },
   { key: "checkin", label: "签到管理", icon: ClipboardCheck, roles: ["admin", "president", "minister"] },
   { key: "members", label: "成员管理", icon: Users, section: "组织管理", roles: ["admin", "president", "minister"] },
+  { key: "member_directory", label: "成员风采", icon: UsersRound, roles: ["admin", "president"] },
   { key: "departments", label: "部门管理", icon: Building2, roles: ["admin", "president"] },
   { key: "recruitment", label: "招新审批", icon: UserPlus, roles: ["admin", "president", "minister"] },
   { key: "finance", label: "财务管理", icon: Wallet, section: "运营", roles: ["admin", "president"] },
