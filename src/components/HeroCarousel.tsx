@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import hero1 from "@/assets/hero-1.jpg";
 import hero2 from "@/assets/hero-2.jpg";
 import hero3 from "@/assets/hero-3.jpg";
@@ -10,84 +11,142 @@ const slides = [
   { image: hero3, title: "翰墨飘香", subtitle: "以文会友", desc: "探索文学之美，感悟生命真谛" },
 ];
 
+const textVariants = {
+  enter: { opacity: 0, y: 30, filter: "blur(8px)" },
+  center: { opacity: 1, y: 0, filter: "blur(0px)" },
+  exit: { opacity: 0, y: -20, filter: "blur(4px)" },
+};
+
 const HeroCarousel = () => {
   const [current, setCurrent] = useState(0);
+  const [direction, setDirection] = useState(1);
 
-  const next = useCallback(() => setCurrent((c) => (c + 1) % slides.length), []);
-  const prev = useCallback(() => setCurrent((c) => (c - 1 + slides.length) % slides.length), []);
+  const next = useCallback(() => {
+    setDirection(1);
+    setCurrent((c) => (c + 1) % slides.length);
+  }, []);
+  const prev = useCallback(() => {
+    setDirection(-1);
+    setCurrent((c) => (c - 1 + slides.length) % slides.length);
+  }, []);
 
   useEffect(() => {
-    const timer = setInterval(next, 5000);
+    const timer = setInterval(next, 6000);
     return () => clearInterval(timer);
   }, [next]);
 
   return (
-    <section className="relative h-[50vh] w-full overflow-hidden md:h-[70vh]">
+    <section className="relative h-[55vh] w-full overflow-hidden md:h-[75vh]">
+      {/* Parallax background images */}
       {slides.map((slide, i) => (
-        <div
+        <motion.div
           key={i}
-          className="absolute inset-0 transition-opacity duration-1000"
-          style={{ opacity: current === i ? 1 : 0 }}
+          className="absolute inset-0"
+          initial={false}
+          animate={{
+            opacity: current === i ? 1 : 0,
+            scale: current === i ? 1.05 : 1.1,
+          }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
         >
           <img
             src={slide.image}
             alt={slide.title}
             className="h-full w-full object-cover"
           />
-          <div className="hero-overlay absolute inset-0" />
-        </div>
+        </motion.div>
       ))}
 
+      {/* Cinematic overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-ink-black/20 via-ink-black/10 to-ink-black/70" />
+      <div className="absolute inset-0 bg-gradient-to-r from-ink-black/30 via-transparent to-ink-black/30" />
+
+      {/* Decorative frame */}
+      <div className="absolute inset-6 border border-rice-paper/10 pointer-events-none md:inset-12" />
+
       {/* Text overlay */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <div className="gold-divider mb-6" />
-        <h1
-          className="font-serif text-4xl font-bold tracking-[0.3em] text-rice-paper drop-shadow-lg md:text-6xl"
-          key={`title-${current}`}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+        <motion.div
+          className="mb-8 flex items-center gap-4"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
         >
-          {slides[current].title}
-        </h1>
-        <h2
-          className="mt-2 font-serif text-2xl tracking-[0.2em] text-gold-light drop-shadow md:text-4xl"
-          key={`subtitle-${current}`}
+          <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold md:w-20" />
+          <div className="h-1.5 w-1.5 rotate-45 bg-gold" />
+          <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold md:w-20" />
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            variants={textVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="flex flex-col items-center"
+          >
+            <h1 className="font-serif text-4xl font-bold tracking-[0.3em] text-rice-paper drop-shadow-2xl md:text-7xl">
+              {slides[current].title}
+            </h1>
+            <h2 className="mt-3 font-serif text-xl tracking-[0.2em] text-gold-light drop-shadow-lg md:text-3xl">
+              {slides[current].subtitle}
+            </h2>
+            <p className="mt-5 max-w-lg text-sm tracking-[0.15em] text-rice-paper/70 md:text-base">
+              {slides[current].desc}
+            </p>
+          </motion.div>
+        </AnimatePresence>
+
+        <motion.div
+          className="mt-8 flex items-center gap-4"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
         >
-          {slides[current].subtitle}
-        </h2>
-        <p className="mt-4 text-sm tracking-widest text-rice-paper/80 md:text-base">
-          {slides[current].desc}
-        </p>
-        <div className="gold-divider mt-6" />
+          <div className="h-px w-12 bg-gradient-to-r from-transparent to-gold md:w-20" />
+          <div className="h-1.5 w-1.5 rotate-45 bg-gold" />
+          <div className="h-px w-12 bg-gradient-to-l from-transparent to-gold md:w-20" />
+        </motion.div>
       </div>
 
-      {/* Arrows */}
+      {/* Navigation arrows */}
       <button
         onClick={prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-ink-black/30 p-2 text-rice-paper backdrop-blur transition hover:bg-ink-black/60"
-        aria-label="Previous slide"
+        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-rice-paper/20 bg-ink-black/20 p-3 text-rice-paper/80 backdrop-blur-md transition-all hover:border-gold/40 hover:bg-ink-black/40 hover:text-gold-light md:left-8"
+        aria-label="上一张"
       >
-        <ChevronLeft className="h-6 w-6" />
+        <ChevronLeft className="h-5 w-5 md:h-6 md:w-6" />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-ink-black/30 p-2 text-rice-paper backdrop-blur transition hover:bg-ink-black/60"
-        aria-label="Next slide"
+        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-rice-paper/20 bg-ink-black/20 p-3 text-rice-paper/80 backdrop-blur-md transition-all hover:border-gold/40 hover:bg-ink-black/40 hover:text-gold-light md:right-8"
+        aria-label="下一张"
       >
-        <ChevronRight className="h-6 w-6" />
+        <ChevronRight className="h-5 w-5 md:h-6 md:w-6" />
       </button>
 
-      {/* Dots */}
-      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2">
+      {/* Progress dots */}
+      <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 gap-3">
         {slides.map((_, i) => (
           <button
             key={i}
-            onClick={() => setCurrent(i)}
-            className={`h-2 rounded-full transition-all ${
-              current === i ? "w-8 bg-gold" : "w-2 bg-rice-paper/50"
-            }`}
-            aria-label={`Slide ${i + 1}`}
-          />
+            onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i); }}
+            className="group relative h-3 w-3 p-0"
+            aria-label={`第 ${i + 1} 张`}
+          >
+            <span className={`block h-full w-full rounded-full border transition-all duration-500 ${
+              current === i
+                ? "scale-100 border-gold bg-gold shadow-[0_0_12px_rgba(218,165,32,0.5)]"
+                : "scale-75 border-rice-paper/40 bg-transparent group-hover:border-rice-paper/70"
+            }`} />
+          </button>
         ))}
       </div>
+
+      {/* Bottom gradient fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 };
