@@ -5,41 +5,47 @@ const SiteFooter = () => {
   const [showMap, setShowMap] = useState(false);
 
   return (
-    <footer className="bg-ink-black text-rice-paper">
-      <div className="container mx-auto px-4 py-8 sm:py-10">
-        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
+    <footer className="relative bg-ink-black text-rice-paper overflow-hidden">
+      {/* Subtle top border glow */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
+      
+      {/* Decorative bg */}
+      <div className="absolute -right-32 -top-32 h-64 w-64 rounded-full bg-primary/5 blur-3xl" />
+
+      <div className="container mx-auto px-4 py-12 sm:py-16 relative">
+        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
           <div className="sm:col-span-2 md:col-span-1">
-            <h3 className="mb-4 font-serif text-lg tracking-widest">红湖文学社</h3>
-            <p className="text-sm leading-relaxed opacity-60">
+            <h3 className="mb-5 font-serif text-xl tracking-widest">红湖文学社</h3>
+            <p className="text-sm leading-[1.9] text-rice-paper/50">
               河北科技学院红湖文学社成立于2003年，社名取自校园内「红湖」，寓意热血、纯净与深邃。一批批的红湖人在河北科技学院历史上各领风骚，一代代的红湖人以低调做人，高调做事的风格活跃在各个领域。
             </p>
           </div>
           <div>
-            <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">快速链接</h4>
-            <ul className="space-y-2 text-sm opacity-60">
-              <li><Link to="/about" className="transition hover:opacity-100">社团概况</Link></li>
-              <li><Link to="/news" className="transition hover:opacity-100">新闻动态</Link></li>
-              <li><Link to="/works" className="transition hover:opacity-100">作品展示</Link></li>
-              <li><Link to="/events" className="transition hover:opacity-100">活动中心</Link></li>
+            <h4 className="mb-4 text-sm font-semibold tracking-wider text-rice-paper/70">快速链接</h4>
+            <ul className="space-y-2.5 text-sm">
+              <li><Link to="/about" className="text-rice-paper/45 transition-colors hover:text-gold-light">社团概况</Link></li>
+              <li><Link to="/news" className="text-rice-paper/45 transition-colors hover:text-gold-light">新闻动态</Link></li>
+              <li><Link to="/works" className="text-rice-paper/45 transition-colors hover:text-gold-light">作品展示</Link></li>
+              <li><Link to="/events" className="text-rice-paper/45 transition-colors hover:text-gold-light">活动中心</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">社团出版物</h4>
-            <ul className="space-y-2 text-sm opacity-60">
-              <li><Link to="/journals" className="transition hover:opacity-100">📖 期刊：《红湖》</Link></li>
-              <li><Link to="/moxiang" className="transition hover:opacity-100">📰 报刊：《墨香阁》</Link></li>
-              <li><Link to="/submit" className="transition hover:opacity-100">投稿系统</Link></li>
-              <li><Link to="/join" className="transition hover:opacity-100">入社申请</Link></li>
+            <h4 className="mb-4 text-sm font-semibold tracking-wider text-rice-paper/70">社团出版物</h4>
+            <ul className="space-y-2.5 text-sm">
+              <li><Link to="/journals" className="text-rice-paper/45 transition-colors hover:text-gold-light">📖 期刊：《红湖》</Link></li>
+              <li><Link to="/moxiang" className="text-rice-paper/45 transition-colors hover:text-gold-light">📰 报刊：《墨香阁》</Link></li>
+              <li><Link to="/submit" className="text-rice-paper/45 transition-colors hover:text-gold-light">投稿系统</Link></li>
+              <li><Link to="/join" className="text-rice-paper/45 transition-colors hover:text-gold-light">入社申请</Link></li>
             </ul>
           </div>
           <div>
-            <h4 className="mb-3 text-sm font-semibold tracking-wider opacity-80">联系我们</h4>
-            <ul className="space-y-2 text-sm opacity-60">
+            <h4 className="mb-4 text-sm font-semibold tracking-wider text-rice-paper/70">联系我们</h4>
+            <ul className="space-y-2.5 text-sm">
               <li className="relative"
                 onMouseEnter={() => setShowMap(true)}
                 onMouseLeave={() => setShowMap(false)}
               >
-                <span className="cursor-pointer transition hover:opacity-100">
+                <span className="cursor-pointer text-rice-paper/45 transition-colors hover:text-gold-light">
                   📍 河北科技学院（曹妃甸校区）
                 </span>
                 {showMap && (
@@ -56,33 +62,34 @@ const SiteFooter = () => {
                     >
                       🗺️ 在高德地图中查看
                     </a>
-                    {/* 连接桥：填补弹窗与触发文字之间的间隙 */}
                     <div className="absolute left-0 top-full h-1 w-full" />
                   </div>
                 )}
               </li>
-              <li>📧 1330760849@qq.com</li>
-              <li>📱 微信公众号：红湖文学社</li>
-              <li>🎵 抖音：红湖文学社</li>
-              <li>📺 Bilibili：红湖文学社</li>
+              <li className="text-rice-paper/45">📧 1330760849@qq.com</li>
+              <li className="text-rice-paper/45">📱 微信公众号：红湖文学社</li>
+              <li className="text-rice-paper/45">🎵 抖音：红湖文学社</li>
+              <li className="text-rice-paper/45">📺 Bilibili：红湖文学社</li>
             </ul>
           </div>
         </div>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
+
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
           <Link
             to="/leadership"
-            className="inline-block rounded border border-rice-paper/20 px-5 py-2 text-xs tracking-wider opacity-60 transition hover:opacity-100 sm:px-6 sm:text-sm"
+            className="inline-block rounded border border-rice-paper/15 px-6 py-2.5 text-xs tracking-wider text-rice-paper/50 transition-all hover:border-gold/30 hover:text-gold-light"
           >
             历届管理团队 →
           </Link>
           <Link
             to="/contact"
-            className="inline-block rounded border border-rice-paper/20 px-5 py-2 text-xs tracking-wider opacity-60 transition hover:opacity-100 sm:px-6 sm:text-sm"
+            className="inline-block rounded border border-rice-paper/15 px-6 py-2.5 text-xs tracking-wider text-rice-paper/50 transition-all hover:border-gold/30 hover:text-gold-light"
           >
             联系我们 →
           </Link>
         </div>
-        <div className="mt-6 border-t border-rice-paper/10 pt-6 text-center text-xs opacity-40">
+
+        <div className="mt-10 border-t border-rice-paper/8 pt-8 text-center text-xs text-rice-paper/30">
           © 2026 红湖文学社 Red Lake Literature Society. All rights reserved.
         </div>
       </div>

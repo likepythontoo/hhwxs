@@ -1,4 +1,5 @@
-import { Building2, Users, Award, BookOpen, Monitor, Crown, Feather, BookMarked } from "lucide-react";
+import { Building2, Users, Award, BookOpen } from "lucide-react";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const departments = [
   { name: "办公室", desc: "活动策划与会议组织" },
@@ -17,57 +18,77 @@ const stats = [
 
 const AboutSection = () => {
   return (
-    <section id="about" className="py-12 md:py-16">
-      <div className="container mx-auto px-4">
-        <h2 className="section-title mb-8">社团概况</h2>
+    <section id="about" className="relative py-16 md:py-24 overflow-hidden">
+      {/* Decorative background */}
+      <div className="absolute -right-20 -top-20 h-80 w-80 rounded-full bg-primary/3 blur-3xl" />
+      <div className="absolute -left-20 bottom-0 h-60 w-60 rounded-full bg-accent/5 blur-3xl" />
 
-        <div className="grid gap-8 md:grid-cols-2">
-          {/* Introduction */}
-          <div>
-            <h3 className="mb-4 font-serif text-xl font-semibold">红湖简介</h3>
-            <p className="mb-4 leading-relaxed text-muted-foreground">
-              河北科技学院红湖文学社成立于2003年，社名取自校园内「红湖」，寓意热血、纯净与深邃。社团致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
-            </p>
-            <p className="mb-6 leading-relaxed text-muted-foreground">
-              社团由主席团统筹管理，下设办公室、话剧部、编辑部、网宣部、国学部五个部门。以「一刊（《红湖》）、一赛（红湖杯征文大赛）、一会（暖冬诗歌朗诵会）」为核心运作模式。
-            </p>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {stats.map((stat) => (
-                <div key={stat.label} className="rounded bg-secondary p-4 text-center">
-                  <stat.icon className="mx-auto mb-2 h-5 w-5 text-primary" />
-                  <div className="font-serif text-xl font-bold text-primary">{stat.value}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
-            </div>
+      <div className="container mx-auto px-4 relative">
+        <ScrollReveal>
+          <div className="mb-12">
+            <span className="mb-2 inline-block text-xs font-medium uppercase tracking-[0.3em] text-accent">About Us</span>
+            <h2 className="section-title text-3xl">社团概况</h2>
           </div>
+        </ScrollReveal>
+
+        <div className="grid gap-12 md:grid-cols-2">
+          {/* Introduction */}
+          <ScrollReveal direction="left">
+            <div>
+              <h3 className="mb-5 font-serif text-2xl font-semibold">红湖简介</h3>
+              <div className="relative pl-5 border-l-2 border-primary/20">
+                <p className="mb-4 leading-[1.9] text-muted-foreground">
+                  河北科技学院红湖文学社成立于2003年，社名取自校园内「红湖」，寓意热血、纯净与深邃。社团致力于繁荣校园文学创作，培养文学新人，传承中华优秀文化。
+                </p>
+                <p className="leading-[1.9] text-muted-foreground">
+                  社团由主席团统筹管理，下设办公室、话剧部、编辑部、网宣部、国学部五个部门。以「一刊（《红湖》）、一赛（红湖杯征文大赛）、一会（暖冬诗歌朗诵会）」为核心运作模式。
+                </p>
+              </div>
+
+              {/* Stats */}
+              <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {stats.map((stat, i) => (
+                  <ScrollReveal key={stat.label} delay={i * 0.1}>
+                    <div className="group rounded-lg border border-border/60 bg-card p-4 text-center transition-all hover:border-primary/20 hover:shadow-[var(--shadow-card)]">
+                      <stat.icon className="mx-auto mb-2.5 h-5 w-5 text-primary/70 transition-colors group-hover:text-primary" />
+                      <div className="font-serif text-2xl font-bold text-primary">{stat.value}</div>
+                      <div className="mt-1.5 text-xs text-muted-foreground">{stat.label}</div>
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
+            </div>
+          </ScrollReveal>
 
           {/* Organization */}
-          <div>
-            <h3 className="mb-4 font-serif text-xl font-semibold">组织架构</h3>
+          <ScrollReveal direction="right">
+            <div>
+              <h3 className="mb-5 font-serif text-2xl font-semibold">组织架构</h3>
 
-            {/* Presidium */}
-            <div className="mb-3 rounded border-2 border-primary bg-primary/10 p-3 text-center">
-              <div className="font-serif text-sm font-bold text-primary">主席团</div>
-              <div className="mt-1 text-xs text-muted-foreground">社团最高领导与决策机构</div>
+              {/* Presidium */}
+              <div className="mb-4 rounded-lg border-2 border-primary/30 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-4 text-center transition-shadow hover:shadow-[var(--shadow-card)]">
+                <div className="font-serif text-base font-bold text-primary">主席团</div>
+                <div className="mt-1 text-xs text-muted-foreground">社团最高领导与决策机构</div>
+              </div>
+
+              <div className="mx-auto mb-4 flex flex-col items-center gap-1">
+                <div className="h-4 w-px bg-primary/20" />
+                <div className="h-1.5 w-1.5 rotate-45 bg-primary/30" />
+                <div className="h-4 w-px bg-primary/20" />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                {departments.map((dept, i) => (
+                  <ScrollReveal key={dept.name} delay={i * 0.08}>
+                    <div className="group rounded-lg border border-border/60 bg-card p-5 text-center transition-all duration-300 hover:border-primary/20 hover:shadow-[var(--shadow-card)] hover:-translate-y-0.5">
+                      <div className="font-serif text-sm font-semibold transition-colors group-hover:text-primary">{dept.name}</div>
+                      <div className="mt-1.5 text-xs text-muted-foreground">{dept.desc}</div>
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
             </div>
-
-            <div className="mx-auto mb-3 h-4 w-px bg-primary/30" />
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {departments.map((dept) => (
-                <div
-                  key={dept.name}
-                  className="rounded border border-border bg-card p-4 text-center transition-shadow hover:shadow-md"
-                >
-                  <div className="font-serif text-sm font-semibold">{dept.name}</div>
-                  <div className="mt-1 text-xs text-muted-foreground">{dept.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
