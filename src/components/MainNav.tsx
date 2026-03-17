@@ -19,7 +19,7 @@ const MainNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="main-nav relative z-50">
+    <nav className="main-nav sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between px-4">
         <ul className="hidden md:flex">
           {navItems.map((item) => (
