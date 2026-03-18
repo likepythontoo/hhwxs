@@ -473,8 +473,14 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          city: string | null
           created_at: string
           id: string
+          introduction: string | null
+          is_claimed: boolean | null
+          literary_tags: string[] | null
+          major: string | null
+          memoir: string | null
           name: string
           role_title: string | null
           term: string
@@ -483,8 +489,14 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
           created_at?: string
           id?: string
+          introduction?: string | null
+          is_claimed?: boolean | null
+          literary_tags?: string[] | null
+          major?: string | null
+          memoir?: string | null
           name: string
           role_title?: string | null
           term: string
@@ -493,8 +505,14 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
           created_at?: string
           id?: string
+          introduction?: string | null
+          is_claimed?: boolean | null
+          literary_tags?: string[] | null
+          major?: string | null
+          memoir?: string | null
           name?: string
           role_title?: string | null
           term?: string

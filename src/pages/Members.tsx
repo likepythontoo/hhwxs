@@ -1,8 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { User, BookOpen, Quote, X } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Search } from "lucide-react";
+import { motion } from "framer-motion";
+import MemberCard from "@/components/members/MemberCard";
+import MemberStats from "@/components/members/MemberStats";
+import PresidentTimeline from "@/components/members/PresidentTimeline";
+import AlumniMap from "@/components/members/AlumniMap";
+import AuthorRanking from "@/components/members/AuthorRanking";
+import PhotoWall from "@/components/members/PhotoWall";
 
 interface Member {
   id: string;
@@ -11,64 +17,100 @@ interface Member {
   role_title: string | null;
   bio: string | null;
   avatar_url: string | null;
+  is_claimed: boolean;
+  city: string | null;
 }
 
-interface MemberWork {
-  id: string;
-  submission_id: string;
-  submissions: {
-    id: string;
-    title: string;
-    genre: string | null;
-    author_name: string;
-    content: string;
-  };
+interface WorkCount {
+  member_id: string;
+  count: number;
 }
 
 const Members = () => {
   const [members, setMembers] = useState<Member[]>([]);
+  const [workCounts, setWorkCounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
-  const [works, setWorks] = useState<MemberWork[]>([]);
-  const [worksLoading, setWorksLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchMembers = async () => {
-      const { data } = await supabase
-        .from("members")
-        .select("*")
-        .order("term", { ascending: false });
-      setMembers(data || []);
+    const fetchData = async () => {
+      const [membersRes, worksRes] = await Promise.all([
+        supabase.from("members").select("id, name, term, role_title, bio, avatar_url, is_claimed, city").order("term", { ascending: false }),
+        supabase.from("member_works").select("member_id"),
+      ]);
+      setMembers((membersRes.data as Member[]) || []);
+
+      // Count works per member
+      const counts: Record<string, number> = {};
+      (worksRes.data || []).forEach((w: any) => {
+        counts[w.member_id] = (counts[w.member_id] || 0) + 1;
+      });
+      setWorkCounts(counts);
       setLoading(false);
     };
-    fetchMembers();
+    fetchData();
   }, []);
 
-  const terms = [...new Set(members.map(m => m.term))];
-  const filteredMembers = selectedTerm
-    ? members.filter(m => m.term === selectedTerm)
-    : members;
+  const terms = useMemo(() => [...new Set(members.map(m => m.term))].sort((a, b) => b.localeCompare(a)), [members]);
+  
+  const roleFilters = ["社长", "副社长", "部长", "社员"];
 
-  const groupedByTerm = filteredMembers.reduce<Record<string, Member[]>>((acc, m) => {
-    (acc[m.term] = acc[m.term] || []).push(m);
-    return acc;
-  }, {});
+  const filtered = useMemo(() => {
+    let result = members;
+    if (search) result = result.filter(m => m.name.includes(search));
+    if (selectedTerm) result = result.filter(m => m.term === selectedTerm);
+    if (selectedRole) {
+      if (selectedRole === "社员") {
+        result = result.filter(m => !m.role_title || (!m.role_title.includes("社长") && !m.role_title.includes("部长")));
+      } else {
+        result = result.filter(m => m.role_title?.includes(selectedRole));
+      }
+    }
+    return result;
+  }, [members, search, selectedTerm, selectedRole]);
+
+  const groupedByTerm = useMemo(() => {
+    const g: Record<string, Member[]> = {};
+    filtered.forEach(m => (g[m.term] = g[m.term] || []).push(m));
+    return g;
+  }, [filtered]);
 
   const sortedTerms = Object.keys(groupedByTerm).sort((a, b) => b.localeCompare(a));
 
-  const openMemberDetail = async (member: Member) => {
-    setSelectedMember(member);
-    setWorksLoading(true);
-    const { data } = await supabase
-      .from("member_works")
-      .select("id, submission_id, submissions(id, title, genre, author_name, content)")
-      .eq("member_id", member.id) as any;
-    setWorks(data || []);
-    setWorksLoading(false);
-  };
+  // Presidents for timeline
+  const presidents = useMemo(() =>
+    members
+      .filter(m => m.role_title?.includes("社长") && !m.role_title?.includes("副"))
+      .sort((a, b) => b.term.localeCompare(a.term)),
+    [members]
+  );
 
-  // Role priority for sorting within a term
+  // City distribution
+  const cityData = useMemo(() => {
+    const c: Record<string, number> = {};
+    members.forEach(m => { if (m.city) c[m.city] = (c[m.city] || 0) + 1; });
+    return c;
+  }, [members]);
+
+  // Top authors
+  const rankedAuthors = useMemo(() =>
+    members
+      .filter(m => (workCounts[m.id] || 0) > 0)
+      .map(m => ({ id: m.id, name: m.name, term: m.term, avatar_url: m.avatar_url, works_count: workCounts[m.id] || 0 }))
+      .sort((a, b) => b.works_count - a.works_count)
+      .slice(0, 10),
+    [members, workCounts]
+  );
+
+  // Photo wall groups
+  const photoGroups = useMemo(() => {
+    const g: Record<string, { id: string; name: string; avatar_url: string | null }[]> = {};
+    members.forEach(m => (g[m.term] = g[m.term] || []).push({ id: m.id, name: m.name, avatar_url: m.avatar_url }));
+    return g;
+  }, [members]);
+
   const rolePriority = (role: string | null) => {
     if (!role) return 99;
     if (role.includes("社长") && !role.includes("副")) return 0;
@@ -89,71 +131,109 @@ const Members = () => {
 
   return (
     <Layout>
-      <div className="relative bg-primary py-16 text-primary-foreground">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="font-serif text-3xl font-bold tracking-widest md:text-4xl">历届成员风采</h1>
-          <p className="mt-3 text-sm opacity-80">每一届的故事，每一个人的光芒</p>
-          <div className="gold-divider mx-auto mt-4" />
+      {/* Hero */}
+      <div className="relative overflow-hidden bg-[hsl(var(--archive-charcoal))] py-20 md:py-28">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/20 to-transparent" />
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
+        <div className="container relative mx-auto px-4 text-center">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="font-serif text-3xl font-bold tracking-[0.2em] text-[hsl(var(--archive-cream))] md:text-5xl"
+          >
+            红湖文学社 · 校友档案库
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.7 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="mt-4 font-serif text-sm italic text-[hsl(var(--archive-cream))] md:text-base"
+          >
+            "一代人有一代人的文学，一代人有一代人的故事"
+          </motion.p>
+
+          {/* Search */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.4 }}
+            className="mx-auto mt-8 max-w-md"
+          >
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="搜索成员姓名..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full rounded-full border border-border/30 bg-background/90 py-3 pl-11 pr-4 text-sm text-foreground backdrop-blur placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              />
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      <section className="py-8 md:py-12">
+      {/* Stats */}
+      <MemberStats
+        totalMembers={members.length}
+        totalWorks={Object.values(workCounts).reduce((a, b) => a + b, 0)}
+        totalPresidents={presidents.length}
+      />
+
+      {/* Filters + Cards */}
+      <section className="py-10 md:py-14">
         <div className="container mx-auto max-w-5xl px-4">
-          {/* Term filter */}
-          <div className="mb-8 flex flex-wrap items-center gap-2">
-            <button
-              onClick={() => setSelectedTerm(null)}
-              className={`rounded-full px-4 py-1.5 text-xs font-medium transition ${
-                !selectedTerm ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-secondary/80"
-              }`}
-            >
-              全部
-            </button>
-            {terms.sort((a, b) => b.localeCompare(a)).map(term => (
+          {/* Filter bar */}
+          <div className="mb-6 space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground mr-1">届别</span>
               <button
-                key={term}
-                onClick={() => setSelectedTerm(term)}
-                className={`rounded-full px-4 py-1.5 text-xs font-medium transition ${
-                  selectedTerm === term ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-secondary/80"
-                }`}
-              >
-                {term}
-              </button>
-            ))}
+                onClick={() => setSelectedTerm(null)}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition ${!selectedTerm ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-secondary/80"}`}
+              >全部</button>
+              {terms.map(t => (
+                <button key={t} onClick={() => setSelectedTerm(t)}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition ${selectedTerm === t ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-secondary/80"}`}
+                >{t}</button>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground mr-1">职位</span>
+              <button
+                onClick={() => setSelectedRole(null)}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition ${!selectedRole ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-secondary/80"}`}
+              >全部</button>
+              {roleFilters.map(r => (
+                <button key={r} onClick={() => setSelectedRole(r)}
+                  className={`rounded-full px-3 py-1 text-xs font-medium transition ${selectedRole === r ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground hover:bg-secondary/80"}`}
+                >{r}</button>
+              ))}
+            </div>
           </div>
 
+          {/* Cards */}
           {sortedTerms.length === 0 ? (
-            <p className="py-20 text-center text-muted-foreground">暂无成员数据</p>
+            <p className="py-20 text-center text-muted-foreground">暂无匹配的成员数据</p>
           ) : (
             sortedTerms.map(term => (
               <div key={term} className="mb-10">
                 <h2 className="mb-4 font-serif text-lg font-bold text-primary">{term}</h2>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {groupedByTerm[term]
                     .sort((a, b) => rolePriority(a.role_title) - rolePriority(b.role_title))
-                    .map(member => (
-                      <button
-                        key={member.id}
-                        onClick={() => openMemberDetail(member)}
-                        className="group rounded-xl border border-border bg-card p-4 text-left transition hover:border-primary/30 hover:shadow-md"
-                      >
-                        <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-lg font-bold text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
-                          {member.avatar_url ? (
-                            <img src={member.avatar_url} alt={member.name} className="h-full w-full rounded-full object-cover" />
-                          ) : (
-                            member.name[0]
-                          )}
-                        </div>
-                        <p className="font-serif text-sm font-bold">{member.name}</p>
-                        {member.role_title && (
-                          <p className="mt-0.5 text-[10px] text-primary">{member.role_title}</p>
-                        )}
-                        {member.bio && (
-                          <p className="mt-1.5 line-clamp-2 text-[11px] leading-relaxed text-muted-foreground italic">
-                            "{member.bio}"
-                          </p>
-                        )}
-                      </button>
+                    .map(m => (
+                      <MemberCard
+                        key={m.id}
+                        id={m.id}
+                        name={m.name}
+                        term={m.term}
+                        role_title={m.role_title}
+                        bio={m.bio}
+                        avatar_url={m.avatar_url}
+                        is_claimed={m.is_claimed || false}
+                        works_count={workCounts[m.id] || 0}
+                      />
                     ))}
                 </div>
               </div>
@@ -162,70 +242,17 @@ const Members = () => {
         </div>
       </section>
 
-      {/* Member Detail Dialog */}
-      <Dialog open={!!selectedMember} onOpenChange={(open) => !open && setSelectedMember(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 font-serif">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-lg font-bold text-primary-foreground">
-                {selectedMember?.avatar_url ? (
-                  <img src={selectedMember.avatar_url} alt={selectedMember.name} className="h-full w-full rounded-full object-cover" />
-                ) : (
-                  selectedMember?.name[0]
-                )}
-              </div>
-              <div>
-                <p>{selectedMember?.name}</p>
-                <p className="text-xs font-normal text-muted-foreground">
-                  {selectedMember?.term} {selectedMember?.role_title && `· ${selectedMember.role_title}`}
-                </p>
-              </div>
-            </DialogTitle>
-          </DialogHeader>
+      {/* President Timeline */}
+      <PresidentTimeline presidents={presidents} />
 
-          <div className="space-y-4">
-            {/* Bio */}
-            {selectedMember?.bio && (
-              <div className="rounded-lg bg-secondary/50 p-4">
-                <div className="mb-1 flex items-center gap-1.5 text-xs font-medium text-primary">
-                  <Quote className="h-3.5 w-3.5" /> 个性签名
-                </div>
-                <p className="text-sm leading-relaxed text-foreground italic">
-                  {selectedMember.bio}
-                </p>
-              </div>
-            )}
+      {/* Alumni Map */}
+      {Object.keys(cityData).length > 0 && <AlumniMap cityData={cityData} />}
 
-            {/* Works */}
-            <div>
-              <h4 className="mb-2 flex items-center gap-1.5 text-xs font-bold">
-                <BookOpen className="h-3.5 w-3.5 text-primary" /> 作品集
-              </h4>
-              {worksLoading ? (
-                <p className="text-xs text-muted-foreground animate-pulse">加载中...</p>
-              ) : works.length === 0 ? (
-                <p className="text-xs text-muted-foreground">暂无关联作品</p>
-              ) : (
-                <div className="space-y-2">
-                  {works.map(w => (
-                    <div key={w.id} className="rounded-lg border border-border bg-card p-3">
-                      <p className="text-sm font-medium">{w.submissions?.title}</p>
-                      {w.submissions?.genre && (
-                        <span className="mt-1 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] text-primary">
-                          {w.submissions.genre}
-                        </span>
-                      )}
-                      <p className="mt-1 line-clamp-3 text-xs text-muted-foreground">
-                        {w.submissions?.content?.replace(/<[^>]*>/g, "").slice(0, 150)}...
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Photo Wall */}
+      <PhotoWall termGroups={photoGroups} />
+
+      {/* Author Ranking */}
+      <AuthorRanking authors={rankedAuthors} />
     </Layout>
   );
 };
