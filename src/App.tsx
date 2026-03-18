@@ -23,6 +23,7 @@ import Journals from "./pages/Journals";
 import Moxiang from "./pages/Moxiang";
 import MoxiangReader from "./pages/MoxiangReader";
 import Members from "./pages/Members";
+import MemberProfile from "./pages/MemberProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
