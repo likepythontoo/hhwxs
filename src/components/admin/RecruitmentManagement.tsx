@@ -61,7 +61,7 @@ const RecruitmentManagement = ({ currentUserRole, currentUserDeptId }: Props) =>
   useEffect(() => { fetchApps(); fetchDepts(); }, [filter]);
 
   const updateStatus = async (id: string, status: string, notes?: string) => {
-    const update: Record<string, unknown> = { status };
+    const update: { status: string; reviewer_notes?: string } = { status };
     if (notes !== undefined) update.reviewer_notes = notes;
     await supabase.from("recruitment_applications").update(update).eq("id", id);
     setViewing(null);
