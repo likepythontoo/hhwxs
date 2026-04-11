@@ -52,7 +52,7 @@ const SubmissionsManagement = () => {
   useEffect(() => { fetch(); }, [filter]);
 
   const updateStatus = async (id: string, status: string, notes?: string) => {
-    const update: Record<string, unknown> = { status };
+    const update: { status: string; reviewer_notes?: string } = { status };
     if (notes !== undefined) update.reviewer_notes = notes;
     await supabase.from("submissions").update(update).eq("id", id);
     setViewing(null);
