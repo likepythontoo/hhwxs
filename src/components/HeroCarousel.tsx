@@ -146,7 +146,7 @@ const HeroCarousel = () => {
       </div>
 
       {/* Bottom gradient fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-ink-black/90 via-ink-black/40 to-transparent" />
     </section>
   );
 };
