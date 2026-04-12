@@ -89,14 +89,15 @@ const MemberProfile = () => {
     if (!currentUserId || !member) return;
     setClaiming(true);
     const { error } = await supabase
-      .from("members")
-      .update({ user_id: currentUserId, is_claimed: true } as any)
-      .eq("id", member.id);
+      .from("member_claims")
+      .insert({ member_id: member.id, user_id: currentUserId, note: claimNote || null } as any);
     if (error) {
-      toast({ title: "认领失败", description: error.message, variant: "destructive" });
+      toast({ title: "提交失败", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "认领成功！", description: "您现在可以编辑自己的资料了" });
-      setMember({ ...member, user_id: currentUserId, is_claimed: true });
+      toast({ title: "申请已提交", description: "请等待管理员审核" });
+      setClaimStatus("pending");
+      setShowClaimForm(false);
+      setClaimNote("");
     }
     setClaiming(false);
   };
