@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, BookOpen, Quote, MapPin, UserCheck, Edit3, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, BookOpen, Quote, MapPin, UserCheck, Edit3, CheckCircle2, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
