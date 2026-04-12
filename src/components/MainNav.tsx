@@ -20,8 +20,6 @@ const MainNav = () => {
 
   return (
     <nav className="main-nav sticky top-0 z-50 shadow-lg">
-      {/* Top decorative gold line */}
-      <div className="h-[2px] bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
       
       <div className="container mx-auto flex items-center justify-between px-4">
         <ul className="hidden md:flex">
