@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, BookOpen, Quote, MapPin, UserCheck, Edit3, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, BookOpen, Quote, MapPin, UserCheck, Edit3, CheckCircle2, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,6 +46,9 @@ const MemberProfile = () => {
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ introduction: "", memoir: "", city: "", literary_tags: "" });
   const [claiming, setClaiming] = useState(false);
+  const [claimNote, setClaimNote] = useState("");
+  const [showClaimForm, setShowClaimForm] = useState(false);
+  const [claimStatus, setClaimStatus] = useState<string | null>(null); // pending / approved / rejected / null
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id || null));
@@ -53,7 +56,7 @@ const MemberProfile = () => {
 
   useEffect(() => {
     if (!id) return;
-    const fetch = async () => {
+    const fetchData = async () => {
       const [memberRes, worksRes] = await Promise.all([
         supabase.from("members").select("*").eq("id", id).single(),
         supabase.from("member_works").select("id, submission_id, submissions(id, title, genre, author_name, content)").eq("member_id", id) as any,
@@ -62,8 +65,23 @@ const MemberProfile = () => {
       setWorks(worksRes.data || []);
       setLoading(false);
     };
-    fetch();
+    fetchData();
   }, [id]);
+
+  // Check claim status for current user
+  useEffect(() => {
+    if (!currentUserId || !id) return;
+    supabase
+      .from("member_claims")
+      .select("status")
+      .eq("member_id", id)
+      .eq("user_id", currentUserId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data.length > 0) setClaimStatus(data[0].status);
+      });
+  }, [currentUserId, id]);
 
   const isOwner = currentUserId && member?.user_id === currentUserId;
 
@@ -71,14 +89,15 @@ const MemberProfile = () => {
     if (!currentUserId || !member) return;
     setClaiming(true);
     const { error } = await supabase
-      .from("members")
-      .update({ user_id: currentUserId, is_claimed: true } as any)
-      .eq("id", member.id);
+      .from("member_claims")
+      .insert({ member_id: member.id, user_id: currentUserId, note: claimNote || null } as any);
     if (error) {
-      toast({ title: "认领失败", description: error.message, variant: "destructive" });
+      toast({ title: "提交失败", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "认领成功！", description: "您现在可以编辑自己的资料了" });
-      setMember({ ...member, user_id: currentUserId, is_claimed: true });
+      toast({ title: "申请已提交", description: "请等待管理员审核" });
+      setClaimStatus("pending");
+      setShowClaimForm(false);
+      setClaimNote("");
     }
     setClaiming(false);
   };
@@ -174,11 +193,37 @@ const MemberProfile = () => {
 
       <div className="container mx-auto max-w-3xl px-4 py-10 space-y-8">
         {/* Actions */}
-        <div className="flex gap-3">
-          {currentUserId && !member.is_claimed && !member.user_id && (
-            <Button variant="outline" size="sm" onClick={handleClaim} disabled={claiming}>
-              <UserCheck className="mr-1.5 h-4 w-4" /> 我是这个成员
-            </Button>
+        <div className="flex flex-col gap-3">
+          {currentUserId && !member.is_claimed && !member.user_id && !claimStatus && (
+            <>
+              {!showClaimForm ? (
+                <Button variant="outline" size="sm" onClick={() => setShowClaimForm(true)}>
+                  <UserCheck className="mr-1.5 h-4 w-4" /> 我是这个成员
+                </Button>
+              ) : (
+                <div className="rounded-xl border border-primary/20 bg-card p-4 space-y-3">
+                  <p className="text-sm font-medium">请简要说明您的身份以便审核</p>
+                  <Textarea
+                    placeholder="例如：我是2024届的张三，专业是中文系"
+                    rows={2}
+                    value={claimNote}
+                    onChange={e => setClaimNote(e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={handleClaim} disabled={claiming}>提交申请</Button>
+                    <Button size="sm" variant="ghost" onClick={() => setShowClaimForm(false)}>取消</Button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          {claimStatus === "pending" && (
+            <Badge variant="secondary" className="w-fit gap-1 text-xs py-1 px-3">
+              <Clock className="h-3 w-3" /> 认领审核中...
+            </Badge>
+          )}
+          {claimStatus === "rejected" && (
+            <Badge variant="destructive" className="w-fit text-xs py-1 px-3">认领申请已被拒绝</Badge>
           )}
           {isOwner && !editing && (
             <Button variant="outline" size="sm" onClick={startEdit}>
