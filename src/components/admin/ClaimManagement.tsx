@@ -63,16 +63,14 @@ const ClaimManagement = () => {
     setProcessing(claim.id);
     const { data: { user } } = await supabase.auth.getUser();
 
-    const updateData: Record<string, unknown> = {
-      status: action,
-      reviewer_id: user?.id,
-      reviewer_note: reviewNotes[claim.id] || null,
-      reviewed_at: new Date().toISOString(),
-    };
-
     const { error } = await supabase
       .from("member_claims")
-      .update(updateData)
+      .update({
+        status: action,
+        reviewer_id: user?.id,
+        reviewer_note: reviewNotes[claim.id] || null,
+        reviewed_at: new Date().toISOString(),
+      } as any)
       .eq("id", claim.id);
 
     if (error) {
@@ -83,11 +81,10 @@ const ClaimManagement = () => {
 
     // If approved, update the member record
     if (action === "approved") {
-      const memberUpdate: Record<string, unknown> = {
+      await supabase.from("members").update({
         user_id: claim.user_id,
         is_claimed: true,
-      };
-      await supabase.from("members").update(memberUpdate).eq("id", claim.member_id);
+      } as any).eq("id", claim.member_id);
     }
 
     toast({ title: action === "approved" ? "已通过认领" : "已拒绝认领" });

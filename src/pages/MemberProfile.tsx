@@ -56,7 +56,7 @@ const MemberProfile = () => {
 
   useEffect(() => {
     if (!id) return;
-    const fetch = async () => {
+    const fetchData = async () => {
       const [memberRes, worksRes] = await Promise.all([
         supabase.from("members").select("*").eq("id", id).single(),
         supabase.from("member_works").select("id, submission_id, submissions(id, title, genre, author_name, content)").eq("member_id", id) as any,
@@ -65,8 +65,23 @@ const MemberProfile = () => {
       setWorks(worksRes.data || []);
       setLoading(false);
     };
-    fetch();
+    fetchData();
   }, [id]);
+
+  // Check claim status for current user
+  useEffect(() => {
+    if (!currentUserId || !id) return;
+    supabase
+      .from("member_claims")
+      .select("status")
+      .eq("member_id", id)
+      .eq("user_id", currentUserId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data.length > 0) setClaimStatus(data[0].status);
+      });
+  }, [currentUserId, id]);
 
   const isOwner = currentUserId && member?.user_id === currentUserId;
 
