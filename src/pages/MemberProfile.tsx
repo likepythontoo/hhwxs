@@ -46,6 +46,9 @@ const MemberProfile = () => {
   const [editing, setEditing] = useState(false);
   const [editData, setEditData] = useState({ introduction: "", memoir: "", city: "", literary_tags: "" });
   const [claiming, setClaiming] = useState(false);
+  const [claimNote, setClaimNote] = useState("");
+  const [showClaimForm, setShowClaimForm] = useState(false);
+  const [claimStatus, setClaimStatus] = useState<string | null>(null); // pending / approved / rejected / null
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setCurrentUserId(data.user?.id || null));
