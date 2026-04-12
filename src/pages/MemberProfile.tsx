@@ -193,11 +193,37 @@ const MemberProfile = () => {
 
       <div className="container mx-auto max-w-3xl px-4 py-10 space-y-8">
         {/* Actions */}
-        <div className="flex gap-3">
-          {currentUserId && !member.is_claimed && !member.user_id && (
-            <Button variant="outline" size="sm" onClick={handleClaim} disabled={claiming}>
-              <UserCheck className="mr-1.5 h-4 w-4" /> 我是这个成员
-            </Button>
+        <div className="flex flex-col gap-3">
+          {currentUserId && !member.is_claimed && !member.user_id && !claimStatus && (
+            <>
+              {!showClaimForm ? (
+                <Button variant="outline" size="sm" onClick={() => setShowClaimForm(true)}>
+                  <UserCheck className="mr-1.5 h-4 w-4" /> 我是这个成员
+                </Button>
+              ) : (
+                <div className="rounded-xl border border-primary/20 bg-card p-4 space-y-3">
+                  <p className="text-sm font-medium">请简要说明您的身份以便审核</p>
+                  <Textarea
+                    placeholder="例如：我是2024届的张三，专业是中文系"
+                    rows={2}
+                    value={claimNote}
+                    onChange={e => setClaimNote(e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={handleClaim} disabled={claiming}>提交申请</Button>
+                    <Button size="sm" variant="ghost" onClick={() => setShowClaimForm(false)}>取消</Button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+          {claimStatus === "pending" && (
+            <Badge variant="secondary" className="w-fit gap-1 text-xs py-1 px-3">
+              <Clock className="h-3 w-3" /> 认领审核中...
+            </Badge>
+          )}
+          {claimStatus === "rejected" && (
+            <Badge variant="destructive" className="w-fit text-xs py-1 px-3">认领申请已被拒绝</Badge>
           )}
           {isOwner && !editing && (
             <Button variant="outline" size="sm" onClick={startEdit}>
