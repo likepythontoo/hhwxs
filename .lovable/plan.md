@@ -1,64 +1,66 @@
-## 登录欢迎动画 + 个人中心功能丰富化
+
+
+## 校友档案库认领审核功能
 
 ### 概述
+将现有的"一键认领"改为"申请认领 → 管理员/社长审核 → 通过后生效"流程。
 
-两个改进方向：(1) 登录成功后显示一个优雅的全屏欢迎动画，根据角色显示不同称呼，2秒后自动跳转；(2) 普通社员的个人中心页面增加更多功能入口和快捷操作。
+### 数据库变更
 
-### 一、登录欢迎动画
+#### 1. 新建 `member_claims` 表
+```sql
+CREATE TABLE public.member_claims (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  member_id uuid NOT NULL REFERENCES public.members(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL,
+  status text NOT NULL DEFAULT 'pending',  -- pending / approved / rejected
+  note text,                               -- 申请备注（如"我是2024届张三"）
+  reviewer_id uuid,
+  reviewer_note text,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  reviewed_at timestamptz
+);
 
-**修改 `src/pages/Auth.tsx**`
+ALTER TABLE public.member_claims ENABLE ROW LEVEL SECURITY;
 
-登录成功后，不再直接 `navigate()`，而是先显示一个全屏欢迎遮罩层：
+-- 登录用户可以提交申请
+CREATE POLICY "Authenticated can submit claims"
+  ON public.member_claims FOR INSERT TO authenticated
+  WITH CHECK (auth.uid() = user_id);
 
-- 使用 framer-motion 的 `AnimatePresence` 实现淡入效果
-- 中央显示：欢迎文案 + 用户昵称 + 角色标签
-- 不同角色不同称呼：
-  - 管理员 → "你好呀！欢迎回来，管理员 · [昵称]"
-  - 社长 → "你好呀！欢迎回来，社长 · [昵称]"
-  - 部长 → "你好呀！欢迎回来，部长 · [昵称]"
-  - 普通社员 → "你好呀！欢迎回来，[昵称]"
-- 底部显示一句随机文学名言
-- 动画持续约 2 秒后自动跳转到对应页面
-- 视觉风格：深红渐变背景 + 金色文字 + 粒子光效
+-- 用户可以查看自己的申请
+CREATE POLICY "Users can view own claims"
+  ON public.member_claims FOR SELECT TO authenticated
+  USING (auth.uid() = user_id);
 
-### 二、丰富个人中心页面
+-- 管理员/社长可管理所有申请
+CREATE POLICY "Admin can manage claims"
+  ON public.member_claims FOR ALL
+  USING (has_admin_access(auth.uid()));
+```
 
-**修改 `src/pages/Profile.tsx**`
+### 前端变更
 
-在现有内容基础上新增以下模块：
+#### 1. 成员个人页 `MemberProfile.tsx`
+- 移除直接设置 `is_claimed = true` 的逻辑
+- "我是这个成员"按钮改为弹出申请表单（含备注输入框，如"请说明你的身份"）
+- 提交后插入 `member_claims` 记录（status=pending）
+- 提交后按钮变为"认领审核中…"（查询该用户是否有 pending 的 claim）
+- 若已通过则正常显示已认证状态和编辑功能
 
-1. **快捷操作区**（顶部卡片组）
-  - 📝 投稿作品 → `/submit`
-  - 📅 活动签到 → `/checkin`
-  - 💬 社员论坛 → `/forum`
-  - 📚 文学期刊 → `/journals`
-  - 👥 历届成员 → `/members`
-  - ✉️ 联系我们 → `/contact`
-2. **我的数据概览**（统计卡片）
-  - 投稿总数（已有数据）
-  - 通过作品数
-  - 签到次数（已有数据）
-  - 加入天数（从 profile.created_at 计算）
-3. **最近活动**（即将到来的活动列表）
-  - 从 `events` 表查询未来活动，显示最近 3 条
-  - 每条显示标题、时间、地点
-4. **论坛动态**（最近帖子）
-  - 从 `forum_posts` 表查询用户自己的帖子
-  - 显示最近 5 条，含标题和回复数
-5. **视觉改进**
-  - 顶部 Hero 区域显示用户头像大图 + 欢迎语 + 角色标签
-  - 快捷操作用图标卡片网格布局
-  - 统计数据用数字动画效果
-  - 整体风格与档案库页面一致（深红 + 米白 + 衬线字体）
+#### 2. 后台管理 — 新建 `ClaimManagement` 组件
+- 在 `AdminDashboard.tsx` 添加"认领审核"标签页
+- 列出所有 pending 状态的认领申请：申请人、目标成员、备注、申请时间
+- 管理员可"通过"或"拒绝"：
+  - 通过：更新 claim 状态为 approved，同时更新 `members` 表的 `user_id` 和 `is_claimed`
+  - 拒绝：更新 claim 状态为 rejected，可填写拒绝理由
 
-### 技术细节
-
-- 欢迎动画使用 `useState` 控制显示状态 + `setTimeout` 自动跳转
-- 个人中心新增查询：`events`（未来活动）、`forum_posts`（用户帖子）
-- 统计数据从已加载的 submissions 和 checkIns 数组计算
-- 不需要数据库变更，仅查询现有表
+#### 3. 成员卡片 `MemberCard.tsx`
+- 已认领（`is_claimed = true`）的成员显示绿色"已认证"徽章（现有逻辑不变）
 
 ### 文件清单
+1. **数据库迁移** — 创建 `member_claims` 表 + RLS
+2. **`src/pages/MemberProfile.tsx`** — 认领改为申请流程
+3. **`src/components/admin/ClaimManagement.tsx`** — 新建认领审核管理组件
+4. **`src/components/admin/AdminDashboard.tsx`** — 添加认领审核标签页
 
-1. `**src/pages/Auth.tsx**` — 添加登录成功欢迎动画
-2. `**src/pages/Profile.tsx**` — 重构为功能丰富的个人中心
