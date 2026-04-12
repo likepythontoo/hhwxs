@@ -19,9 +19,10 @@ import DepartmentManagement from "@/components/admin/DepartmentManagement";
 import CheckInManagement from "@/components/admin/CheckInManagement";
 import JournalManagement from "@/components/admin/JournalManagement";
 import MemberDirectoryManagement from "@/components/admin/MemberDirectoryManagement";
+import ClaimManagement from "@/components/admin/ClaimManagement";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
-type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
+type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "claims" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
 
 interface TabConfig {
   key: Tab;
@@ -41,6 +42,7 @@ const tabs: TabConfig[] = [
   { key: "checkin", label: "签到管理", icon: ClipboardCheck, roles: ["admin", "president", "minister"] },
   { key: "members", label: "成员管理", icon: Users, section: "组织管理", roles: ["admin", "president", "minister"] },
   { key: "member_directory", label: "成员风采", icon: UsersRound, roles: ["admin", "president"] },
+  { key: "claims", label: "认领审核", icon: UserCheck, roles: ["admin", "president"] },
   { key: "departments", label: "部门管理", icon: Building2, roles: ["admin", "president"] },
   { key: "recruitment", label: "招新审批", icon: UserPlus, roles: ["admin", "president", "minister"] },
   { key: "finance", label: "财务管理", icon: Wallet, section: "运营", roles: ["admin", "president"] },
@@ -193,6 +195,7 @@ const Admin = () => {
           {tab === "events" && <EventManagement />}
           {tab === "members" && <MemberManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
           {tab === "member_directory" && <MemberDirectoryManagement />}
+          {tab === "claims" && <ClaimManagement />}
           {tab === "departments" && <DepartmentManagement />}
           {tab === "news" && <NewsManagement />}
           {tab === "submissions" && <SubmissionsManagement />}
