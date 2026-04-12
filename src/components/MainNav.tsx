@@ -19,19 +19,19 @@ const menuVariants = {
   hidden: { opacity: 0, height: 0 },
   visible: {
     opacity: 1,
-    height: "auto",
-    transition: { duration: 0.3, ease: "easeOut", staggerChildren: 0.04 },
+    height: "auto" as const,
+    transition: { duration: 0.3, ease: [0, 0, 0.2, 1] as const, staggerChildren: 0.04 },
   },
   exit: {
     opacity: 0,
     height: 0,
-    transition: { duration: 0.2, ease: "easeIn" },
+    transition: { duration: 0.2, ease: [0.4, 0, 1, 1] as const },
   },
 };
 
 const itemVariants = {
   hidden: { opacity: 0, x: -16 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.25, ease: "easeOut" } },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.25, ease: [0, 0, 0.2, 1] as const } },
 };
 
 const MainNav = () => {
