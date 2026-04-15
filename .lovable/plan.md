@@ -1,66 +1,35 @@
+## 近期活动横向滚动优化方案
 
+### 问题
 
-## 校友档案库认领审核功能
+目前 `limit(3)` 只能显示3个活动，用户希望能显示更多但又不占用太多空间。
 
-### 概述
-将现有的"一键认领"改为"申请认领 → 管理员/社长审核 → 通过后生效"流程。
+### 解决方案
 
-### 数据库变更
+改为**横向滚动条**布局：
 
-#### 1. 新建 `member_claims` 表
-```sql
-CREATE TABLE public.member_claims (
-  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  member_id uuid NOT NULL REFERENCES public.members(id) ON DELETE CASCADE,
-  user_id uuid NOT NULL,
-  status text NOT NULL DEFAULT 'pending',  -- pending / approved / rejected
-  note text,                               -- 申请备注（如"我是2024届张三"）
-  reviewer_id uuid,
-  reviewer_note text,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  reviewed_at timestamptz
-);
+- 一行展示更多活动
+- 用户可横向滑动浏览
+- 不增加页面高度，节省垂直空间
 
-ALTER TABLE public.member_claims ENABLE ROW LEVEL SECURITY;
+### 具体改动
 
--- 登录用户可以提交申请
-CREATE POLICY "Authenticated can submit claims"
-  ON public.member_claims FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = user_id);
+`**src/components/UpcomingEvents.tsx**`
 
--- 用户可以查看自己的申请
-CREATE POLICY "Users can view own claims"
-  ON public.member_claims FOR SELECT TO authenticated
-  USING (auth.uid() = user_id);
-
--- 管理员/社长可管理所有申请
-CREATE POLICY "Admin can manage claims"
-  ON public.member_claims FOR ALL
-  USING (has_admin_access(auth.uid()));
-```
-
-### 前端变更
-
-#### 1. 成员个人页 `MemberProfile.tsx`
-- 移除直接设置 `is_claimed = true` 的逻辑
-- "我是这个成员"按钮改为弹出申请表单（含备注输入框，如"请说明你的身份"）
-- 提交后插入 `member_claims` 记录（status=pending）
-- 提交后按钮变为"认领审核中…"（查询该用户是否有 pending 的 claim）
-- 若已通过则正常显示已认证状态和编辑功能
-
-#### 2. 后台管理 — 新建 `ClaimManagement` 组件
-- 在 `AdminDashboard.tsx` 添加"认领审核"标签页
-- 列出所有 pending 状态的认领申请：申请人、目标成员、备注、申请时间
-- 管理员可"通过"或"拒绝"：
-  - 通过：更新 claim 状态为 approved，同时更新 `members` 表的 `user_id` 和 `is_claimed`
-  - 拒绝：更新 claim 状态为 rejected，可填写拒绝理由
-
-#### 3. 成员卡片 `MemberCard.tsx`
-- 已认领（`is_claimed = true`）的成员显示绿色"已认证"徽章（现有逻辑不变）
-
-### 文件清单
-1. **数据库迁移** — 创建 `member_claims` 表 + RLS
-2. **`src/pages/MemberProfile.tsx`** — 认领改为申请流程
-3. **`src/components/admin/ClaimManagement.tsx`** — 新建认领审核管理组件
-4. **`src/components/admin/AdminDashboard.tsx`** — 添加认领审核标签页
-
+1. **查询更多数据**
+  - 将 `.limit(3)` 改为 `.limit(8)` 获取最多8个活动
+2. **布局改为横向滚动**
+  - 移除 `grid` 布局
+  - 改用 `flex overflow-x-auto` 横向滚动容器
+  - 每个活动卡片固定宽度（约280px），紧凑排列
+3. **卡片优化**
+  - 减小卡片内边距和间距
+  - 标题最多显示2行
+  - 隐藏描述文字（节省空间）
+  - 保留核心信息：标题、日期、地点、倒计时、报名按钮
+4. **滚动条美化**
+  - 隐藏默认滚动条（移动端友好）
+  - 添加自定义细滚动条（仅桌面端显示）
+  - 添加渐变提示左右可滑动
+5. **底部操作**
+  - 右侧添加"查看更多 →"链接，跳转到 `/events` 页面
