@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
@@ -20,6 +20,8 @@ import CheckInManagement from "@/components/admin/CheckInManagement";
 import JournalManagement from "@/components/admin/JournalManagement";
 import MemberDirectoryManagement from "@/components/admin/MemberDirectoryManagement";
 import ClaimManagement from "@/components/admin/ClaimManagement";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { motion, AnimatePresence } from "framer-motion";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "claims" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
@@ -60,12 +62,14 @@ const roleLabels: Record<AppRole, string> = {
 
 const Admin = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [userRole, setUserRole] = useState<AppRole | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>("dashboard");
   const [displayName, setDisplayName] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [userDeptId, setUserDeptId] = useState<string | undefined>();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -87,7 +91,6 @@ const Admin = () => {
       setUserRole(foundRole);
       setDisplayName(profileRes.data?.display_name || session.user.email || "");
 
-      // Find department where user is head
       const headDept = (deptRes.data || []).find((d: any) => d.is_head);
       if (headDept) setUserDeptId(headDept.department_id);
 
@@ -130,9 +133,141 @@ const Admin = () => {
 
   const visibleTabs = tabs.filter(t => t.roles.includes(userRole));
 
+  const renderContent = () => (
+    <>
+      {tab === "dashboard" && <AdminDashboard />}
+      {tab === "events" && <EventManagement />}
+      {tab === "members" && <MemberManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
+      {tab === "member_directory" && <MemberDirectoryManagement />}
+      {tab === "claims" && <ClaimManagement />}
+      {tab === "departments" && <DepartmentManagement />}
+      {tab === "news" && <NewsManagement />}
+      {tab === "submissions" && <SubmissionsManagement />}
+      {tab === "finance" && <FinanceManagement />}
+      {tab === "recruitment" && <RecruitmentManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
+      {tab === "forum" && <ForumManagement />}
+      {tab === "journals" && <JournalManagement />}
+      {tab === "checkin" && <CheckInManagement />}
+      {tab === "export" && <ExportCenter />}
+      {tab === "audit" && <AuditLogViewer />}
+      {tab === "settings" && <SiteSettings />}
+    </>
+  );
+
+  // Group tabs by section for drawer
+  const groupedTabs = visibleTabs.reduce<{ section: string; items: TabConfig[] }[]>((acc, t) => {
+    if (t.section) {
+      acc.push({ section: t.section, items: [t] });
+    } else if (acc.length > 0) {
+      acc[acc.length - 1].items.push(t);
+    }
+    return acc;
+  }, []);
+
+  if (isMobile) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        {/* Mobile top bar */}
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-card px-4">
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-foreground active:bg-secondary"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <h1 className="font-serif text-sm font-bold truncate max-w-[200px]">
+            {visibleTabs.find(t => t.key === tab)?.label}
+          </h1>
+          <button
+            onClick={handleLogout}
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground active:bg-secondary"
+            title="退出"
+          >
+            <LogOut className="h-5 w-5" />
+          </button>
+        </header>
+
+        {/* Drawer overlay + menu */}
+        <AnimatePresence>
+          {drawerOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-40 bg-black/50"
+                onClick={() => setDrawerOpen(false)}
+              />
+              <motion.aside
+                initial={{ x: "-100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "-100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                className="fixed inset-y-0 left-0 z-50 w-72 bg-card border-r border-border shadow-xl overflow-y-auto"
+              >
+                {/* Drawer header */}
+                <div className="flex items-center justify-between border-b border-border px-4 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                      {(displayName || "?")[0]}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium leading-tight truncate max-w-[140px]">{displayName}</p>
+                      <p className="text-xs text-primary">{roleLabels[userRole]}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setDrawerOpen(false)}
+                    className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground active:bg-secondary"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Drawer nav */}
+                <nav className="py-2">
+                  {groupedTabs.map((group, gi) => (
+                    <div key={group.section}>
+                      <p className="px-4 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                        {group.section}
+                      </p>
+                      {group.items.map((t, ti) => (
+                        <motion.button
+                          key={t.key}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: gi * 0.05 + ti * 0.03, duration: 0.2 }}
+                          onClick={() => { setTab(t.key); setDrawerOpen(false); }}
+                          className={`flex w-full items-center gap-3 px-4 py-3 text-sm font-medium transition ${
+                            tab === t.key
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground active:bg-secondary"
+                          }`}
+                        >
+                          <t.icon className={`h-5 w-5 flex-shrink-0 ${tab === t.key ? "text-primary" : ""}`} />
+                          <span>{t.label}</span>
+                        </motion.button>
+                      ))}
+                    </div>
+                  ))}
+                </nav>
+              </motion.aside>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Main content */}
+        <main className="flex-1 overflow-y-auto p-4">
+          {renderContent()}
+        </main>
+      </div>
+    );
+  }
+
+  // Desktop layout (unchanged)
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Sidebar */}
       <aside className={`sticky top-0 flex h-screen flex-col border-r border-border bg-card transition-all ${sidebarOpen ? "w-52" : "w-14"}`}>
         <div className="flex items-center gap-2 border-b border-border px-3 py-3.5">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="rounded-lg p-1.5 transition hover:bg-secondary">
@@ -185,28 +320,12 @@ const Admin = () => {
         </div>
       </aside>
 
-      {/* Main */}
       <main className="flex-1 overflow-y-auto">
         <header className="sticky top-0 z-10 border-b border-border bg-card/80 px-6 py-3 backdrop-blur-sm">
           <h1 className="font-serif text-lg font-bold">{visibleTabs.find(t => t.key === tab)?.label}</h1>
         </header>
         <div className="p-6">
-          {tab === "dashboard" && <AdminDashboard />}
-          {tab === "events" && <EventManagement />}
-          {tab === "members" && <MemberManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
-          {tab === "member_directory" && <MemberDirectoryManagement />}
-          {tab === "claims" && <ClaimManagement />}
-          {tab === "departments" && <DepartmentManagement />}
-          {tab === "news" && <NewsManagement />}
-          {tab === "submissions" && <SubmissionsManagement />}
-          {tab === "finance" && <FinanceManagement />}
-          {tab === "recruitment" && <RecruitmentManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
-          {tab === "forum" && <ForumManagement />}
-          {tab === "journals" && <JournalManagement />}
-          {tab === "checkin" && <CheckInManagement />}
-          {tab === "export" && <ExportCenter />}
-          {tab === "audit" && <AuditLogViewer />}
-          {tab === "settings" && <SiteSettings />}
+          {renderContent()}
         </div>
       </main>
     </div>
