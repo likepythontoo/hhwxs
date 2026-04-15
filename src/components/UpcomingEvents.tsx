@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { CalendarDays, MapPin, Users, Clock, ChevronRight, X, CheckCircle } from "lucide-react";
+import { CalendarDays, MapPin, Users, Clock, ChevronRight, X, CheckCircle, ChevronLeft } from "lucide-react";
 import { z } from "zod";
+import { Link } from "react-router-dom";
 
 interface Event {
   id: string;
@@ -32,6 +33,9 @@ const UpcomingEvents = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -41,12 +45,36 @@ const UpcomingEvents = () => {
         .eq("is_active", true)
         .gte("event_date", new Date().toISOString())
         .order("event_date", { ascending: true })
-        .limit(3);
+        .limit(8);
       setEvents(data || []);
       setLoading(false);
     };
     fetchEvents();
   }, []);
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener("scroll", checkScroll, { passive: true });
+      window.addEventListener("resize", checkScroll);
+      return () => {
+        el.removeEventListener("scroll", checkScroll);
+        window.removeEventListener("resize", checkScroll);
+      };
+    }
+  }, [events]);
+
+  const scroll = (dir: "left" | "right") => {
+    scrollRef.current?.scrollBy({ left: dir === "left" ? -300 : 300, behavior: "smooth" });
+  };
 
   const handleSubmit = async () => {
     const result = registrationSchema.safeParse(formData);
@@ -83,19 +111,47 @@ const UpcomingEvents = () => {
 
   return (
     <>
-      <div className="mb-10 rounded-xl border-2 border-primary/20 bg-card p-6 shadow-sm">
-        <div className="mb-5 flex items-center justify-between">
+      <div className="mb-10 rounded-xl border-2 border-primary/20 bg-card p-4 sm:p-6 shadow-sm">
+        <div className="mb-4 flex items-center justify-between">
           <h2 className="flex items-center gap-2 font-serif text-lg font-bold text-primary">
             <Clock className="h-5 w-5" />
             近期活动
           </h2>
-          <span className="text-xs text-muted-foreground">每两周一场大型活动</span>
+          <Link to="/events" className="flex items-center gap-1 text-xs text-primary hover:underline">
+            查看全部 <ChevronRight className="h-3.5 w-3.5" />
+          </Link>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => (
-            <EventCard key={event.id} event={event} onRegister={() => { setSelectedEvent(event); setSubmitted(false); setFormData({ name: "", student_id: "", college: "", phone: "", email: "", notes: "" }); setFormErrors({}); }} />
-          ))}
+        {/* Horizontal scroll container */}
+        <div className="relative">
+          {/* Left fade + arrow */}
+          {canScrollLeft && (
+            <>
+              <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-8 bg-gradient-to-r from-card to-transparent" />
+              <button onClick={() => scroll("left")} className="absolute left-1 top-1/2 z-20 -translate-y-1/2 hidden sm:flex h-7 w-7 items-center justify-center rounded-full bg-card border border-border shadow-sm hover:bg-secondary transition-colors">
+                <ChevronLeft className="h-4 w-4 text-foreground" />
+              </button>
+            </>
+          )}
+          {/* Right fade + arrow */}
+          {canScrollRight && (
+            <>
+              <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-8 bg-gradient-to-l from-card to-transparent" />
+              <button onClick={() => scroll("right")} className="absolute right-1 top-1/2 z-20 -translate-y-1/2 hidden sm:flex h-7 w-7 items-center justify-center rounded-full bg-card border border-border shadow-sm hover:bg-secondary transition-colors">
+                <ChevronRight className="h-4 w-4 text-foreground" />
+              </button>
+            </>
+          )}
+
+          <div
+            ref={scrollRef}
+            className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin"
+            style={{ scrollbarWidth: "thin", scrollbarColor: "hsl(var(--border)) transparent" }}
+          >
+            {events.map((event) => (
+              <CompactEventCard key={event.id} event={event} onRegister={() => { setSelectedEvent(event); setSubmitted(false); setFormData({ name: "", student_id: "", college: "", phone: "", email: "", notes: "" }); setFormErrors({}); }} />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -185,52 +241,47 @@ const Countdown = ({ targetDate }: { targetDate: string }) => {
   }, [targetDate]);
 
   return (
-    <div className="flex gap-1.5">
-      <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[11px] font-bold text-primary">{timeLeft.days}天</span>
-      <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[11px] font-bold text-primary">{timeLeft.hours}时</span>
-      <span className="rounded bg-primary/10 px-1.5 py-0.5 text-[11px] font-bold text-primary">{timeLeft.mins}分</span>
+    <div className="flex gap-1">
+      <span className="rounded bg-primary/10 px-1 py-0.5 text-[10px] font-bold text-primary">{timeLeft.days}天</span>
+      <span className="rounded bg-primary/10 px-1 py-0.5 text-[10px] font-bold text-primary">{timeLeft.hours}时</span>
+      <span className="rounded bg-primary/10 px-1 py-0.5 text-[10px] font-bold text-primary">{timeLeft.mins}分</span>
     </div>
   );
 };
 
-const EventCard = ({ event, onRegister }: { event: Event; onRegister: () => void }) => {
+const CompactEventCard = ({ event, onRegister }: { event: Event; onRegister: () => void }) => {
   const eventDate = new Date(event.event_date);
   const isPast = eventDate.getTime() < Date.now();
   const deadlinePassed = event.registration_deadline && new Date(event.registration_deadline).getTime() < Date.now();
 
   return (
-    <div className="group flex flex-col rounded-lg border border-border bg-secondary/20 p-5 transition-shadow hover:shadow-md">
-      {/* Category badge */}
-      <div className="mb-3 flex items-center justify-between">
-        <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">
+    <div className="flex w-[260px] min-w-[260px] flex-col rounded-lg border border-border bg-secondary/20 p-4 transition-shadow hover:shadow-md">
+      {/* Category + countdown */}
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <span className="truncate rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
           {event.category}
         </span>
         {!isPast && <Countdown targetDate={event.event_date} />}
       </div>
 
       {/* Title */}
-      <h3 className="mb-2 font-serif text-sm font-bold leading-relaxed">{event.title}</h3>
-
-      {/* Description */}
-      {event.description && (
-        <p className="mb-3 flex-1 text-xs leading-relaxed text-muted-foreground line-clamp-2">{event.description}</p>
-      )}
+      <h3 className="mb-2 font-serif text-sm font-bold leading-snug line-clamp-2">{event.title}</h3>
 
       {/* Meta */}
       <div className="mb-3 space-y-1 text-[11px] text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          <CalendarDays className="h-3 w-3" />
-          {eventDate.toLocaleDateString("zh-CN")} {eventDate.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}
+          <CalendarDays className="h-3 w-3 shrink-0" />
+          <span className="truncate">{eventDate.toLocaleDateString("zh-CN")} {eventDate.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}</span>
         </div>
         {event.location && (
           <div className="flex items-center gap-1.5">
-            <MapPin className="h-3 w-3" />
-            {event.location}
+            <MapPin className="h-3 w-3 shrink-0" />
+            <span className="truncate">{event.location}</span>
           </div>
         )}
         {event.max_participants && (
           <div className="flex items-center gap-1.5">
-            <Users className="h-3 w-3" />
+            <Users className="h-3 w-3 shrink-0" />
             限{event.max_participants}人
           </div>
         )}
@@ -240,7 +291,7 @@ const EventCard = ({ event, onRegister }: { event: Event; onRegister: () => void
       <button
         onClick={onRegister}
         disabled={isPast || !!deadlinePassed}
-        className="flex items-center justify-center gap-1 rounded-md bg-primary py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="mt-auto flex items-center justify-center gap-1 rounded-md bg-primary py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {isPast ? "活动已结束" : deadlinePassed ? "报名已截止" : "立即报名"}
         {!isPast && !deadlinePassed && <ChevronRight className="h-3.5 w-3.5" />}
