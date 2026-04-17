@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Crown, User } from "lucide-react";
-import { leadershipData } from "@/data/leadershipData";
+import { ChevronLeft, ChevronRight, Crown } from "lucide-react";
+import { useLeadershipData } from "@/hooks/useLeadershipData";
 
 const LeadershipBook = () => {
+  const { data: leadershipData = [], isLoading } = useLeadershipData();
   const [page, setPage] = useState(0);
   const [flipping, setFlipping] = useState<"left" | "right" | null>(null);
 
-  const term = leadershipData[page];
+  if (isLoading || leadershipData.length === 0) return <p className="py-10 text-center text-sm text-muted-foreground animate-pulse">加载中...</p>;
+  const term = leadershipData[Math.min(page, leadershipData.length - 1)];
 
   const flip = (dir: "left" | "right") => {
     const next = dir === "right" ? page + 1 : page - 1;

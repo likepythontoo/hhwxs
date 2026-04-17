@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Crown, User, X } from "lucide-react";
-import { leadershipData, type Term } from "@/data/leadershipData";
+import { type Term } from "@/data/leadershipData";
+import { useLeadershipData } from "@/hooks/useLeadershipData";
 
 const LeadershipGrid = () => {
+  const { data: leadershipData = [], isLoading } = useLeadershipData();
   const [selected, setSelected] = useState<Term | null>(null);
 
+  if (isLoading) return <p className="py-10 text-center text-sm text-muted-foreground animate-pulse">加载中...</p>;
   return (
     <>
       <div className="mx-auto grid max-w-4xl gap-4 sm:grid-cols-2 md:grid-cols-3">

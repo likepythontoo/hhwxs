@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Crown, User } from "lucide-react";
-import { leadershipData } from "@/data/leadershipData";
+import { useLeadershipData } from "@/hooks/useLeadershipData";
 
 const LeadershipCarousel = () => {
+  const { data: leadershipData = [], isLoading } = useLeadershipData();
   const [current, setCurrent] = useState(0);
-  const term = leadershipData[current];
+  if (isLoading || leadershipData.length === 0) return <p className="py-10 text-center text-sm text-muted-foreground animate-pulse">加载中...</p>;
+  const term = leadershipData[Math.min(current, leadershipData.length - 1)];
 
   const prev = () => setCurrent((c) => (c === 0 ? leadershipData.length - 1 : c - 1));
   const next = () => setCurrent((c) => (c === leadershipData.length - 1 ? 0 : c + 1));
