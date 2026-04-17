@@ -343,6 +343,48 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_slides: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string
+          is_active: boolean
+          link_text: string | null
+          link_url: string | null
+          sort_order: number
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url: string
+          is_active?: boolean
+          link_text?: string | null
+          link_url?: string | null
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          link_text?: string | null
+          link_url?: string | null
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       journal_articles: {
         Row: {
           created_at: string
@@ -430,6 +472,71 @@ export type Database = {
           type?: string
           updated_at?: string
           year?: number
+        }
+        Relationships: []
+      }
+      leadership_departments: {
+        Row: {
+          created_at: string
+          id: string
+          members: string[] | null
+          sort_order: number
+          term_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          members?: string[] | null
+          sort_order?: number
+          term_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          members?: string[] | null
+          sort_order?: number
+          term_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leadership_departments_term_id_fkey"
+            columns: ["term_id"]
+            isOneToOne: false
+            referencedRelation: "leadership_terms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      leadership_terms: {
+        Row: {
+          created_at: string
+          id: string
+          president: string
+          sort_order: number
+          updated_at: string
+          vice_presidents: string[] | null
+          year: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          president: string
+          sort_order?: number
+          updated_at?: string
+          vice_presidents?: string[] | null
+          year: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          president?: string
+          sort_order?: number
+          updated_at?: string
+          vice_presidents?: string[] | null
+          year?: string
         }
         Relationships: []
       }
