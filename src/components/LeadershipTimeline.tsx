@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Crown, User } from "lucide-react";
-import { leadershipData } from "@/data/leadershipData";
+import { useLeadershipData } from "@/hooks/useLeadershipData";
 
 const LeadershipTimeline = () => {
+  const { data: leadershipData = [], isLoading } = useLeadershipData();
   const [expandedYear, setExpandedYear] = useState<string>("2025届");
 
+  if (isLoading) return <section className="bg-secondary py-12"><p className="text-center text-sm text-muted-foreground animate-pulse">加载中...</p></section>;
   return (
     <section className="bg-secondary py-12 md:py-16">
       <div className="container mx-auto px-4">

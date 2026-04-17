@@ -1,7 +1,9 @@
-import { Crown, User, Users } from "lucide-react";
-import { leadershipData } from "@/data/leadershipData";
+import { Crown, User } from "lucide-react";
+import { useLeadershipData } from "@/hooks/useLeadershipData";
 
 const LeadershipVerticalTimeline = () => {
+  const { data: leadershipData = [], isLoading } = useLeadershipData();
+  if (isLoading) return <p className="py-10 text-center text-sm text-muted-foreground animate-pulse">加载中...</p>;
   return (
     <div className="relative mx-auto max-w-4xl">
       {/* Vertical line */}

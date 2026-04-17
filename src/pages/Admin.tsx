@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
@@ -20,11 +20,13 @@ import CheckInManagement from "@/components/admin/CheckInManagement";
 import JournalManagement from "@/components/admin/JournalManagement";
 import MemberDirectoryManagement from "@/components/admin/MemberDirectoryManagement";
 import ClaimManagement from "@/components/admin/ClaimManagement";
+import LeadershipManagement from "@/components/admin/LeadershipManagement";
+import HeroSlidesManagement from "@/components/admin/HeroSlidesManagement";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
-type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "claims" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "settings";
+type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "claims" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "leadership" | "hero_slides" | "settings";
 
 interface TabConfig {
   key: Tab;
@@ -50,6 +52,8 @@ const tabs: TabConfig[] = [
   { key: "finance", label: "财务管理", icon: Wallet, section: "运营", roles: ["admin", "president"] },
   { key: "export", label: "数据导出", icon: Download, roles: ["admin", "president"] },
   { key: "audit", label: "操作日志", icon: ScrollText, roles: ["admin", "president"] },
+  { key: "hero_slides", label: "首页轮播", icon: ImageIcon, section: "网站内容", roles: ["admin", "president"] },
+  { key: "leadership", label: "历届团队", icon: Crown, roles: ["admin", "president"] },
   { key: "settings", label: "系统设置", icon: Settings, section: "系统", roles: ["admin", "president"] },
 ];
 
@@ -150,6 +154,8 @@ const Admin = () => {
       {tab === "checkin" && <CheckInManagement />}
       {tab === "export" && <ExportCenter />}
       {tab === "audit" && <AuditLogViewer />}
+      {tab === "hero_slides" && <HeroSlidesManagement />}
+      {tab === "leadership" && <LeadershipManagement />}
       {tab === "settings" && <SiteSettings />}
     </>
   );

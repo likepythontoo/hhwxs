@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { ChevronDown, Crown, User } from "lucide-react";
-import { leadershipData } from "@/data/leadershipData";
+import { useLeadershipData } from "@/hooks/useLeadershipData";
 
 const LeadershipAccordion = () => {
+  const { data: leadershipData = [], isLoading } = useLeadershipData();
   const [openYear, setOpenYear] = useState<string>("2025届");
 
+  if (isLoading) return <p className="py-10 text-center text-sm text-muted-foreground animate-pulse">加载中...</p>;
   return (
     <div className="mx-auto max-w-3xl space-y-2">
       {leadershipData.map((term) => {
