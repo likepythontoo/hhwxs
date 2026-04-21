@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { Search } from "lucide-react";
+import { Search, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 import MemberCard from "@/components/members/MemberCard";
 import MemberStats from "@/components/members/MemberStats";
@@ -9,6 +9,7 @@ import PresidentTimeline from "@/components/members/PresidentTimeline";
 import AlumniMap from "@/components/members/AlumniMap";
 import AuthorRanking from "@/components/members/AuthorRanking";
 import PhotoWall from "@/components/members/PhotoWall";
+import SelfRegistrationDialog from "@/components/members/SelfRegistrationDialog";
 
 interface Member {
   id: string;
