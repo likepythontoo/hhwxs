@@ -60,6 +60,7 @@ const Profile = () => {
   const [editingBio, setEditingBio] = useState(false);
   const [events, setEvents] = useState<any[]>([]);
   const [forumPosts, setForumPosts] = useState<any[]>([]);
+  const [registrationRequest, setRegistrationRequest] = useState<any>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -68,7 +69,7 @@ const Profile = () => {
 
       const uid = session.user.id;
 
-      const [profileRes, roleRes, deptRes, checkInRes, subRes, memberRes, eventsRes, postsRes] = await Promise.all([
+      const [profileRes, roleRes, deptRes, checkInRes, subRes, memberRes, eventsRes, postsRes, regReqRes] = await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", uid).single(),
         supabase.from("user_roles").select("role").eq("user_id", uid),
         supabase.from("department_members").select("department_id, is_head, departments(name)").eq("user_id", uid),
@@ -77,6 +78,7 @@ const Profile = () => {
         supabase.from("members").select("*").eq("user_id", uid).limit(1),
         supabase.from("events").select("id, title, event_date, location").gte("event_date", new Date().toISOString()).order("event_date", { ascending: true }).limit(3),
         supabase.from("forum_posts").select("id, title, created_at, view_count").eq("author_id", uid).order("created_at", { ascending: false }).limit(5),
+        supabase.from("member_registration_requests" as any).select("*").eq("user_id", uid).order("created_at", { ascending: false }).limit(1),
       ]);
 
       setProfile(profileRes.data);
@@ -91,6 +93,7 @@ const Profile = () => {
       setMemberBio(mr?.bio || "");
       setEvents(eventsRes.data || []);
       setForumPosts(postsRes.data || []);
+      setRegistrationRequest((regReqRes.data as any)?.[0] || null);
       setLoading(false);
     };
     load();
@@ -176,6 +179,35 @@ const Profile = () => {
       <section className="py-8 md:py-12">
         <div className="container mx-auto max-w-4xl space-y-8 px-4">
 
+          {/* Self-Registration Status Card */}
+          {registrationRequest && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`rounded-xl border p-4 shadow-sm ${
+                registrationRequest.status === "pending" ? "border-amber-500/30 bg-amber-500/5" :
+                registrationRequest.status === "approved" ? "border-primary/30 bg-primary/5" :
+                "border-destructive/30 bg-destructive/5"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <p className="font-serif text-sm font-bold">校友自助登记申请</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {registrationRequest.status === "pending" && "您的申请正在审核中，请耐心等待。"}
+                    {registrationRequest.status === "approved" && "🎉 审核通过！您已加入校友档案库。"}
+                    {registrationRequest.status === "rejected" && "很遗憾，您的申请未通过。"}
+                  </p>
+                  {registrationRequest.reviewer_note && (
+                    <p className="mt-2 text-xs text-destructive">审核备注：{registrationRequest.reviewer_note}</p>
+                  )}
+                </div>
+                <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ${statusLabels[registrationRequest.status]?.cls}`}>
+                  {statusLabels[registrationRequest.status]?.label}
+                </span>
+              </div>
+            </motion.div>
+          )}
           {/* Stats Row */}
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {[
