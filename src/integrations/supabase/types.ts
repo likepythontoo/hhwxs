@@ -681,11 +681,14 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          birthday: string | null
           city: string | null
           created_at: string
+          featured_quote: string | null
           id: string
           introduction: string | null
           is_claimed: boolean | null
+          joined_date: string | null
           literary_tags: string[] | null
           major: string | null
           memoir: string | null
@@ -697,11 +700,14 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          birthday?: string | null
           city?: string | null
           created_at?: string
+          featured_quote?: string | null
           id?: string
           introduction?: string | null
           is_claimed?: boolean | null
+          joined_date?: string | null
           literary_tags?: string[] | null
           major?: string | null
           memoir?: string | null
@@ -713,11 +719,14 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          birthday?: string | null
           city?: string | null
           created_at?: string
+          featured_quote?: string | null
           id?: string
           introduction?: string | null
           is_claimed?: boolean | null
+          joined_date?: string | null
           literary_tags?: string[] | null
           major?: string | null
           memoir?: string | null
