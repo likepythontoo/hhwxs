@@ -1,70 +1,74 @@
 
 
-## 后台内容管理系统（CMS）扩展方案
+## 校友档案库 - 自助登记功能
 
-### 现状问题
-当前网站有大量内容**硬编码在前端代码中**，无法通过后台修改：
-- **历届管理团队**（`leadershipData.ts`）— 9届团队信息硬编码
-- **首页轮播图**（`HeroCarousel.tsx`）— 3张幻灯片标题/描述硬编码
-- **快捷入口**（`QuickLinks.tsx`）— 6个功能入口硬编码
-- **关于页面**（`About.tsx`）— 部门介绍、发展历程、荣誉表全部硬编码
-- **章程页面**（`Charter.tsx`）— 全部章程条款硬编码
-- **页脚**（`SiteFooter.tsx`）— 联系方式、社交媒体硬编码
-- **系统设置**仅 7 个简单字段
+### 现状
+当前 `/members` 页面只能展示**已存在**的成员档案，前社员若发现自己**不在档案库中**（漏登记/遗失），无法自主补录。现有的"认领"功能只针对已存在的成员卡片。
 
 ### 目标
-让管理员/社长可以在后台**实时编辑**网站几乎所有可变内容，前端读取后端数据动态渲染。
+新增"**自助登记**"入口，让之前进入过社团但档案缺失的人，可以提交个人信息申请加入档案库，经管理员审核通过后正式录入。
 
-### 实施方案（分阶段，本次先做核心三块）
+### 实施方案
 
-#### 第一阶段（本次实施）
+#### 1. 数据库（新建一张表）
+**`member_registration_requests`** —— 自助登记申请表
+- `id` uuid 主键
+- `user_id` uuid（提交人，已登录）
+- `name` text 姓名
+- `term` text 届别（如 2018届）
+- `role_title` text 当时担任职务（可选）
+- `major` text 专业（可选）
+- `city` text 现居城市（可选）
+- `bio` text 一句话简介（可选）
+- `memoir` text 入社经历/补充说明（必填，作为审核依据）
+- `contact` text 联系方式（必填，便于核实）
+- `evidence_url` text 凭证图片（可选，如老照片、聊天记录等）
+- `status` text 默认 `pending`（pending/approved/rejected）
+- `reviewer_id` uuid、`reviewer_note` text、`reviewed_at` timestamptz
+- `created_at` timestamptz
 
-**1. 历届管理团队管理（核心）**
-- 新建数据表 `leadership_terms`：年份、社长、副社长（数组）、排序
-- 新建数据表 `leadership_departments`：所属届、部门名、成员（数组）、排序
-- 新建后台模块 `LeadershipManagement.tsx`：
-  - 列出所有届，可新增/编辑/删除届
-  - 每届可编辑社长、副社长（多人）、部门（动态增减）、每个部门下成员（动态增减）
-- 改造 5 个 Leadership 展示组件，从 `leadershipData.ts` 改为从数据库读取
+**RLS 策略**：
+- 已登录用户可 INSERT 自己的申请（`auth.uid() = user_id`）
+- 用户可 SELECT 自己的申请
+- 管理员（`has_admin_access`）可 ALL
 
-**2. 首页轮播图管理**
-- 新建数据表 `hero_slides`：图片URL、主标题、副标题、描述、排序、是否启用
-- 新建后台模块 `HeroSlidesManagement.tsx`：增删改查 + 拖拽排序 + 图片上传
-- 改造 `HeroCarousel.tsx` 从数据库读取
+凭证图片复用现有 `site-assets` 公共桶，路径 `registration-evidence/{user_id}/{timestamp}.{ext}`。
 
-**3. 系统设置扩展**
-- 在现有 `site_settings` 表中新增字段（key-value 模式继续使用）：
-  - `footer_address` 校区地址
-  - `footer_address_detail` 地址详情
-  - `footer_amap_url` 高德地图链接
-  - `social_douyin` 抖音账号
-  - `social_bilibili` B站账号
-  - `social_weibo` 微博账号
-  - `copyright_text` 版权文字
-  - `hero_autoplay_interval` 轮播自动切换秒数
-  - `about_intro` 关于页简介段落（长文本）
-- `SiteSettings.tsx` 增加分类标签页（基本信息、联系方式、社交媒体、首页设置、关于页面），每类下分组显示，长文本用 textarea
-- 改造 `SiteFooter.tsx`、`AboutSection.tsx` 从数据库读取这些设置
+#### 2. 前端 - 用户提交端
+**`src/pages/Members.tsx`** Hero 区域搜索框旁新增按钮"**📝 我也是老社员 · 自助登记**"
 
-#### 第二阶段（后续可继续）
-- 关于页详细内容（部门、发展历程、荣誉）独立 CRUD
-- 章程条款独立 CRUD
-- 快捷入口管理
+**新建 `src/components/members/SelfRegistrationDialog.tsx`** 弹窗表单：
+- 未登录 → 提示先登录，跳转 `/auth?redirect=/members`
+- 已登录 → 显示表单，使用 zod 校验：姓名/届别/经历/联系方式必填，姓名 ≤50 字、经历 ≤500 字
+- 支持上传一张凭证图片（≤5MB，jpg/png）
+- 提交后 toast 提示"申请已提交，等待管理员审核"
+- 同一用户若已有 pending 申请，显示"您有一条待审核的申请"，禁止重复提交
 
-### 文件清单（本次）
-1. **数据库迁移** — 新建 `leadership_terms`、`leadership_departments`、`hero_slides` 表 + RLS；新增 site_settings 默认值
-2. **`src/components/admin/LeadershipManagement.tsx`** — 新建团队管理组件
-3. **`src/components/admin/HeroSlidesManagement.tsx`** — 新建轮播图管理组件
-4. **`src/components/admin/SiteSettings.tsx`** — 重构为分类标签页 + 更多字段
-5. **`src/components/admin/AdminDashboard.tsx`** 或 `src/pages/Admin.tsx` — 添加新模块入口
-6. **5 个 Leadership 组件** — 改为从数据库读取（带加载态）
-7. **`src/components/HeroCarousel.tsx`** — 改为从数据库读取
-8. **`src/components/SiteFooter.tsx`** — 联系信息从设置读取
-9. **`src/components/AboutSection.tsx`** — 简介从设置读取
+#### 3. 前端 - 管理员审核端
+**新建 `src/components/admin/RegistrationRequestManagement.tsx`**（参考现有 `ClaimManagement.tsx` 风格）：
+- 顶部分"待审核 / 已通过 / 已拒绝"三个 Tab
+- 每条申请展示：申请人头像、姓名、届别、职务、经历、联系方式、凭证图片预览
+- 操作：
+  - **通过**：自动在 `members` 表 INSERT 一条新记录（带上 `user_id` + `is_claimed=true`），同时更新申请状态为 approved
+  - **拒绝**：填写拒绝理由，状态改为 rejected
+- 已处理记录可查看历史
 
-### 技术细节
-- 使用 React Query 缓存，编辑后 `invalidateQueries` 触发前台实时刷新
-- 团队/轮播图采用乐观更新提升交互流畅度
-- 图片上传使用 Lovable Cloud Storage（`journals` 公共桶或新建 `site-assets` 桶）
-- 现有硬编码 `leadershipData.ts` 在迁移时作为初始数据 INSERT 进数据库（一次性 seed）
+**`src/pages/Admin.tsx`** 在"内容管理"分组中新增 Tab"**校友登记申请**"，图标 `UserPlus`。
+
+#### 4. 通知 & 反馈
+- 用户在 `/profile` 个人中心顶部，若有自己的申请记录，展示一张状态卡片（pending/approved/rejected + 拒绝理由）
+
+### 文件清单
+1. **数据库迁移** - 新建 `member_registration_requests` 表 + RLS
+2. **`src/components/members/SelfRegistrationDialog.tsx`** - 新建用户提交弹窗
+3. **`src/pages/Members.tsx`** - Hero 区域增加入口按钮
+4. **`src/components/admin/RegistrationRequestManagement.tsx`** - 新建管理员审核组件
+5. **`src/pages/Admin.tsx`** - 注册新管理 Tab
+6. **`src/pages/Profile.tsx`** - 个人中心展示申请状态（小改动）
+
+### 安全要点
+- 表单走 zod 严格校验，长度/必填限制
+- 凭证图片走公共桶但路径含 user_id，避免覆盖
+- 防重复提交：插入前查询是否已有 pending 记录
+- 审核通过创建 members 记录由管理员客户端执行（已有 RLS 保护，仅 admin 可写）
 
