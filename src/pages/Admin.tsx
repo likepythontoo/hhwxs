@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon, UserPlus2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
@@ -22,11 +22,12 @@ import MemberDirectoryManagement from "@/components/admin/MemberDirectoryManagem
 import ClaimManagement from "@/components/admin/ClaimManagement";
 import LeadershipManagement from "@/components/admin/LeadershipManagement";
 import HeroSlidesManagement from "@/components/admin/HeroSlidesManagement";
+import RegistrationRequestManagement from "@/components/admin/RegistrationRequestManagement";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
-type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "claims" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "leadership" | "hero_slides" | "settings";
+type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "claims" | "registration_requests" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "leadership" | "hero_slides" | "settings";
 
 interface TabConfig {
   key: Tab;
@@ -47,6 +48,7 @@ const tabs: TabConfig[] = [
   { key: "members", label: "成员管理", icon: Users, section: "组织管理", roles: ["admin", "president", "minister"] },
   { key: "member_directory", label: "成员风采", icon: UsersRound, roles: ["admin", "president"] },
   { key: "claims", label: "认领审核", icon: UserCheck, roles: ["admin", "president"] },
+  { key: "registration_requests", label: "校友登记申请", icon: UserPlus2, roles: ["admin", "president"] },
   { key: "departments", label: "部门管理", icon: Building2, roles: ["admin", "president"] },
   { key: "recruitment", label: "招新审批", icon: UserPlus, roles: ["admin", "president", "minister"] },
   { key: "finance", label: "财务管理", icon: Wallet, section: "运营", roles: ["admin", "president"] },
@@ -144,6 +146,7 @@ const Admin = () => {
       {tab === "members" && <MemberManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
       {tab === "member_directory" && <MemberDirectoryManagement />}
       {tab === "claims" && <ClaimManagement />}
+      {tab === "registration_requests" && <RegistrationRequestManagement />}
       {tab === "departments" && <DepartmentManagement />}
       {tab === "news" && <NewsManagement />}
       {tab === "submissions" && <SubmissionsManagement />}

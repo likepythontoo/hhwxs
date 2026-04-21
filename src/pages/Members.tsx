@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { Search } from "lucide-react";
+import { Search, UserPlus } from "lucide-react";
 import { motion } from "framer-motion";
 import MemberCard from "@/components/members/MemberCard";
 import MemberStats from "@/components/members/MemberStats";
@@ -9,6 +9,7 @@ import PresidentTimeline from "@/components/members/PresidentTimeline";
 import AlumniMap from "@/components/members/AlumniMap";
 import AuthorRanking from "@/components/members/AuthorRanking";
 import PhotoWall from "@/components/members/PhotoWall";
+import SelfRegistrationDialog from "@/components/members/SelfRegistrationDialog";
 
 interface Member {
   id: string;
@@ -33,6 +34,7 @@ const Members = () => {
   const [search, setSearch] = useState("");
   const [selectedTerm, setSelectedTerm] = useState<string | null>(null);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [registrationOpen, setRegistrationOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -170,6 +172,16 @@ const Members = () => {
                 className="w-full rounded-full border border-border/30 bg-background/90 py-3 pl-11 pr-4 text-sm text-foreground backdrop-blur placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
               />
             </div>
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.4 }}
+              onClick={() => setRegistrationOpen(true)}
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--archive-cream))]/30 bg-[hsl(var(--archive-cream))]/10 px-5 py-2 text-xs font-medium text-[hsl(var(--archive-cream))] backdrop-blur transition hover:bg-[hsl(var(--archive-cream))]/20"
+            >
+              <UserPlus className="h-3.5 w-3.5" />
+              我也是老社员 · 自助登记
+            </motion.button>
           </motion.div>
         </div>
       </div>
@@ -253,6 +265,8 @@ const Members = () => {
 
       {/* Author Ranking */}
       <AuthorRanking authors={rankedAuthors} />
+
+      <SelfRegistrationDialog open={registrationOpen} onOpenChange={setRegistrationOpen} />
     </Layout>
   );
 };

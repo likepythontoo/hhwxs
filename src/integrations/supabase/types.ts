@@ -584,6 +584,63 @@ export type Database = {
           },
         ]
       }
+      member_registration_requests: {
+        Row: {
+          bio: string | null
+          city: string | null
+          contact: string
+          created_at: string
+          evidence_url: string | null
+          id: string
+          major: string | null
+          memoir: string
+          name: string
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_note: string | null
+          role_title: string | null
+          status: string
+          term: string
+          user_id: string
+        }
+        Insert: {
+          bio?: string | null
+          city?: string | null
+          contact: string
+          created_at?: string
+          evidence_url?: string | null
+          id?: string
+          major?: string | null
+          memoir: string
+          name: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          role_title?: string | null
+          status?: string
+          term: string
+          user_id: string
+        }
+        Update: {
+          bio?: string | null
+          city?: string | null
+          contact?: string
+          created_at?: string
+          evidence_url?: string | null
+          id?: string
+          major?: string | null
+          memoir?: string
+          name?: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          role_title?: string | null
+          status?: string
+          term?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       member_works: {
         Row: {
           created_at: string
