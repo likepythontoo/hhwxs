@@ -68,8 +68,9 @@ const NewsSection = () => {
         <div className="grid gap-8 md:grid-cols-5">
           {/* Featured news */}
           <ScrollReveal direction="left" className="md:col-span-2">
-            <div className="group relative h-full overflow-hidden rounded-lg bg-card shadow-[var(--shadow-elegant)] transition-shadow hover:shadow-2xl">
+            <Link to={featuredNews ? `/news/${featuredNews.id}` : "/news"} className="group relative block h-full overflow-hidden rounded-lg bg-card shadow-[var(--shadow-elegant)] transition-shadow hover:shadow-2xl">
               <div className="relative h-52 overflow-hidden bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10">
+                {featuredNews?.cover_url && <img src={featuredNews.cover_url} alt={featuredNews.title} className="h-full w-full object-cover" />}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Sparkles className="h-16 w-16 text-primary/20" />
                 </div>
@@ -80,17 +81,17 @@ const NewsSection = () => {
               </div>
               <div className="p-6">
                 <h3 className="font-serif text-lg font-bold leading-relaxed transition-colors group-hover:text-primary">
-                  {featuredNews.title}
+                  {featuredNews?.title || "暂无头条新闻"}
                 </h3>
                 <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                  {featuredNews.desc}
+                  {featuredNews?.content || "后台发布新闻后，将自动同步显示在首页。"}
                 </p>
                 <div className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <CalendarDays className="h-3.5 w-3.5" />
-                  {featuredNews.date}
+                  {featuredNews ? formatDate(featuredNews) : "等待发布"}
                 </div>
               </div>
-            </div>
+            </Link>
           </ScrollReveal>
 
           {/* Tabs */}
@@ -115,23 +116,24 @@ const NewsSection = () => {
                 ))}
               </div>
               <ul className="space-y-0.5">
-                {newsData[activeTab].map((item, i) => (
+                {newsData[activeTab].map((item) => (
                   <li
-                    key={i}
+                    key={item.id}
                     className="group/item flex items-center justify-between border-b border-dashed border-border/60 py-3.5 last:border-0"
                   >
-                    <a
-                      href="#"
+                    <Link
+                      to={`/news/${item.id}`}
                       className="flex-1 truncate text-sm transition-colors group-hover/item:text-primary"
                     >
                       <span className="mr-2.5 inline-block h-1.5 w-1.5 rounded-full bg-primary/60 transition-all group-hover/item:bg-primary group-hover/item:shadow-[0_0_6px_rgba(164,42,42,0.4)]" />
                       {item.title}
-                    </a>
+                    </Link>
                     <span className="ml-4 shrink-0 text-xs text-muted-foreground/70">
-                      {item.date}
+                      {formatDate(item)}
                     </span>
                   </li>
                 ))}
+                {newsData[activeTab].length === 0 && <li className="py-10 text-center text-sm text-muted-foreground">暂无该分类新闻</li>}
               </ul>
             </div>
           </ScrollReveal>
