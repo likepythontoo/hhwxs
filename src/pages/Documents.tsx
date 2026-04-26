@@ -43,8 +43,6 @@ const documents: DocItem[] = [
   },
 ];
 
-const categories = ["全部", ...Array.from(new Set(documents.map((d) => d.category)))];
-
 const fileTypeIcons: Record<string, typeof FileText> = {
   doc: FileText,
   docx: FileText,
@@ -193,7 +191,7 @@ const Documents = () => {
 
                     {/* Download */}
                     <a
-                      href={`/files/${doc.fileName}`}
+                      href={doc.fileUrl || `/files/${doc.fileName}`}
                       download
                       className="flex shrink-0 items-center gap-1.5 rounded bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                     >
