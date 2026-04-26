@@ -1,6 +1,8 @@
+import { useEffect, useMemo, useState } from "react";
 import Layout from "@/components/Layout";
 import LeadershipTimeline from "@/components/LeadershipTimeline";
 import { Building2, Users, Award, BookOpen, Monitor, Feather, BookMarked, Crown, Trophy, Star, Medal, Mic } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const stats = [
   { icon: Building2, label: "成立年份", value: "2003" },
@@ -132,7 +134,51 @@ const coreFeatures = [
   { icon: Star, title: "社团精神", desc: "坚持原创，拒绝平庸，用文字记录青春" },
 ];
 
+const iconMap = { Building2, Users, Award, BookOpen, Monitor, Feather, BookMarked, Crown, Trophy, Star, Medal, Mic };
+
+interface AboutItem {
+  id: string;
+  type: string;
+  title: string;
+  subtitle: string | null;
+  body: string | null;
+  meta: any;
+  icon: keyof typeof iconMap | null;
+}
+
 const About = () => {
+  const [contentItems, setContentItems] = useState<AboutItem[]>([]);
+
+  useEffect(() => {
+    (supabase.from("about_content_items" as any) as any).select("id,type,title,subtitle,body,meta,icon")
+      .eq("is_active", true)
+      .order("sort_order")
+      .then(({ data }: any) => setContentItems(data || []));
+  }, []);
+
+  const displayStats = useMemo(() => {
+    const items = contentItems.filter(i => i.type === "stat");
+    return items.length ? items.map(i => ({ icon: iconMap[i.icon || "Award"] || Award, label: i.title, value: i.subtitle || "" })) : stats;
+  }, [contentItems]);
+
+  const displayTimeline = useMemo(() => {
+    const items = contentItems.filter(i => i.type === "timeline");
+    return items.length ? items.map(i => ({ phase: i.title, period: i.subtitle || "", events: (i.body || "").split("\n").filter(Boolean).map(line => {
+      const [year, ...rest] = line.split("｜");
+      return { year: year || "", event: rest.join("｜") || line };
+    }) })) : timelinePhases;
+  }, [contentItems]);
+
+  const displayAwards = useMemo(() => {
+    const items = contentItems.filter(i => i.type === "award");
+    return items.length ? items.map(i => ({ year: i.subtitle || "", title: i.title, org: i.body || "", level: i.meta?.level || "校级" })) : awards;
+  }, [contentItems]);
+
+  const displayFeatures = useMemo(() => {
+    const items = contentItems.filter(i => i.type === "feature");
+    return items.length ? items.map(i => ({ icon: iconMap[i.icon || "Star"] || Star, title: i.title, desc: i.body || "" })) : coreFeatures;
+  }, [contentItems]);
+
   return (
     <Layout>
       {/* Hero Banner */}
