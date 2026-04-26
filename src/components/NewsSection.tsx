@@ -1,43 +1,48 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
+import { supabase } from "@/integrations/supabase/client";
 
 const tabs = ["社情快讯", "通知公告", "文学前沿"];
 
-const newsData: Record<string, { title: string; date: string }[]> = {
-  "社情快讯": [
-    { title: "红湖文学社2025年度总结大会圆满举行", date: "2025-12-20" },
-    { title: '第十二届"红湖杯"征文大赛获奖名单公布', date: "2025-11-15" },
-    { title: "文学社赴西湖开展秋季采风活动", date: "2025-10-28" },
-    { title: "新任社长就职典礼暨社团发展规划发布", date: "2025-09-10" },
-    { title: "红湖文学社招新工作圆满结束，新增社员86名", date: "2025-09-05" },
-  ],
-  "通知公告": [
-    { title: "关于开展2026年春季学期社员注册工作的通知", date: "2026-02-28" },
-    { title: "《红湖》第48期征稿启事", date: "2026-02-15" },
-    { title: "关于调整社团活动室使用时间的公告", date: "2026-01-20" },
-    { title: "2025年度优秀社员评选结果公示", date: "2025-12-25" },
-    { title: "关于举办寒假文学创作营的通知", date: "2025-12-10" },
-  ],
-  "文学前沿": [
-    { title: "当代校园文学创作的新趋势与新探索", date: "2026-01-18" },
-    { title: "人工智能时代的文学写作何去何从", date: "2025-12-30" },
-    { title: "第十一届全国大学生文学作品大赛征稿启事", date: "2025-11-20" },
-    { title: "著名作家余华教授莅临我校讲座纪实", date: "2025-10-15" },
-    { title: "浅析网络文学对传统文学教育的影响", date: "2025-09-22" },
-  ],
-};
-
-const featuredNews = {
-  title: '红湖文学社荣获"全国百佳大学生社团"称号',
-  date: "2026-01-10",
-  desc: '近日，由中国高等教育学会主办的全国大学生社团评选活动揭晓，我校红湖文学社凭借在文学创作、文化传承、社会服务等方面的突出表现，荣获"全国百佳大学生社团"称号。',
-  image: "",
-};
+interface NewsItem {
+  id: string;
+  title: string;
+  content: string | null;
+  category: string | null;
+  cover_url: string | null;
+  published_at: string | null;
+  created_at: string;
+}
 
 const NewsSection = () => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [news, setNews] = useState<NewsItem[]>([]);
+
+  useEffect(() => {
+    supabase.from("news").select("id,title,content,category,cover_url,published_at,created_at")
+      .eq("is_published", true)
+      .order("published_at", { ascending: false, nullsFirst: false })
+      .order("created_at", { ascending: false })
+      .limit(30)
+      .then(({ data }) => setNews((data as NewsItem[]) || []));
+  }, []);
+
+  const featuredNews = news[0];
+  const newsData = useMemo(() => {
+    const grouped: Record<string, NewsItem[]> = { "社情快讯": [], "通知公告": [], "文学前沿": [] };
+    news.forEach((item) => {
+      const category = item.category || "通知公告";
+      if (grouped[category]) grouped[category].push(item);
+      else if (["公告", "通知"].includes(category)) grouped["通知公告"].push(item);
+      else if (["新闻", "活动回顾"].includes(category)) grouped["社情快讯"].push(item);
+      else grouped["文学前沿"].push(item);
+    });
+    return grouped;
+  }, [news]);
+
+  const formatDate = (item: NewsItem) => new Date(item.published_at || item.created_at).toLocaleDateString("zh-CN");
 
   return (
     <section id="news" className="relative py-16 md:py-24">
@@ -63,8 +68,9 @@ const NewsSection = () => {
         <div className="grid gap-8 md:grid-cols-5">
           {/* Featured news */}
           <ScrollReveal direction="left" className="md:col-span-2">
-            <div className="group relative h-full overflow-hidden rounded-lg bg-card shadow-[var(--shadow-elegant)] transition-shadow hover:shadow-2xl">
+            <Link to={featuredNews ? `/news/${featuredNews.id}` : "/news"} className="group relative block h-full overflow-hidden rounded-lg bg-card shadow-[var(--shadow-elegant)] transition-shadow hover:shadow-2xl">
               <div className="relative h-52 overflow-hidden bg-gradient-to-br from-primary/20 via-primary/10 to-accent/10">
+                {featuredNews?.cover_url && <img src={featuredNews.cover_url} alt={featuredNews.title} className="h-full w-full object-cover" />}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Sparkles className="h-16 w-16 text-primary/20" />
                 </div>
@@ -75,17 +81,17 @@ const NewsSection = () => {
               </div>
               <div className="p-6">
                 <h3 className="font-serif text-lg font-bold leading-relaxed transition-colors group-hover:text-primary">
-                  {featuredNews.title}
+                  {featuredNews?.title || "暂无头条新闻"}
                 </h3>
                 <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                  {featuredNews.desc}
+                  {featuredNews?.content || "后台发布新闻后，将自动同步显示在首页。"}
                 </p>
                 <div className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
                   <CalendarDays className="h-3.5 w-3.5" />
-                  {featuredNews.date}
+                  {featuredNews ? formatDate(featuredNews) : "等待发布"}
                 </div>
               </div>
-            </div>
+            </Link>
           </ScrollReveal>
 
           {/* Tabs */}
@@ -110,23 +116,24 @@ const NewsSection = () => {
                 ))}
               </div>
               <ul className="space-y-0.5">
-                {newsData[activeTab].map((item, i) => (
+                {newsData[activeTab].map((item) => (
                   <li
-                    key={i}
+                    key={item.id}
                     className="group/item flex items-center justify-between border-b border-dashed border-border/60 py-3.5 last:border-0"
                   >
-                    <a
-                      href="#"
+                    <Link
+                      to={`/news/${item.id}`}
                       className="flex-1 truncate text-sm transition-colors group-hover/item:text-primary"
                     >
                       <span className="mr-2.5 inline-block h-1.5 w-1.5 rounded-full bg-primary/60 transition-all group-hover/item:bg-primary group-hover/item:shadow-[0_0_6px_rgba(164,42,42,0.4)]" />
                       {item.title}
-                    </a>
+                    </Link>
                     <span className="ml-4 shrink-0 text-xs text-muted-foreground/70">
-                      {item.date}
+                      {formatDate(item)}
                     </span>
                   </li>
                 ))}
+                {newsData[activeTab].length === 0 && <li className="py-10 text-center text-sm text-muted-foreground">暂无该分类新闻</li>}
               </ul>
             </div>
           </ScrollReveal>
