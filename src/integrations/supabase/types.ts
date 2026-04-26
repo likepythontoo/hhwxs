@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      about_content_items: {
+        Row: {
+          body: string | null
+          created_at: string
+          icon: string | null
+          id: string
+          is_active: boolean
+          meta: Json
+          sort_order: number
+          subtitle: string | null
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          meta?: Json
+          sort_order?: number
+          subtitle?: string | null
+          title: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          meta?: Json
+          sort_order?: number
+          subtitle?: string | null
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -135,6 +177,51 @@ export type Database = {
           description?: string | null
           id?: string
           name?: string
+        }
+        Relationships: []
+      }
+      documents: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          file_date: string | null
+          file_name: string
+          file_type: string
+          file_url: string | null
+          id: string
+          is_public: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          file_date?: string | null
+          file_name: string
+          file_type?: string
+          file_url?: string | null
+          id?: string
+          is_public?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          file_date?: string | null
+          file_name?: string
+          file_type?: string
+          file_url?: string | null
+          id?: string
+          is_public?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }
@@ -833,6 +920,45 @@ export type Database = {
           student_id?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      quick_links: {
+        Row: {
+          accent: string | null
+          created_at: string
+          description: string | null
+          href: string
+          icon: string
+          id: string
+          is_active: boolean
+          label: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          accent?: string | null
+          created_at?: string
+          description?: string | null
+          href: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          label: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          accent?: string | null
+          created_at?: string
+          description?: string | null
+          href?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          label?: string
+          sort_order?: number
+          updated_at?: string
         }
         Relationships: []
       }
