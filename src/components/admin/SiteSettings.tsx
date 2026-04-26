@@ -31,8 +31,12 @@ const groups: { id: string; label: string; fields: Record<string, FieldMeta> }[]
     id: "contact",
     label: "联系方式",
     fields: {
+      contact_address: { label: "社团地址", description: "联系页面展示的社团地址" },
       contact_email: { label: "联系邮箱", description: "对外展示的联系邮箱", type: "email" },
+      president_email: { label: "社长邮箱", description: "联系页面展示的社长邮箱", type: "email" },
       contact_phone: { label: "联系电话", description: "对外展示的联系电话", type: "tel" },
+      advisor_name: { label: "指导老师", description: "联系页面展示的指导老师姓名" },
+      advisor_phone: { label: "指导老师联系方式", description: "指导老师电话或办公联系方式", type: "tel" },
       wechat_id: { label: "微信公众号", description: "公众号ID或名称" },
       footer_address: { label: "校区地址（短）", description: "页脚短地址" },
       footer_address_detail: { label: "校区地址（详细）", description: "完整校区详细地址" },
@@ -61,6 +65,16 @@ const groups: { id: string; label: string; fields: Record<string, FieldMeta> }[]
     label: "关于页",
     fields: {
       about_intro: { label: "社团简介段落", description: "关于页面 / 页脚显示的总体简介", type: "textarea" },
+    },
+  },
+  {
+    id: "publication",
+    label: "出版物",
+    fields: {
+      publication_honghu_title: { label: "《红湖》标题", description: "联系页面出版物名称" },
+      publication_honghu_desc: { label: "《红湖》介绍", description: "联系页面展示的出版物介绍", type: "textarea" },
+      publication_moxiang_title: { label: "《墨香阁》标题", description: "联系页面出版物名称" },
+      publication_moxiang_desc: { label: "《墨香阁》介绍", description: "联系页面展示的出版物介绍", type: "textarea" },
     },
   },
 ];

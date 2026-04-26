@@ -1,6 +1,8 @@
+import { useEffect, useMemo, useState } from "react";
 import Layout from "@/components/Layout";
 import LeadershipTimeline from "@/components/LeadershipTimeline";
 import { Building2, Users, Award, BookOpen, Monitor, Feather, BookMarked, Crown, Trophy, Star, Medal, Mic } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const stats = [
   { icon: Building2, label: "成立年份", value: "2003" },
@@ -132,7 +134,51 @@ const coreFeatures = [
   { icon: Star, title: "社团精神", desc: "坚持原创，拒绝平庸，用文字记录青春" },
 ];
 
+const iconMap = { Building2, Users, Award, BookOpen, Monitor, Feather, BookMarked, Crown, Trophy, Star, Medal, Mic };
+
+interface AboutItem {
+  id: string;
+  type: string;
+  title: string;
+  subtitle: string | null;
+  body: string | null;
+  meta: any;
+  icon: keyof typeof iconMap | null;
+}
+
 const About = () => {
+  const [contentItems, setContentItems] = useState<AboutItem[]>([]);
+
+  useEffect(() => {
+    (supabase.from("about_content_items" as any) as any).select("id,type,title,subtitle,body,meta,icon")
+      .eq("is_active", true)
+      .order("sort_order")
+      .then(({ data }: any) => setContentItems(data || []));
+  }, []);
+
+  const displayStats = useMemo(() => {
+    const items = contentItems.filter(i => i.type === "stat");
+    return items.length ? items.map(i => ({ icon: iconMap[i.icon || "Award"] || Award, label: i.title, value: i.subtitle || "" })) : stats;
+  }, [contentItems]);
+
+  const displayTimeline = useMemo(() => {
+    const items = contentItems.filter(i => i.type === "timeline");
+    return items.length ? items.map(i => ({ phase: i.title, period: i.subtitle || "", events: (i.body || "").split("\n").filter(Boolean).map(line => {
+      const [year, ...rest] = line.split("｜");
+      return { year: year || "", event: rest.join("｜") || line };
+    }) })) : timelinePhases;
+  }, [contentItems]);
+
+  const displayAwards = useMemo(() => {
+    const items = contentItems.filter(i => i.type === "award");
+    return items.length ? items.map(i => ({ year: i.subtitle || "", title: i.title, org: i.body || "", level: i.meta?.level || "校级" })) : awards;
+  }, [contentItems]);
+
+  const displayFeatures = useMemo(() => {
+    const items = contentItems.filter(i => i.type === "feature");
+    return items.length ? items.map(i => ({ icon: iconMap[i.icon || "Star"] || Star, title: i.title, desc: i.body || "" })) : coreFeatures;
+  }, [contentItems]);
+
   return (
     <Layout>
       {/* Hero Banner */}
@@ -149,7 +195,7 @@ const About = () => {
       {/* Stats */}
       <div className="bg-secondary py-8">
         <div className="container mx-auto grid grid-cols-2 gap-4 px-4 sm:grid-cols-4">
-          {stats.map((stat) => (
+          {displayStats.map((stat) => (
             <div key={stat.label} className="rounded-sm bg-card p-5 text-center shadow-sm">
               <stat.icon className="mx-auto mb-2 h-6 w-6 text-primary" />
               <div className="font-serif text-2xl font-bold text-primary">{stat.value}</div>
@@ -225,7 +271,7 @@ const About = () => {
           <h2 className="section-title mb-10">发展历程</h2>
 
           <div className="space-y-10">
-            {timelinePhases.map((phase, pi) => (
+            {displayTimeline.map((phase, pi) => (
               <div key={pi}>
                 <div className="mb-5 flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
@@ -272,7 +318,7 @@ const About = () => {
                 </tr>
               </thead>
               <tbody>
-                {awards.map((a, i) => (
+                {displayAwards.map((a, i) => (
                   <tr key={i} className="border-b border-border/50 transition-colors hover:bg-card">
                     <td className="px-4 py-3 font-serif font-bold text-primary">{a.year}</td>
                     <td className="px-4 py-3">{a.title}</td>
@@ -295,7 +341,7 @@ const About = () => {
         <div className="container mx-auto px-4">
           <h2 className="section-title mb-8">核心特色</h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {coreFeatures.map((f) => (
+            {displayFeatures.map((f) => (
               <div key={f.title} className="rounded border border-border bg-card p-6 text-center transition-shadow hover:shadow-md">
                 <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
                   <f.icon className="h-6 w-6 text-primary" />

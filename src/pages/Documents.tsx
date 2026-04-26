@@ -1,16 +1,19 @@
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Layout from "@/components/Layout";
 import { Search, Download, FileText, FileSpreadsheet, File, Calendar, Tag, FolderOpen } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DocItem {
+  id?: string;
   name: string;
   fileName: string;
   category: string;
   description: string;
   date: string;
   fileType: "doc" | "docx" | "pdf" | "xlsx" | "other";
+  fileUrl?: string;
 }
 
 const documents: DocItem[] = [
@@ -40,8 +43,6 @@ const documents: DocItem[] = [
   },
 ];
 
-const categories = ["全部", ...Array.from(new Set(documents.map((d) => d.category)))];
-
 const fileTypeIcons: Record<string, typeof FileText> = {
   doc: FileText,
   docx: FileText,
@@ -61,9 +62,29 @@ const fileTypeColors: Record<string, string> = {
 const Documents = () => {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("全部");
+  const [dynamicDocs, setDynamicDocs] = useState<DocItem[]>([]);
+
+  useEffect(() => {
+    (supabase.from("documents" as any) as any).select("id,name,file_name,category,description,file_date,file_type,file_url")
+      .eq("is_public", true)
+      .order("sort_order")
+      .then(({ data }: any) => setDynamicDocs((data || []).map((d: any) => ({
+        id: d.id,
+        name: d.name,
+        fileName: d.file_name,
+        category: d.category,
+        description: d.description || "",
+        date: d.file_date || "",
+        fileType: ["doc", "docx", "pdf", "xlsx"].includes(d.file_type) ? d.file_type : "other",
+        fileUrl: d.file_url || `/files/${d.file_name}`,
+      }))));
+  }, []);
+
+  const displayDocuments = dynamicDocs.length > 0 ? dynamicDocs : documents;
+  const categories = useMemo(() => ["全部", ...Array.from(new Set(displayDocuments.map((d) => d.category)))], [displayDocuments]);
 
   const filtered = useMemo(() => {
-    return documents.filter((doc) => {
+    return displayDocuments.filter((doc) => {
       const matchesSearch =
         !search ||
         doc.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -72,7 +93,7 @@ const Documents = () => {
       const matchesCategory = activeCategory === "全部" || doc.category === activeCategory;
       return matchesSearch && matchesCategory;
     });
-  }, [search, activeCategory]);
+  }, [search, activeCategory, displayDocuments]);
 
   return (
     <Layout>
@@ -170,7 +191,7 @@ const Documents = () => {
 
                     {/* Download */}
                     <a
-                      href={`/files/${doc.fileName}`}
+                      href={doc.fileUrl || `/files/${doc.fileName}`}
                       download
                       className="flex shrink-0 items-center gap-1.5 rounded bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                     >
