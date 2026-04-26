@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon, UserPlus2 } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon, UserPlus2, FileText, Link2, Info, Mail } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
@@ -23,11 +23,15 @@ import ClaimManagement from "@/components/admin/ClaimManagement";
 import LeadershipManagement from "@/components/admin/LeadershipManagement";
 import HeroSlidesManagement from "@/components/admin/HeroSlidesManagement";
 import RegistrationRequestManagement from "@/components/admin/RegistrationRequestManagement";
+import DocumentManagement from "@/components/admin/DocumentManagement";
+import QuickLinksManagement from "@/components/admin/QuickLinksManagement";
+import AboutContentManagement from "@/components/admin/AboutContentManagement";
+import MessageManagement from "@/components/admin/MessageManagement";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, AnimatePresence } from "framer-motion";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
-type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "members" | "member_directory" | "claims" | "registration_requests" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "leadership" | "hero_slides" | "settings";
+type Tab = "dashboard" | "events" | "news" | "submissions" | "journals" | "forum" | "messages" | "members" | "member_directory" | "claims" | "registration_requests" | "departments" | "recruitment" | "finance" | "checkin" | "export" | "audit" | "leadership" | "hero_slides" | "documents" | "quick_links" | "about_content" | "settings";
 
 interface TabConfig {
   key: Tab;
@@ -43,6 +47,7 @@ const tabs: TabConfig[] = [
   { key: "news", label: "新闻公告", icon: Newspaper, roles: ["admin", "president", "minister"] },
   { key: "submissions", label: "作品投稿", icon: BookOpen, roles: ["admin", "president", "minister"] },
   { key: "forum", label: "论坛管理", icon: MessageSquare, roles: ["admin", "president", "minister"] },
+  { key: "messages", label: "留言管理", icon: Mail, roles: ["admin", "president", "minister"] },
   { key: "journals", label: "期刊管理", icon: Library, roles: ["admin", "president", "minister"] },
   { key: "checkin", label: "签到管理", icon: ClipboardCheck, roles: ["admin", "president", "minister"] },
   { key: "members", label: "成员管理", icon: Users, section: "组织管理", roles: ["admin", "president", "minister"] },
@@ -55,6 +60,9 @@ const tabs: TabConfig[] = [
   { key: "export", label: "数据导出", icon: Download, roles: ["admin", "president"] },
   { key: "audit", label: "操作日志", icon: ScrollText, roles: ["admin", "president"] },
   { key: "hero_slides", label: "首页轮播", icon: ImageIcon, section: "网站内容", roles: ["admin", "president"] },
+  { key: "quick_links", label: "快捷入口", icon: Link2, roles: ["admin", "president"] },
+  { key: "documents", label: "文件中心", icon: FileText, roles: ["admin", "president"] },
+  { key: "about_content", label: "社团概况", icon: Info, roles: ["admin", "president"] },
   { key: "leadership", label: "历届团队", icon: Crown, roles: ["admin", "president"] },
   { key: "settings", label: "系统设置", icon: Settings, section: "系统", roles: ["admin", "president"] },
 ];
