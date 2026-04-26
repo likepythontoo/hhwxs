@@ -161,11 +161,15 @@ const Admin = () => {
       {tab === "finance" && <FinanceManagement />}
       {tab === "recruitment" && <RecruitmentManagement currentUserRole={userRole} currentUserDeptId={userDeptId} />}
       {tab === "forum" && <ForumManagement />}
+      {tab === "messages" && <MessageManagement />}
       {tab === "journals" && <JournalManagement />}
       {tab === "checkin" && <CheckInManagement />}
       {tab === "export" && <ExportCenter />}
       {tab === "audit" && <AuditLogViewer />}
       {tab === "hero_slides" && <HeroSlidesManagement />}
+      {tab === "quick_links" && <QuickLinksManagement />}
+      {tab === "documents" && <DocumentManagement />}
+      {tab === "about_content" && <AboutContentManagement />}
       {tab === "leadership" && <LeadershipManagement />}
       {tab === "settings" && <SiteSettings />}
     </>
