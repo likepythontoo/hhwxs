@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import UpcomingEvents from "@/components/UpcomingEvents";
-import { CalendarDays, Search, Tag, ChevronLeft } from "lucide-react";
+import { CalendarDays, Search, Tag } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface NewsItem {
   id: string;
@@ -29,7 +30,6 @@ const News = () => {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("全部");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selected, setSelected] = useState<NewsItem | null>(null);
 
   useEffect(() => {
     supabase.from("news").select("*")
@@ -50,38 +50,6 @@ const News = () => {
     const d = item.published_at || item.created_at;
     return new Date(d).toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" });
   };
-
-  // Detail view
-  if (selected) {
-    return (
-      <Layout>
-        <div className="relative bg-primary py-16 text-primary-foreground">
-          <div className="container mx-auto px-4">
-            <button onClick={() => setSelected(null)} className="mb-3 flex items-center gap-1 text-sm opacity-70 hover:opacity-100">
-              <ChevronLeft className="h-4 w-4" /> 返回列表
-            </button>
-            {selected.category && (
-              <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs">{selected.category}</span>
-            )}
-            <h1 className="mt-2 font-serif text-2xl font-bold md:text-3xl">{selected.title}</h1>
-            <p className="mt-2 text-sm text-primary-foreground/70">{formatDate(selected)}</p>
-          </div>
-        </div>
-        <section className="py-8 md:py-12">
-          <div className="container mx-auto max-w-2xl px-4">
-            {selected.cover_url && (
-              <div className="mb-6 overflow-hidden rounded-xl">
-                <img src={selected.cover_url} alt={selected.title} className="w-full object-cover" />
-              </div>
-            )}
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm md:p-8">
-              <div className="whitespace-pre-wrap text-sm leading-loose">{selected.content || "暂无内容"}</div>
-            </div>
-          </div>
-        </section>
-      </Layout>
-    );
-  }
 
   return (
     <Layout>
@@ -147,7 +115,7 @@ const News = () => {
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((item) => (
-                <button key={item.id} onClick={() => setSelected(item)}
+                <Link key={item.id} to={`/news/${item.id}`}
                   className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card text-left transition-shadow hover:shadow-md">
                   <div className="h-1 bg-primary" />
                   <div className="flex flex-1 flex-col p-5">
@@ -173,7 +141,7 @@ const News = () => {
                       </span>
                     </div>
                   </div>
-                </button>
+                </Link>
               ))}
             </div>
           )}
