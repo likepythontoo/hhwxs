@@ -8,6 +8,7 @@ import About from "./pages/About";
 import Charter from "./pages/Charter";
 import Leadership from "./pages/Leadership";
 import News from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import Join from "./pages/Join";
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/charter" element={<Charter />} />
           <Route path="/leadership" element={<Leadership />} />
           <Route path="/news" element={<News />} />
+          <Route path="/news/:id" element={<NewsDetail />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/join" element={<Join />} />

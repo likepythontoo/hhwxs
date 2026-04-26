@@ -1,68 +1,44 @@
+## 修复首页新闻点击问题
 
+### 问题原因
+首页 `NewsSection` 里的新闻列表目前使用的是 `href="#"`，点击后浏览器会跳到页面顶部，所以看起来像“自动向上”，并没有真正进入新闻内容页。
 
-## 校友档案库丰富化方案
+同时 `/news` 页面现在的详情是“页面内部选中新闻后展示”，首页没有把具体新闻 ID 或选中状态传过去，因此首页新闻无法直接打开对应内容。
 
-### 现状盘点
+### 修复方案
 
-当前 `/members` 页面已有：成员卡片网格、届别/职位筛选、统计数字、社长时间线、城市分布、合影墙、作者排行、自助登记。但视觉单调、信息密度低、互动性弱。
+#### 1. 让首页新闻使用真实跳转
+把首页新闻条目从 `href="#"` 改成跳转到具体新闻详情地址，例如：
+- `/news/:id`
 
-### 增强方向（5 大模块）
+首页“更多新闻”仍然保留跳转到 `/news` 列表页。
 
-#### 1. 视图切换 + 排序（卡片更丰富）
-- 顶部增加 **"卡片 / 列表 / 时间轴 / 关系图"** 4 种视图切换
-- 增加排序：按届别、按作品数、按姓名拼音、按入社时间
-- `MemberCard` 增强：显示文学标签胶囊、所在城市、作品数徽章、悬停时翻转显示更多信息（背面：寄语/回忆首句）
+#### 2. 为新闻详情增加独立路由
+在路由中新增：
+- `/news/:id`
 
-#### 2. 文学流派 / 标签云
-- 新增 **`LiteraryTagCloud.tsx`** 组件：聚合所有成员 `literary_tags`，按出现频次生成动态字号标签云
-- 点击标签 → 筛选出该流派所有成员
-- 配合"诗歌系 / 小说系 / 散文系"分类着色
+这样首页、新闻列表、搜索结果都可以直接打开同一篇新闻，刷新页面也不会丢失内容。
 
-#### 3. 校友风采 · 精选寄语墙
-- 新增 **`MemoirWall.tsx`**：从所有成员的 `memoir`/`bio` 字段抽取，瀑布流卡片，poster 风格引文
-- 每张卡随机不同高度、轻微旋转角度、纸张纹理底色
-- 配合作者姓名与届别水印
+#### 3. 改造新闻详情页
+把当前 `/news` 页面里“点击卡片后用 selected 状态显示详情”的逻辑，改成更稳定的独立详情页：
+- `/news`：新闻列表、筛选、搜索
+- `/news/:id`：读取对应新闻并显示正文、封面、日期、分类、返回按钮
 
-#### 4. 互动性增强
-- **生日 / 入社纪念日**：在 `members` 表新增 `joined_date`、`birthday`（可选），首页轮播"今日纪念"卡片
-- **校友寻人板**：基于 `member_registration_requests` 的"待审核 + 已通过"组合，公开展示"最近 X 位刚加入档案库的校友"动态时间流
-- **排行榜扩展**：除作品数排行，新增"最受推荐作品作者"（基于 `submissions.recommend_count`）、"最活跃届别"、"地域明星"
+#### 4. 首页新闻数据来源同步后台
+当前首页 `NewsSection` 仍有硬编码新闻数据，后台发布的新新闻不会实时显示在首页。一起修复为：
+- 从后台新闻表读取已发布新闻
+- 按分类展示：社情快讯 / 通知公告 / 文学前沿
+- 头条新闻优先显示最新一条或可按已有字段规则显示
+- 点击每条新闻进入 `/news/:id`
 
-#### 5. 数据可视化升级
-- **届别金字塔图**：横向条形图，每届人数 + 该届产出作品数双指标
-- **流派玫瑰图**：用 SVG 玫瑰图展示文学流派分布
-- **地域热力卡**：现有 `AlumniMap` 升级为带数字气泡 + 排名前 3 高亮
+### 涉及文件
+- `src/components/NewsSection.tsx`：首页新闻改为读取后台数据，并使用真实链接
+- `src/pages/News.tsx`：列表页改为使用详情路由跳转
+- 新增 `src/pages/NewsDetail.tsx`：新闻详情页
+- `src/App.tsx`：添加 `/news/:id` 路由
 
-### 文件清单
-
-**数据库**
-- 迁移：`members` 表增加 `joined_date date`、`birthday date`、`featured_quote text`（可选纪念字段）
-
-**新增组件**
-- `src/components/members/ViewSwitcher.tsx` — 视图模式切换器
-- `src/components/members/MemberListView.tsx` — 紧凑列表视图（Excel 风格）
-- `src/components/members/MemberRelationGraph.tsx` — D3/SVG 校友关系图（同届连线）
-- `src/components/members/LiteraryTagCloud.tsx` — 标签云
-- `src/components/members/MemoirWall.tsx` — 寄语瀑布流墙
-- `src/components/members/AnniversaryCard.tsx` — 今日纪念卡
-- `src/components/members/RecentJoinFeed.tsx` — 新加入校友时间流
-- `src/components/members/TermPyramid.tsx` — 届别金字塔图
-- `src/components/members/GenreRoseChart.tsx` — 流派玫瑰图
-
-**修改组件**
-- `src/components/members/MemberCard.tsx` — 翻转效果、标签、作品徽章
-- `src/components/members/AlumniMap.tsx` — 加排名气泡
-- `src/components/members/AuthorRanking.tsx` — 新增 Tab：作品数 / 推荐数 / 活跃度
-- `src/pages/Members.tsx` — 集成新模块、视图切换、排序
-- `src/pages/MemberProfile.tsx` — 编辑表单加入生日/入社日/精选寄语
-
-### 视觉风格
-延续"考究学术档案"风格：米色纸张 + 深栗红 + 墨黑印章感；新模块统一使用 Framer Motion 滚动入场、轻微旋转/位移；标签云、玫瑰图采用 archive-cream/charcoal 主色谱。
-
-### 实施顺序
-1. 数据库迁移 + 视图切换框架
-2. MemberCard 翻转 + 列表视图
-3. 标签云 + 寄语墙（最具视觉冲击）
-4. 数据可视化（金字塔 + 玫瑰图）
-5. 关系图 + 纪念卡（互动收尾）
-
+### 预期效果
+- 首页点击新闻不再跳到顶部
+- 点击首页任意新闻会进入对应新闻内容页
+- 新闻详情页支持刷新和直接分享链接
+- 后台发布/修改新闻后，首页新闻和新闻页都能同步显示
