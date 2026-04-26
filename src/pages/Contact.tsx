@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { Mail, Phone, MapPin, MessageSquare, Send, ExternalLink, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,11 +12,20 @@ const socialLinks = [
 
 const Contact = () => {
   const { toast } = useToast();
+  const [settings, setSettings] = useState<Record<string, string>>({});
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [content, setContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("key,value").then(({ data }) => {
+      setSettings(Object.fromEntries((data || []).map(s => [s.key, s.value || ""])));
+    });
+  }, []);
+
+  const setting = (key: string, fallback: string) => settings[key] || fallback;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,21 +72,21 @@ const Contact = () => {
                     <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <div>
                       <p className="font-medium">社团地址</p>
-                      <p className="text-muted-foreground">河北省唐山市曹妃甸区河北科技学院</p>
+                      <p className="text-muted-foreground">{setting("contact_address", "河北省唐山市曹妃甸区河北科技学院")}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <div>
                       <p className="font-medium">社长邮箱</p>
-                      <p className="text-muted-foreground">1330760849@qq.com</p>
+                      <p className="text-muted-foreground">{setting("president_email", setting("contact_email", "1330760849@qq.com"))}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                     <div>
                       <p className="font-medium">指导老师</p>
-                      <p className="text-muted-foreground">某某某 · 000-0000-0000</p>
+                      <p className="text-muted-foreground">{setting("advisor_name", "某某某")} · {setting("advisor_phone", "000-0000-0000")}</p>
                     </div>
                   </div>
                 </div>
@@ -91,7 +100,7 @@ const Contact = () => {
                       <span className="text-lg">{s.icon}</span>
                       <div className="text-sm">
                         <p className="font-medium">{s.name}</p>
-                        <p className="text-muted-foreground">{s.handle}</p>
+                        <p className="text-muted-foreground">{s.name === "微信公众号" ? setting("wechat_id", s.handle) : s.name === "抖音" ? setting("social_douyin", s.handle) : setting("social_bilibili", s.handle)}</p>
                       </div>
                     </div>
                   ))}
@@ -123,12 +132,12 @@ const Contact = () => {
                 <h2 className="mb-4 font-serif text-lg font-bold">📖 社团出版物</h2>
                 <div className="space-y-3 text-sm">
                   <div className="rounded-lg bg-secondary/50 px-4 py-3">
-                    <p className="font-medium">期刊：《红湖》</p>
-                    <p className="mt-1 text-xs text-muted-foreground">社团核心出版物，每年定期出刊，汇集社员优秀文学作品</p>
+                    <p className="font-medium">{setting("publication_honghu_title", "期刊：《红湖》")}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{setting("publication_honghu_desc", "社团核心出版物，每年定期出刊，汇集社员优秀文学作品")}</p>
                   </div>
                   <div className="rounded-lg bg-secondary/50 px-4 py-3">
-                    <p className="font-medium">报刊：《墨香阁》</p>
-                    <p className="mt-1 text-xs text-muted-foreground">社团文艺副刊，聚焦校园文化与文学评论</p>
+                    <p className="font-medium">{setting("publication_moxiang_title", "报刊：《墨香阁》")}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{setting("publication_moxiang_desc", "社团文艺副刊，聚焦校园文化与文学评论")}</p>
                   </div>
                 </div>
               </div>
