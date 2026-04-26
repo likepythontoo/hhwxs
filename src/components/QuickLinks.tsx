@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   PenLine,
   BookOpen,
@@ -5,9 +6,13 @@ import {
   CalendarCheck,
   Download,
   FileBarChart,
+  FileText,
+  MessageSquare,
+  Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import ScrollReveal from "@/components/ScrollReveal";
+import { supabase } from "@/integrations/supabase/client";
 
 const links = [
   { icon: PenLine, label: "投稿系统", desc: "在线提交文学作品", href: "/submit", accent: "from-primary/10 to-primary/5" },
@@ -18,7 +23,35 @@ const links = [
   { icon: FileBarChart, label: "社团章程", desc: "规章制度查阅", href: "/charter", accent: "from-accent/5 to-primary/10" },
 ];
 
+const iconMap = { PenLine, BookOpen, Users, CalendarCheck, Download, FileBarChart, FileText, MessageSquare, Star };
+
+interface QuickLinkItem {
+  id: string;
+  label: string;
+  description: string | null;
+  href: string;
+  icon: keyof typeof iconMap;
+  accent: string | null;
+}
+
 const QuickLinks = () => {
+  const [dynamicLinks, setDynamicLinks] = useState<QuickLinkItem[]>([]);
+
+  useEffect(() => {
+    (supabase.from("quick_links" as any) as any).select("id,label,description,href,icon,accent")
+      .eq("is_active", true)
+      .order("sort_order")
+      .then(({ data }: any) => setDynamicLinks(data || []));
+  }, []);
+
+  const displayLinks = dynamicLinks.length > 0 ? dynamicLinks.map(l => ({
+    icon: iconMap[l.icon] || FileText,
+    label: l.label,
+    desc: l.description || "",
+    href: l.href,
+    accent: l.accent || "from-primary/10 to-primary/5",
+  })) : links;
+
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">
       {/* Background decoration */}
@@ -37,7 +70,7 @@ const QuickLinks = () => {
         </ScrollReveal>
 
         <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-6">
-          {links.map((link, i) => (
+          {displayLinks.map((link, i) => (
             <ScrollReveal key={link.label} delay={i * 0.08}>
               <Link
                 to={link.href}
