@@ -199,13 +199,24 @@ const Admin = () => {
           <h1 className="font-serif text-sm font-bold truncate max-w-[200px]">
             {visibleTabs.find(t => t.key === tab)?.label}
           </h1>
-          <button
-            onClick={handleLogout}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground active:bg-secondary"
-            title="退出"
-          >
-            <LogOut className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground active:bg-secondary"
+              title="新窗口查看前台"
+            >
+              <Home className="h-5 w-5" />
+            </a>
+            <button
+              onClick={handleLogout}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground active:bg-secondary"
+              title="退出"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          </div>
         </header>
 
         {/* Drawer overlay + menu */}
