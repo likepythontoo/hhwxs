@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon, UserPlus2, FileText, Link2, Info, Mail } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon, UserPlus2, FileText, Link2, Info, Mail, Home, ExternalLink } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
