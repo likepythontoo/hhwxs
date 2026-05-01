@@ -350,14 +350,36 @@ const Admin = () => {
                   <p className="text-[9px] text-primary">{roleLabels[userRole]}</p>
                 </div>
               </div>
-              <button onClick={handleLogout} className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-foreground" title="退出">
-                <LogOut className="h-3.5 w-3.5" />
-              </button>
+              <div className="flex items-center gap-0.5">
+                <a
+                  href="/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-primary"
+                  title="新窗口查看前台"
+                >
+                  <Home className="h-3.5 w-3.5" />
+                </a>
+                <button onClick={handleLogout} className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-foreground" title="退出">
+                  <LogOut className="h-3.5 w-3.5" />
+                </button>
+              </div>
             </div>
           ) : (
-            <button onClick={handleLogout} className="mx-auto block rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary" title="退出">
-              <LogOut className="h-4 w-4" />
-            </button>
+            <div className="flex flex-col items-center gap-1">
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-primary"
+                title="新窗口查看前台"
+              >
+                <Home className="h-4 w-4" />
+              </a>
+              <button onClick={handleLogout} className="block rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary" title="退出">
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
           )}
         </div>
       </aside>
