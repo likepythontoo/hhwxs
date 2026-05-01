@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, User, Clock, UserPlus, ClipboardCheck, LogIn } from "lucide-react";
+import { Search, User, Clock, UserPlus, ClipboardCheck, LogIn, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
@@ -10,22 +10,32 @@ const TopBar = () => {
   const [user, setUser] = useState<any>(null);
   const [displayName, setDisplayName] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [hasAdminAccess, setHasAdminAccess] = useState(false);
+
+  const loadUserMeta = async (userId: string, fallbackEmail: string) => {
+    const [profileRes, rolesRes] = await Promise.all([
+      supabase.from("profiles").select("display_name").eq("user_id", userId).single(),
+      supabase.from("user_roles").select("role").eq("user_id", userId),
+    ]);
+    setDisplayName(profileRes.data?.display_name || fallbackEmail);
+    const roles = (rolesRes.data || []).map((r: any) => r.role as string);
+    setHasAdminAccess(roles.some(r => ["admin", "president", "minister"].includes(r)));
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setUser(session.user);
-        supabase.from("profiles").select("display_name").eq("user_id", session.user.id).single()
-          .then(({ data }) => setDisplayName(data?.display_name || session.user.email || ""));
+        loadUserMeta(session.user.id, session.user.email || "");
       }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user || null);
       if (session?.user) {
-        supabase.from("profiles").select("display_name").eq("user_id", session.user.id).single()
-          .then(({ data }) => setDisplayName(data?.display_name || session.user.email || ""));
+        loadUserMeta(session.user.id, session.user.email || "");
       } else {
         setDisplayName("");
+        setHasAdminAccess(false);
       }
     });
     return () => subscription.unsubscribe();
@@ -55,6 +65,12 @@ const TopBar = () => {
             <ClipboardCheck className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">活动签到</span>
           </Link>
+          {user && hasAdminAccess && (
+            <Link to="/admin" className="flex items-center gap-1.5 rounded bg-gold/20 px-2 py-0.5 text-gold opacity-90 transition-opacity hover:opacity-100" title="管理后台">
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">管理后台</span>
+            </Link>
+          )}
           {user ? (
             <Link to="/profile" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-[10px] font-bold">

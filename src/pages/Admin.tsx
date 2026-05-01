@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon, UserPlus2, FileText, Link2, Info, Mail } from "lucide-react";
+import { LogOut, LayoutDashboard, Calendar, Users, Newspaper, BookOpen, Wallet, Settings, UserPlus, ScrollText, Download, MessageSquare, Building2, ClipboardCheck, Star, Library, UsersRound, UserCheck, Menu, X, Crown, Image as ImageIcon, UserPlus2, FileText, Link2, Info, Mail, Home, ExternalLink } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import EventManagement from "@/components/admin/EventManagement";
@@ -199,13 +199,24 @@ const Admin = () => {
           <h1 className="font-serif text-sm font-bold truncate max-w-[200px]">
             {visibleTabs.find(t => t.key === tab)?.label}
           </h1>
-          <button
-            onClick={handleLogout}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground active:bg-secondary"
-            title="退出"
-          >
-            <LogOut className="h-5 w-5" />
-          </button>
+          <div className="flex items-center gap-1">
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground active:bg-secondary"
+              title="新窗口查看前台"
+            >
+              <Home className="h-5 w-5" />
+            </a>
+            <button
+              onClick={handleLogout}
+              className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground active:bg-secondary"
+              title="退出"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
+          </div>
         </header>
 
         {/* Drawer overlay + menu */}
@@ -245,6 +256,16 @@ const Admin = () => {
                     <X className="h-5 w-5" />
                   </button>
                 </div>
+
+                {/* Quick link to frontend */}
+                <a
+                  href="/"
+                  onClick={() => setDrawerOpen(false)}
+                  className="flex items-center gap-3 border-b border-border px-4 py-3 text-sm font-medium text-primary hover:bg-primary/5"
+                >
+                  <Home className="h-5 w-5" />
+                  <span>返回前台首页</span>
+                </a>
 
                 {/* Drawer nav */}
                 <nav className="py-2">
@@ -329,21 +350,53 @@ const Admin = () => {
                   <p className="text-[9px] text-primary">{roleLabels[userRole]}</p>
                 </div>
               </div>
-              <button onClick={handleLogout} className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-foreground" title="退出">
-                <LogOut className="h-3.5 w-3.5" />
-              </button>
+              <div className="flex items-center gap-0.5">
+                <a
+                  href="/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-primary"
+                  title="新窗口查看前台"
+                >
+                  <Home className="h-3.5 w-3.5" />
+                </a>
+                <button onClick={handleLogout} className="rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-foreground" title="退出">
+                  <LogOut className="h-3.5 w-3.5" />
+                </button>
+              </div>
             </div>
           ) : (
-            <button onClick={handleLogout} className="mx-auto block rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary" title="退出">
-              <LogOut className="h-4 w-4" />
-            </button>
+            <div className="flex flex-col items-center gap-1">
+              <a
+                href="/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary hover:text-primary"
+                title="新窗口查看前台"
+              >
+                <Home className="h-4 w-4" />
+              </a>
+              <button onClick={handleLogout} className="block rounded-lg p-1.5 text-muted-foreground transition hover:bg-secondary" title="退出">
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
           )}
         </div>
       </aside>
 
       <main className="flex-1 overflow-y-auto">
-        <header className="sticky top-0 z-10 border-b border-border bg-card/80 px-6 py-3 backdrop-blur-sm">
+        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card/80 px-6 py-3 backdrop-blur-sm">
           <h1 className="font-serif text-lg font-bold">{visibleTabs.find(t => t.key === tab)?.label}</h1>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-primary"
+            title="在新窗口打开前台"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            <span>查看前台</span>
+          </a>
         </header>
         <div className="p-6">
           {renderContent()}
