@@ -257,6 +257,16 @@ const Admin = () => {
                   </button>
                 </div>
 
+                {/* Quick link to frontend */}
+                <a
+                  href="/"
+                  onClick={() => setDrawerOpen(false)}
+                  className="flex items-center gap-3 border-b border-border px-4 py-3 text-sm font-medium text-primary hover:bg-primary/5"
+                >
+                  <Home className="h-5 w-5" />
+                  <span>返回前台首页</span>
+                </a>
+
                 {/* Drawer nav */}
                 <nav className="py-2">
                   {groupedTabs.map((group, gi) => (
