@@ -1,19 +1,59 @@
-User-agent: Googlebot
+# 全站对所有搜索引擎开放
+User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /auth
+Disallow: /profile
 
-User-agent: Bingbot
-Allow: /
-
+# 百度
 User-agent: Baiduspider
 Allow: /
+Disallow: /admin
+Crawl-delay: 1
 
+# 360
+User-agent: 360Spider
+Allow: /
+Disallow: /admin
+
+User-agent: HaoSouSpider
+Allow: /
+Disallow: /admin
+
+# 搜狗
+User-agent: Sogou web spider
+Allow: /
+Disallow: /admin
+
+User-agent: Sogou inst spider
+Allow: /
+Disallow: /admin
+
+# 神马（UC 移动搜索）
+User-agent: YisouSpider
+Allow: /
+Disallow: /admin
+
+# 字节头条搜索
+User-agent: Bytespider
+Allow: /
+Disallow: /admin
+
+# 必应
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+
+# 谷歌
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+
+# Twitter / Facebook 抓取
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
-Allow: /
-
-User-agent: *
 Allow: /
 
 Sitemap: https://hhwxs.lovable.app/sitemap.xml
