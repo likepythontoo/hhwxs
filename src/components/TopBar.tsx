@@ -65,6 +65,12 @@ const TopBar = () => {
             <ClipboardCheck className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">活动签到</span>
           </Link>
+          {user && hasAdminAccess && (
+            <Link to="/admin" className="flex items-center gap-1.5 rounded bg-gold/20 px-2 py-0.5 text-gold opacity-90 transition-opacity hover:opacity-100" title="管理后台">
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">管理后台</span>
+            </Link>
+          )}
           {user ? (
             <Link to="/profile" className="flex items-center gap-1.5 opacity-80 transition-opacity hover:opacity-100">
               <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-[10px] font-bold">
