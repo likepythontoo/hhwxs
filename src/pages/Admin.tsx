@@ -385,8 +385,18 @@ const Admin = () => {
       </aside>
 
       <main className="flex-1 overflow-y-auto">
-        <header className="sticky top-0 z-10 border-b border-border bg-card/80 px-6 py-3 backdrop-blur-sm">
+        <header className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card/80 px-6 py-3 backdrop-blur-sm">
           <h1 className="font-serif text-lg font-bold">{visibleTabs.find(t => t.key === tab)?.label}</h1>
+          <a
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs text-muted-foreground transition hover:border-primary/40 hover:text-primary"
+            title="在新窗口打开前台"
+          >
+            <ExternalLink className="h-3.5 w-3.5" />
+            <span>查看前台</span>
+          </a>
         </header>
         <div className="p-6">
           {renderContent()}
