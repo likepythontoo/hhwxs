@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, User, Clock, UserPlus, ClipboardCheck, LogIn } from "lucide-react";
+import { Search, User, Clock, UserPlus, ClipboardCheck, LogIn, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/logo.png";
