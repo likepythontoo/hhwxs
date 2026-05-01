@@ -10,22 +10,32 @@ const TopBar = () => {
   const [user, setUser] = useState<any>(null);
   const [displayName, setDisplayName] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [hasAdminAccess, setHasAdminAccess] = useState(false);
+
+  const loadUserMeta = async (userId: string, fallbackEmail: string) => {
+    const [profileRes, rolesRes] = await Promise.all([
+      supabase.from("profiles").select("display_name").eq("user_id", userId).single(),
+      supabase.from("user_roles").select("role").eq("user_id", userId),
+    ]);
+    setDisplayName(profileRes.data?.display_name || fallbackEmail);
+    const roles = (rolesRes.data || []).map((r: any) => r.role as string);
+    setHasAdminAccess(roles.some(r => ["admin", "president", "minister"].includes(r)));
+  };
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setUser(session.user);
-        supabase.from("profiles").select("display_name").eq("user_id", session.user.id).single()
-          .then(({ data }) => setDisplayName(data?.display_name || session.user.email || ""));
+        loadUserMeta(session.user.id, session.user.email || "");
       }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user || null);
       if (session?.user) {
-        supabase.from("profiles").select("display_name").eq("user_id", session.user.id).single()
-          .then(({ data }) => setDisplayName(data?.display_name || session.user.email || ""));
+        loadUserMeta(session.user.id, session.user.email || "");
       } else {
         setDisplayName("");
+        setHasAdminAccess(false);
       }
     });
     return () => subscription.unsubscribe();
