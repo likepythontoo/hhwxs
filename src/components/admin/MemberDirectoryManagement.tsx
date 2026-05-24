@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Trash2, Edit2, Save, X, Upload, BookOpen, Link2 } from "lucide-react";
+import { Plus, Trash2, Edit2, Save, X, Upload, BookOpen, Link2, FileSpreadsheet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { leadershipData } from "@/data/leadershipData";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import MemberBulkImportDialog from "./MemberBulkImportDialog";
+
 
 interface Member {
   id: string;
