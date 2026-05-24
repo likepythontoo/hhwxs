@@ -299,7 +299,14 @@ const MemberDirectoryManagement = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <MemberBulkImportDialog
+        open={bulkImportOpen}
+        onOpenChange={setBulkImportOpen}
+        onImported={fetchMembers}
+      />
     </div>
+
   );
 };
 
