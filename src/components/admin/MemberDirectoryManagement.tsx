@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Trash2, Edit2, Save, X, Upload, BookOpen, Link2 } from "lucide-react";
+import { Plus, Trash2, Edit2, Save, X, Upload, BookOpen, Link2, FileSpreadsheet } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { leadershipData } from "@/data/leadershipData";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import MemberBulkImportDialog from "./MemberBulkImportDialog";
+
 
 interface Member {
   id: string;
@@ -32,6 +34,8 @@ const MemberDirectoryManagement = () => {
   const [adding, setAdding] = useState(false);
   const [newMember, setNewMember] = useState({ name: "", term: "", role_title: "", bio: "" });
   const [importing, setImporting] = useState(false);
+  const [bulkImportOpen, setBulkImportOpen] = useState(false);
+
 
   // Works linking
   const [worksDialogMember, setWorksDialogMember] = useState<Member | null>(null);
@@ -161,6 +165,12 @@ const MemberDirectoryManagement = () => {
             </button>
           )}
           <button
+            onClick={() => setBulkImportOpen(true)}
+            className="flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/10"
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" /> 批量导入
+          </button>
+          <button
             onClick={() => setAdding(true)}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground"
           >
@@ -168,6 +178,7 @@ const MemberDirectoryManagement = () => {
           </button>
         </div>
       </div>
+
 
       {/* Add Form */}
       {adding && (
@@ -288,7 +299,14 @@ const MemberDirectoryManagement = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <MemberBulkImportDialog
+        open={bulkImportOpen}
+        onOpenChange={setBulkImportOpen}
+        onImported={fetchMembers}
+      />
     </div>
+
   );
 };
 
