@@ -34,6 +34,8 @@ const MemberDirectoryManagement = () => {
   const [adding, setAdding] = useState(false);
   const [newMember, setNewMember] = useState({ name: "", term: "", role_title: "", bio: "" });
   const [importing, setImporting] = useState(false);
+  const [bulkImportOpen, setBulkImportOpen] = useState(false);
+
 
   // Works linking
   const [worksDialogMember, setWorksDialogMember] = useState<Member | null>(null);
