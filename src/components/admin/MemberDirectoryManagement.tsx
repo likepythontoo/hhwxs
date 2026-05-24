@@ -165,6 +165,12 @@ const MemberDirectoryManagement = () => {
             </button>
           )}
           <button
+            onClick={() => setBulkImportOpen(true)}
+            className="flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary transition hover:bg-primary/10"
+          >
+            <FileSpreadsheet className="h-3.5 w-3.5" /> 批量导入
+          </button>
+          <button
             onClick={() => setAdding(true)}
             className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground"
           >
@@ -172,6 +178,7 @@ const MemberDirectoryManagement = () => {
           </button>
         </div>
       </div>
+
 
       {/* Add Form */}
       {adding && (
