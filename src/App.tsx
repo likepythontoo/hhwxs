@@ -26,6 +26,7 @@ import MoxiangReader from "./pages/MoxiangReader";
 import Members from "./pages/Members";
 import MemberProfile from "./pages/MemberProfile";
 import NotFound from "./pages/NotFound";
+import OAuthConsent from "./pages/OAuthConsent";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ const App = () => (
           <Route path="/moxiang/:id" element={<MoxiangReader />} />
           <Route path="/members" element={<Members />} />
           <Route path="/members/:id" element={<MemberProfile />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

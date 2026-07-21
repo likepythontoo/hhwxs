@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Layout from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Lock, User } from "lucide-react";
@@ -36,6 +36,10 @@ const Auth = () => {
     target: string;
   } | null>(null);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // Same-origin relative path only (starts with "/" but not "//")
+  const rawNext = searchParams.get("next") ?? "";
+  const nextPath = rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +64,7 @@ const Auth = () => {
         const name = profileRes.data?.display_name || data.user.email?.split("@")[0] || "用户";
         const roles = (rolesRes.data || []).map((r: any) => r.role as string);
         const hasManagement = roles.some(r => ["admin", "president", "minister"].includes(r));
-        const target = hasManagement ? "/admin" : "/profile";
+        const target = nextPath || (hasManagement ? "/admin" : "/profile");
 
         // Pick the highest priority role label
         let roleLabel = "";
@@ -73,7 +77,9 @@ const Auth = () => {
         setWelcome({ name, roleLabel, quote, target });
 
         setTimeout(() => {
-          navigate(target);
+          // Use hard nav for OAuth-consent redirect so route re-mounts and reads fresh session
+          if (nextPath) window.location.href = target;
+          else navigate(target);
         }, 2500);
       }
     } else {
@@ -82,7 +88,7 @@ const Auth = () => {
         password,
         options: {
           data: { display_name: displayName },
-          emailRedirectTo: window.location.origin,
+          emailRedirectTo: nextPath ? window.location.origin + nextPath : window.location.origin,
         },
       });
       if (error) {
