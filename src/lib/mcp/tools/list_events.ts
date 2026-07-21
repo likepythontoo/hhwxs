@@ -15,7 +15,7 @@ export default defineTool({
     const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_PUBLISHABLE_KEY!, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
-    let q = supabase.from("events").select("id, title, description, event_date, location, category");
+    let q = supabase.from("events").select("id, title, description, event_date, location, category").eq("is_active", true);
     const now = new Date().toISOString();
     if (filter === "upcoming") q = q.gte("event_date", now).order("event_date", { ascending: true });
     else if (filter === "past") q = q.lt("event_date", now).order("event_date", { ascending: false });

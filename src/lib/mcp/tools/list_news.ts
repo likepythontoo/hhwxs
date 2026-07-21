@@ -16,7 +16,7 @@ export default defineTool({
     });
     const { data, error } = await supabase
       .from("news")
-      .select("id, title, summary, category, published_at, cover_image_url")
+      .select("id, title, category, published_at, cover_url")
       .eq("is_published", true)
       .order("published_at", { ascending: false })
       .limit(limit ?? 10);

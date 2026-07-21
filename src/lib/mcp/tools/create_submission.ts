@@ -24,7 +24,7 @@ export default defineTool({
     const { data, error } = await supabase
       .from("submissions")
       .insert({
-        user_id: ctx.getUserId(),
+        author_id: ctx.getUserId(),
         title,
         content,
         genre,

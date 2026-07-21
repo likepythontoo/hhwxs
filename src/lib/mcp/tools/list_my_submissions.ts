@@ -17,8 +17,8 @@ export default defineTool({
     });
     const { data, error } = await supabase
       .from("submissions")
-      .select("id, title, genre, status, created_at, review_notes")
-      .eq("user_id", ctx.getUserId())
+      .select("id, title, genre, status, created_at, reviewer_notes")
+      .eq("author_id", ctx.getUserId())
       .order("created_at", { ascending: false });
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     return {

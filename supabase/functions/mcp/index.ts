@@ -21,7 +21,7 @@ var list_news_default = defineTool({
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
       auth: { persistSession: false, autoRefreshToken: false }
     });
-    const { data, error } = await supabase.from("news").select("id, title, summary, category, published_at, cover_image_url").eq("is_published", true).order("published_at", { ascending: false }).limit(limit ?? 10);
+    const { data, error } = await supabase.from("news").select("id, title, category, published_at, cover_url").eq("is_published", true).order("published_at", { ascending: false }).limit(limit ?? 10);
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     return {
       content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
@@ -68,7 +68,7 @@ var list_events_default = defineTool3({
     const supabase = createClient3(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
       auth: { persistSession: false, autoRefreshToken: false }
     });
-    let q = supabase.from("events").select("id, title, description, event_date, location, category");
+    let q = supabase.from("events").select("id, title, description, event_date, location, category").eq("is_active", true);
     const now = (/* @__PURE__ */ new Date()).toISOString();
     if (filter === "upcoming") q = q.gte("event_date", now).order("event_date", { ascending: true });
     else if (filter === "past") q = q.lt("event_date", now).order("event_date", { ascending: false });
@@ -196,7 +196,7 @@ var list_my_submissions_default = defineTool7({
       global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
       auth: { persistSession: false, autoRefreshToken: false }
     });
-    const { data, error } = await supabase.from("submissions").select("id, title, genre, status, created_at, review_notes").eq("user_id", ctx.getUserId()).order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("submissions").select("id, title, genre, status, created_at, reviewer_notes").eq("author_id", ctx.getUserId()).order("created_at", { ascending: false });
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     return {
       content: [{ type: "text", text: JSON.stringify(data, null, 2) }],
@@ -229,7 +229,7 @@ var create_submission_default = defineTool8({
       auth: { persistSession: false, autoRefreshToken: false }
     });
     const { data, error } = await supabase.from("submissions").insert({
-      user_id: ctx.getUserId(),
+      author_id: ctx.getUserId(),
       title,
       content,
       genre,
