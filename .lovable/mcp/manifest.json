@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "sdk_version": "0.24.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://wuroxjmdjwvncvoqztza.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "honghu-literary-society-mcp",
+      "version": "0.1.0",
+      "title": "红湖文学社 MCP"
+    },
+    "tools": [
+      {
+        "name": "list_news",
+        "title": "列出新闻",
+        "description": "获取红湖文学社已发布的新闻列表，按发布日期倒序。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "description": "返回条数，默认 10"
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_news",
+        "title": "获取新闻详情",
+        "description": "根据 ID 获取一条新闻的完整正文与元数据。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "description": "新闻 ID (UUID)"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_events",
+        "title": "列出活动",
+        "description": "获取文学社活动列表。可选按 upcoming / past 过滤。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "type": "string",
+              "enum": [
+                "upcoming",
+                "past",
+                "all"
+              ],
+              "description": "时间过滤，默认 all"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_members",
+        "title": "列出历届成员",
+        "description": "查询文学社历届成员档案，可按届别或姓名关键字过滤。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "term": {
+              "type": "string",
+              "description": "届别，例如 2024级"
+            },
+            "search": {
+              "type": "string",
+              "description": "姓名关键字"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_works",
+        "title": "列出作品",
+        "description": "查询已审核通过、公开发表的文学作品（诗歌、小说、散文等）。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "genre": {
+              "type": "string",
+              "description": "体裁，例如 诗歌 / 小说 / 散文"
+            },
+            "search": {
+              "type": "string",
+              "description": "标题或正文关键字"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_my_profile",
+        "title": "获取我的个人资料",
+        "description": "获取当前登录用户在红湖文学社的个人资料、角色以及关联的成员档案。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_submissions",
+        "title": "我的投稿",
+        "description": "列出当前登录用户提交过的所有作品及审核状态。",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_submission",
+        "title": "提交作品",
+        "description": "以当前登录用户身份向红湖文学社提交一篇作品（待管理员审核）。",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200,
+              "description": "作品标题"
+            },
+            "content": {
+              "type": "string",
+              "minLength": 1,
+              "description": "作品正文"
+            },
+            "genre": {
+              "type": "string",
+              "minLength": 1,
+              "description": "体裁：诗歌 / 小说 / 散文 等"
+            },
+            "author_name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "作者署名"
+            }
+          },
+          "required": [
+            "title",
+            "content",
+            "genre",
+            "author_name"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
