@@ -1,63 +1,28 @@
 ## 目标
 
-在管理后台「成员管理」中新增**批量导入**功能，支持上传 Excel (.xlsx/.xls) 或 CSV 文件一次性导入大量成员，导入后自动显示在前台 `/members` 校友档案页。
+把仓库根目录的 `README.md` 从 Lovable 默认模板，替换成这个项目自己的中文说明文档，让人在 GitHub 上打开就能明白这是什么网站、有哪些功能、怎么跑起来。
 
-## 实现位置
+## README 结构
 
-`src/components/admin/MemberDirectoryManagement.tsx` —— 它管理 `members` 表（前台 `/members` 显示的校友/历届成员名单）。该文件已经引入了 `Upload` 图标但尚未实现导入功能。
-
-> 注：另一个 `MemberManagement.tsx` 管理的是注册用户角色（`profiles` + `user_roles`），不在此次范围内，因为已注册账号无法被"批量创建"。
-
-## 功能设计
-
-### 1. 工具栏新增两个按钮
-- **📥 下载模板**：生成一个示范 Excel 文件，含表头和 2 行示例数据。
-- **📤 批量导入**：弹出对话框上传文件。
-
-### 2. 支持的字段（与 `members` 表对齐）
-
-| 中文表头 | 数据库字段 | 必填 | 说明 |
-|---|---|---|---|
-| 姓名 | name | ✅ | |
-| 届别 | term | ✅ | 例如 "2024级" |
-| 职务 | role_title | | 例如 "社长" |
-| 简介 | bio | | |
-| 个人格言 | featured_quote | | |
-| 专业 | major | | |
-| 城市 | city | | |
-| 加入日期 | joined_date | | YYYY-MM-DD |
-| 生日 | birthday | | YYYY-MM-DD |
-| 文学标签 | literary_tags | | 用 `、` 或 `,` 分隔的多个标签 |
-| 头像URL | avatar_url | | |
-| 回忆录 | memoir | | |
-
-### 3. 导入流程
-
-```text
-选择文件 → 解析(xlsx库) → 字段映射 → 预览前 5 行 + 错误标记
-       → 用户确认 → 分批插入 (每批 100 条) → 进度条
-       → 显示结果：成功 X 条 / 失败 Y 条（含错误明细）
-       → 自动刷新列表
-```
-
-### 4. 校验规则
-- `name` 和 `term` 不能为空，否则跳过该行并记录原因。
-- 重复行（同 `name` + `term`）默认跳过，对话框中可勾选"覆盖现有"。
-- 日期字段做格式校验，非法日期保留为空并提示。
-- 文学标签自动拆分为字符串数组。
-
-### 5. 模板与示例
-下载模板时直接用 `xlsx` 库生成 `.xlsx`，第一行为中文表头，第二行为示例数据，第三行为字段说明（灰色字体）。
+1. **标题与简介** — 红湖文学社官网（河北科技学院），一句话定位 + 在线地址 https://hhwxs.lovable.app/
+2. **徽章行** — React 18 / Vite 5 / TypeScript / Tailwind / Supabase（静态 shields.io 徽章）
+3. **功能特性** — 分组列出：
+   - 前台：首页轮播与快捷入口、新闻中心（含详情页）、活动与签到、在线投稿、作品展示、《红湖》期刊与《墨香阁》互动报纸阅读器、校友档案库（卡片/列表/时间轴/关系图多视图、标签云、玫瑰图、寄语墙）、社员自助认领登记、招新报名、论坛、文件中心、全站 Ctrl+K 搜索
+   - 后台：新闻/活动/成员/投稿/期刊/招新/财务/文件/快捷入口/关于页内容/首页轮播/历届管理团队/留言/审计日志/导出中心/站点设置
+   - 权限：admin / president / minister 等角色，基于独立 `user_roles` 表 + RLS
+   - MCP：OAuth 保护的 Agent 集成，8 个工具
+4. **技术栈** — 前端、后端（Lovable Cloud / Supabase：数据库、鉴权、存储、Edge Functions）、关键库（framer-motion、recharts、react-hook-form + zod、xlsx、embla）
+5. **本地开发** — `npm i` / `npm run dev` / `npm run build` / `npm run lint` / `npm run test`，以及所需的 `.env` 变量名（VITE_SUPABASE_URL、VITE_SUPABASE_PUBLISHABLE_KEY、VITE_SUPABASE_PROJECT_ID，只写变量名不写值）
+6. **目录结构** — ```text 代码块，列出 src/pages、src/components/admin、src/components/members、src/lib/mcp、supabase/functions 等主要目录及职责
+7. **数据库概览** — 主要表的一句话说明表格（news、events、members、submissions、journals、documents、quick_links、about_content_items、site_settings、user_roles、member_registration_requests 等）
+8. **SEO 说明** — 已做的国内搜索引擎优化（index.html 静态正文、robots.txt 放行 Baiduspider、sitemap.xml、JSON-LD），以及建议绑定备案域名
+9. **部署** — Lovable 一键发布；GitHub 同步说明；自托管提示
+10. **贡献与许可** — 简短的分支/PR 约定，版权归红湖文学社所有
 
 ## 技术细节
 
-- 新增依赖：`xlsx`（用于解析 .xlsx/.xls，并能同时处理 CSV）。
-- 用现有的 shadcn `Dialog` 做导入向导（选择文件 → 预览 → 确认）。
-- 使用 `supabase.from("members").insert([...])` 批量插入，遵循现有 RLS（管理员/部长可写）。
-- 不需要新的数据库迁移，沿用现有 `members` 表与策略。
-- 前台 `/members` 页面无需改动，新数据会自动出现。
-
-## 不在本次范围
-- 头像图片批量上传（仅支持填写 URL）。
-- 关联作品（`member_works`）批量导入。
-- 校友自助登记审批流程（已有独立入口）。
+- 只改 `README.md` 一个文件，不动任何代码。
+- 全中文撰写，与站点语言一致；命令与变量名保留英文。
+- 不写入任何密钥或真实环境变量值，只列变量名。
+- 不引用 Supabase 控制台链接，后端统一称为 Lovable Cloud。
+- 数据库表清单在动笔前先读 `src/integrations/supabase/types.ts` 核对，只列真实存在的表。
