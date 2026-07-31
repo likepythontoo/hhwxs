@@ -3,6 +3,7 @@
 河北科技学院红湖文学社的官方网站，一个带完整后台内容管理系统的校园文学社团平台：新闻发布、活动签到、在线投稿与审稿、期刊阅读、校友档案库、招新报名，全部内容均可在后台实时维护。
 
 在线地址：<https://hhwxs.lovable.app/>
+网站域名：<https://www.hhwxs.cn/>
 
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)
