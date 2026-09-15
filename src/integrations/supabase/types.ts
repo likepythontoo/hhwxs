@@ -56,6 +56,158 @@ export type Database = {
         }
         Relationships: []
       }
+      alumni_gathering_signups: {
+        Row: {
+          contact: string | null
+          created_at: string
+          gathering_id: string
+          id: string
+          name: string
+          note: string | null
+          term: string | null
+          user_id: string
+        }
+        Insert: {
+          contact?: string | null
+          created_at?: string
+          gathering_id: string
+          id?: string
+          name: string
+          note?: string | null
+          term?: string | null
+          user_id: string
+        }
+        Update: {
+          contact?: string | null
+          created_at?: string
+          gathering_id?: string
+          id?: string
+          name?: string
+          note?: string | null
+          term?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alumni_gathering_signups_gathering_id_fkey"
+            columns: ["gathering_id"]
+            isOneToOne: false
+            referencedRelation: "alumni_gatherings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      alumni_gatherings: {
+        Row: {
+          contact: string | null
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          gather_at: string
+          id: string
+          location: string | null
+          max_participants: number | null
+          organizer_id: string | null
+          organizer_name: string | null
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_note: string | null
+          status: string
+          term: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          contact?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          gather_at: string
+          id?: string
+          location?: string | null
+          max_participants?: number | null
+          organizer_id?: string | null
+          organizer_name?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          term?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          contact?: string | null
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          gather_at?: string
+          id?: string
+          location?: string | null
+          max_participants?: number | null
+          organizer_id?: string | null
+          organizer_name?: string | null
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          term?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      alumni_lookups: {
+        Row: {
+          author_id: string
+          author_name: string
+          contact: string | null
+          content: string
+          created_at: string
+          id: string
+          is_resolved: boolean
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_note: string | null
+          status: string
+          target_name: string
+          term: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          author_name: string
+          contact?: string | null
+          content: string
+          created_at?: string
+          id?: string
+          is_resolved?: boolean
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          target_name: string
+          term?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string
+          contact?: string | null
+          content?: string
+          created_at?: string
+          id?: string
+          is_resolved?: boolean
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          target_name?: string
+          term?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -671,6 +823,171 @@ export type Database = {
           },
         ]
       }
+      member_honors: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          issuer: string | null
+          member_id: string
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_note: string | null
+          status: string
+          submitted_by: string | null
+          title: string
+          updated_at: string
+          year: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          issuer?: string | null
+          member_id: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          submitted_by?: string | null
+          title: string
+          updated_at?: string
+          year?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          issuer?: string | null
+          member_id?: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          submitted_by?: string | null
+          title?: string
+          updated_at?: string
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_honors_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_messages: {
+        Row: {
+          author_id: string
+          author_name: string
+          content: string
+          created_at: string
+          id: string
+          like_count: number
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_note: string | null
+          status: string
+          target_member_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          author_name: string
+          content: string
+          created_at?: string
+          id?: string
+          like_count?: number
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          target_member_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          author_name?: string
+          content?: string
+          created_at?: string
+          id?: string
+          like_count?: number
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          status?: string
+          target_member_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_messages_target_member_id_fkey"
+            columns: ["target_member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_photos: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          member_id: string
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_note: string | null
+          sort_order: number
+          status: string
+          submitted_by: string | null
+          taken_on: string | null
+          updated_at: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          member_id: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          sort_order?: number
+          status?: string
+          submitted_by?: string | null
+          taken_on?: string | null
+          updated_at?: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          member_id?: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          sort_order?: number
+          status?: string
+          submitted_by?: string | null
+          taken_on?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_photos_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_registration_requests: {
         Row: {
           bio: string | null
@@ -727,6 +1044,68 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      member_timeline: {
+        Row: {
+          created_at: string
+          description: string | null
+          happened_on: string | null
+          id: string
+          kind: string
+          member_id: string
+          reviewed_at: string | null
+          reviewer_id: string | null
+          reviewer_note: string | null
+          sort_order: number
+          status: string
+          submitted_by: string | null
+          title: string
+          updated_at: string
+          year_label: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          happened_on?: string | null
+          id?: string
+          kind?: string
+          member_id: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          sort_order?: number
+          status?: string
+          submitted_by?: string | null
+          title: string
+          updated_at?: string
+          year_label?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          happened_on?: string | null
+          id?: string
+          kind?: string
+          member_id?: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          reviewer_note?: string | null
+          sort_order?: number
+          status?: string
+          submitted_by?: string | null
+          title?: string
+          updated_at?: string
+          year_label?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_timeline_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       member_works: {
         Row: {
@@ -1155,6 +1534,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      gathering_signup_counts: {
+        Args: never
+        Returns: {
+          gathering_id: string
+          signup_count: number
+        }[]
+      }
       has_admin_access: { Args: { _user_id: string }; Returns: boolean }
       has_management_access: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
@@ -1168,6 +1554,7 @@ export type Database = {
         Args: { _department_id: string; _user_id: string }
         Returns: boolean
       }
+      like_member_message: { Args: { p_id: string }; Returns: number }
       validate_checkin_code: {
         Args: { p_code: string }
         Returns: {
