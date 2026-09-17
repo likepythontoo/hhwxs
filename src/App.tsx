@@ -25,6 +25,7 @@ import Moxiang from "./pages/Moxiang";
 import MoxiangReader from "./pages/MoxiangReader";
 import Members from "./pages/Members";
 import MemberProfile from "./pages/MemberProfile";
+import AlumniEvents from "./pages/AlumniEvents";
 import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
 
@@ -59,6 +60,7 @@ const App = () => (
           <Route path="/moxiang/:id" element={<MoxiangReader />} />
           <Route path="/members" element={<Members />} />
           <Route path="/members/:id" element={<MemberProfile />} />
+          <Route path="/alumni-events" element={<AlumniEvents />} />
           <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
